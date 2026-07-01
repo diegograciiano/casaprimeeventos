@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as PersonalizarRouteImport } from './routes/personalizar'
 import { Route as PacotesRouteImport } from './routes/pacotes'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as ContatoRouteImport } from './routes/contato'
@@ -18,6 +19,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonalizarRoute = PersonalizarRouteImport.update({
+  id: '/personalizar',
+  path: '/personalizar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PacotesRoute = PacotesRouteImport.update({
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
   '/pacotes': typeof PacotesRoute
+  '/personalizar': typeof PersonalizarRoute
   '/sobre': typeof SobreRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
   '/pacotes': typeof PacotesRoute
+  '/personalizar': typeof PersonalizarRoute
   '/sobre': typeof SobreRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,28 @@ export interface FileRoutesById {
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
   '/pacotes': typeof PacotesRoute
+  '/personalizar': typeof PersonalizarRoute
   '/sobre': typeof SobreRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contato' | '/galeria' | '/pacotes' | '/sobre'
+  fullPaths:
+    | '/'
+    | '/contato'
+    | '/galeria'
+    | '/pacotes'
+    | '/personalizar'
+    | '/sobre'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contato' | '/galeria' | '/pacotes' | '/sobre'
-  id: '__root__' | '/' | '/contato' | '/galeria' | '/pacotes' | '/sobre'
+  to: '/' | '/contato' | '/galeria' | '/pacotes' | '/personalizar' | '/sobre'
+  id:
+    | '__root__'
+    | '/'
+    | '/contato'
+    | '/galeria'
+    | '/pacotes'
+    | '/personalizar'
+    | '/sobre'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +98,7 @@ export interface RootRouteChildren {
   ContatoRoute: typeof ContatoRoute
   GaleriaRoute: typeof GaleriaRoute
   PacotesRoute: typeof PacotesRoute
+  PersonalizarRoute: typeof PersonalizarRoute
   SobreRoute: typeof SobreRoute
 }
 
@@ -86,6 +109,13 @@ declare module '@tanstack/react-router' {
       path: '/sobre'
       fullPath: '/sobre'
       preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/personalizar': {
+      id: '/personalizar'
+      path: '/personalizar'
+      fullPath: '/personalizar'
+      preLoaderRoute: typeof PersonalizarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pacotes': {
@@ -124,6 +154,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContatoRoute: ContatoRoute,
   GaleriaRoute: GaleriaRoute,
   PacotesRoute: PacotesRoute,
+  PersonalizarRoute: PersonalizarRoute,
   SobreRoute: SobreRoute,
 }
 export const routeTree = rootRouteImport
