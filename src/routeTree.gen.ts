@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
-import { Route as PersonalizarRouteImport } from './routes/personalizar'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as IndexRouteImport } from './routes/index'
@@ -22,11 +21,6 @@ import { Route as PacotesComBuffetRouteImport } from './routes/pacotes.com-buffe
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PersonalizarRoute = PersonalizarRouteImport.update({
-  id: '/personalizar',
-  path: '/personalizar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GaleriaRoute = GaleriaRouteImport.update({
@@ -69,7 +63,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
-  '/personalizar': typeof PersonalizarRoute
   '/sobre': typeof SobreRoute
   '/pacotes/com-buffet': typeof PacotesComBuffetRoute
   '/pacotes/festa-completa': typeof PacotesFestaCompletaRoute
@@ -80,7 +73,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
-  '/personalizar': typeof PersonalizarRoute
   '/sobre': typeof SobreRoute
   '/pacotes/com-buffet': typeof PacotesComBuffetRoute
   '/pacotes/festa-completa': typeof PacotesFestaCompletaRoute
@@ -92,7 +84,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
-  '/personalizar': typeof PersonalizarRoute
   '/sobre': typeof SobreRoute
   '/pacotes/com-buffet': typeof PacotesComBuffetRoute
   '/pacotes/festa-completa': typeof PacotesFestaCompletaRoute
@@ -105,7 +96,6 @@ export interface FileRouteTypes {
     | '/'
     | '/contato'
     | '/galeria'
-    | '/personalizar'
     | '/sobre'
     | '/pacotes/com-buffet'
     | '/pacotes/festa-completa'
@@ -116,7 +106,6 @@ export interface FileRouteTypes {
     | '/'
     | '/contato'
     | '/galeria'
-    | '/personalizar'
     | '/sobre'
     | '/pacotes/com-buffet'
     | '/pacotes/festa-completa'
@@ -127,7 +116,6 @@ export interface FileRouteTypes {
     | '/'
     | '/contato'
     | '/galeria'
-    | '/personalizar'
     | '/sobre'
     | '/pacotes/com-buffet'
     | '/pacotes/festa-completa'
@@ -139,7 +127,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContatoRoute: typeof ContatoRoute
   GaleriaRoute: typeof GaleriaRoute
-  PersonalizarRoute: typeof PersonalizarRoute
   SobreRoute: typeof SobreRoute
   PacotesComBuffetRoute: typeof PacotesComBuffetRoute
   PacotesFestaCompletaRoute: typeof PacotesFestaCompletaRoute
@@ -154,13 +141,6 @@ declare module '@tanstack/react-router' {
       path: '/sobre'
       fullPath: '/sobre'
       preLoaderRoute: typeof SobreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/personalizar': {
-      id: '/personalizar'
-      path: '/personalizar'
-      fullPath: '/personalizar'
-      preLoaderRoute: typeof PersonalizarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/galeria': {
@@ -219,7 +199,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContatoRoute: ContatoRoute,
   GaleriaRoute: GaleriaRoute,
-  PersonalizarRoute: PersonalizarRoute,
   SobreRoute: SobreRoute,
   PacotesComBuffetRoute: PacotesComBuffetRoute,
   PacotesFestaCompletaRoute: PacotesFestaCompletaRoute,
@@ -229,13 +208,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
