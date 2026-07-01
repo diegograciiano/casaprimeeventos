@@ -205,7 +205,7 @@ function Index() {
             ].map((p) => (
               <div
                 key={p.to}
-                className="relative flex flex-col items-center rounded-[2.5rem] border border-white/10 bg-[#8641df]/10 p-10 text-center"
+                className="card-glow relative flex flex-col items-center rounded-[2.5rem] border border-white/10 bg-[#8641df]/10 p-10 text-center"
               >
                 <div className="mb-3 text-xs font-black uppercase tracking-widest text-[#ffcb03]">
                   {p.subtitulo}
