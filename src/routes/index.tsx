@@ -350,7 +350,7 @@ function Index() {
                 @casaprimeeventos
               </a>
             </p>
-          </div>
+          </Reveal>
         </div>
       </section>
       <EscolherPacoteDialog open={escolherOpen} onOpenChange={setEscolherOpen} />
