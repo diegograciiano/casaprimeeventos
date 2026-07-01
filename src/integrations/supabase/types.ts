@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      leads_festas: {
+        Row: {
+          created_at: string
+          crianca_nome: string | null
+          data_festa: string | null
+          email: string | null
+          id: string
+          pacote: string | null
+          qtd_pessoas: number | null
+          responsavel_nome: string
+          restricoes: string | null
+          status: string
+          telefone: string
+          tema: string | null
+        }
+        Insert: {
+          created_at?: string
+          crianca_nome?: string | null
+          data_festa?: string | null
+          email?: string | null
+          id?: string
+          pacote?: string | null
+          qtd_pessoas?: number | null
+          responsavel_nome: string
+          restricoes?: string | null
+          status?: string
+          telefone: string
+          tema?: string | null
+        }
+        Update: {
+          created_at?: string
+          crianca_nome?: string | null
+          data_festa?: string | null
+          email?: string | null
+          id?: string
+          pacote?: string | null
+          qtd_pessoas?: number | null
+          responsavel_nome?: string
+          restricoes?: string | null
+          status?: string
+          telefone?: string
+          tema?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
