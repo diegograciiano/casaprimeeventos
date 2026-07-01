@@ -21,13 +21,16 @@ export type Database = {
           data_festa: string | null
           email: string | null
           id: string
+          idade: number | null
           pacote: string | null
           qtd_pessoas: number | null
           responsavel_nome: string
           restricoes: string | null
+          session_id: string | null
           status: string
           telefone: string
           tema: string | null
+          updated_at: string
         }
         Insert: {
           created_at?: string
@@ -35,13 +38,16 @@ export type Database = {
           data_festa?: string | null
           email?: string | null
           id?: string
+          idade?: number | null
           pacote?: string | null
           qtd_pessoas?: number | null
           responsavel_nome: string
           restricoes?: string | null
+          session_id?: string | null
           status?: string
           telefone: string
           tema?: string | null
+          updated_at?: string
         }
         Update: {
           created_at?: string
@@ -49,13 +55,16 @@ export type Database = {
           data_festa?: string | null
           email?: string | null
           id?: string
+          idade?: number | null
           pacote?: string | null
           qtd_pessoas?: number | null
           responsavel_nome?: string
           restricoes?: string | null
+          session_id?: string | null
           status?: string
           telefone?: string
           tema?: string | null
+          updated_at?: string
         }
         Relationships: []
       }

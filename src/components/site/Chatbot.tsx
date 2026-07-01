@@ -45,10 +45,14 @@ function textOf(m: UIMessage): string {
 export function Chatbot() {
   const { open, closeChat } = useChatbot();
   const [input, setInput] = useState("");
+  const [sessionId, setSessionId] = useState(() => crypto.randomUUID());
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
+  const transport = useMemo(
+    () => new DefaultChatTransport({ api: "/api/chat", body: () => ({ sessionId }) }),
+    [sessionId],
+  );
   const { messages, sendMessage, status, setMessages } = useChat({
     id: "casaprime-chat",
     messages: INITIAL,
@@ -59,6 +63,7 @@ export function Chatbot() {
 
   useEffect(() => {
     if (!open) return;
+    setSessionId(crypto.randomUUID());
     setMessages(INITIAL);
     setInput("");
     setTimeout(() => inputRef.current?.focus(), 150);

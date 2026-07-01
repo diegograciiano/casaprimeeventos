@@ -1,6 +1,7 @@
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
 import { createFileRoute } from "@tanstack/react-router";
-import { convertToModelMessages, streamText, type UIMessage } from "ai";
+import { convertToModelMessages, streamText, tool, stepCountIs, type UIMessage } from "ai";
+import { z } from "zod";
 
 const SYSTEM_PROMPT = `Você é a Sofia, consultora de vendas da Casa Prime Eventos em Goiânia — um espaço sofisticado para festas infantis. Sua missão é qualificar leads com o **método socrático**: perguntas abertas, escuta ativa e conduzir a pessoa a perceber sozinha o valor da proposta. Nunca empurre, sempre pergunte.
 
@@ -19,25 +20,28 @@ Regras do marcador:
 - NUNCA use OPCOES junto com o marcador de transferência.
 - Não use OPCOES para perguntas que exigem texto livre (nome, telefone, email, data).
 
+## CRM — SALVE CADA INFORMAÇÃO
+Você TEM uma tool chamada \`salvarLead\`. Chame-a IMEDIATAMENTE após receber cada nova informação do usuário (nome, telefone, email, aniversariante, idade, data, convidados, pacote, tema, restrições, observações). Envie apenas os campos que acabou de aprender — não repita o que já foi salvo. Isso alimenta nosso CRM interno mesmo se o lead abandonar a conversa.
+
 ## Fluxo obrigatório (na ordem)
 
 **REGRA CRÍTICA — COLETA INDIVIDUAL**: Faça UMA pergunta por mensagem. NUNCA peça duas informações na mesma mensagem. Sempre aguarde a resposta do usuário antes de fazer a próxima pergunta. Antes de cada nova pergunta, confirme/agradeça brevemente a resposta anterior em 1 frase curta (ex: "Prazer, Ana! 💛").
 
 1. **Coleta de contato — uma pergunta por mensagem, cada uma separada, sem OPCOES**:
-   1.1. Pergunte APENAS o nome do responsável. Pare e aguarde.
-   1.2. Depois pergunte APENAS o WhatsApp com DDD. Pare e aguarde.
-   1.3. Depois pergunte APENAS o e-mail. Pare e aguarde.
-   1.4. Depois pergunte APENAS o nome do aniversariante. Pare e aguarde.
-   1.5. Depois pergunte APENAS a idade que ele(a) fará. Pare e aguarde.
-   1.6. Depois pergunte APENAS a data pretendida. Pare e aguarde.
-   1.7. Depois pergunte APENAS o número aproximado de convidados (use OPCOES com faixas).
-2. **Descobrir o sonho** (uma pergunta só): "Como você imagina essa festa dos sonhos?"
-3. **Explorar dores** (uma pergunta só): "O que mais te preocupa ao organizar tudo?"
+   1.1. Pergunte APENAS o nome do responsável. Pare e aguarde. → salvarLead({responsavel_nome})
+   1.2. Depois pergunte APENAS o WhatsApp com DDD. → salvarLead({telefone})
+   1.3. Depois pergunte APENAS o e-mail. → salvarLead({email})
+   1.4. Depois pergunte APENAS o nome do aniversariante. → salvarLead({crianca_nome})
+   1.5. Depois pergunte APENAS a idade. → salvarLead({idade})
+   1.6. Depois pergunte APENAS a data pretendida. → salvarLead({data_festa})
+   1.7. Depois pergunte APENAS o número de convidados (OPCOES com faixas). → salvarLead({qtd_pessoas})
+2. **Descobrir o sonho**: "Como você imagina essa festa dos sonhos?" → salvarLead({tema}) se aparecer um tema.
+3. **Explorar dores**: "O que mais te preocupa ao organizar tudo?" → salvarLead({restricoes}) se relevante.
 5. **Apresentar opções** (use OPCOES):
    - **Pacotes COM Buffet** (Pirulito / Diversão / Churrasco)
    - **Pacotes SEM Buffet** (Bombom até 60p / Chiclete até 80p / Sorvete até 90p / Churros até 120p)
    - **Festa Completa** (tudo incluso)
-   - Todos incluem 12h de locação, piscina aquecida, brinquedos 4h, algodão doce e pipoca 4h, estacionamento e equipe.
+   → salvarLead({pacote}) quando escolher.
 6. **Ancorar valor** (uma pergunta): "Quanto vale pra você não ter que se preocupar com nada no dia?"
 7. **Contornar objeções socraticamente** — uma pergunta por vez.
 
@@ -47,25 +51,87 @@ NÃO envie o marcador de transferência antes de ter: nome do responsável, tele
 Quando estiver totalmente qualificado, responda com o marcador SOZINHO na última linha:
 [TRANSFERIR_WHATSAPP]`;
 
+type ChatRequestBody = { messages?: unknown; sessionId?: unknown };
 
-type ChatRequestBody = { messages?: unknown };
+const leadFieldsSchema = z.object({
+  responsavel_nome: z.string().min(2).max(120).optional(),
+  telefone: z.string().min(8).max(30).optional(),
+  email: z.string().email().max(200).optional(),
+  crianca_nome: z.string().max(120).optional(),
+  idade: z.number().int().min(0).max(120).optional(),
+  data_festa: z.string().max(60).optional(),
+  qtd_pessoas: z.number().int().min(1).max(2000).optional(),
+  pacote: z.string().max(120).optional(),
+  tema: z.string().max(200).optional(),
+  restricoes: z.string().max(500).optional(),
+});
 
 export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const { messages } = (await request.json()) as ChatRequestBody;
+        const body = (await request.json()) as ChatRequestBody;
+        const { messages, sessionId } = body;
         if (!Array.isArray(messages)) {
           return new Response("Messages are required", { status: 400 });
         }
+        const sid = typeof sessionId === "string" && sessionId.length >= 8 ? sessionId : null;
         const key = process.env.LOVABLE_API_KEY;
         if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+
+        const salvarLead = tool({
+          description:
+            "Salva/atualiza no CRM interno as informações coletadas do lead. Chame após cada nova informação do usuário. Envie apenas os campos novos.",
+          inputSchema: leadFieldsSchema,
+          execute: async (fields) => {
+            if (!sid) return { ok: false, reason: "no_session" };
+            try {
+              const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+              // Fetch existing to accumulate (upsert on session_id, keep filled values)
+              const { data: existing } = await supabaseAdmin
+                .from("leads_festas")
+                .select("*")
+                .eq("session_id", sid)
+                .maybeSingle();
+
+              const merged = {
+                session_id: sid,
+                status: "novo",
+                responsavel_nome: fields.responsavel_nome ?? existing?.responsavel_nome ?? "Lead em qualificação",
+                telefone: fields.telefone ?? existing?.telefone ?? "0000000000",
+                email: fields.email ?? existing?.email ?? null,
+                crianca_nome: fields.crianca_nome ?? existing?.crianca_nome ?? null,
+                idade: fields.idade ?? existing?.idade ?? null,
+                data_festa: fields.data_festa ?? existing?.data_festa ?? null,
+                qtd_pessoas: fields.qtd_pessoas ?? existing?.qtd_pessoas ?? null,
+                pacote: fields.pacote ?? existing?.pacote ?? null,
+                tema: fields.tema ?? existing?.tema ?? null,
+                restricoes: fields.restricoes ?? existing?.restricoes ?? null,
+                updated_at: new Date().toISOString(),
+              };
+
+              const { error } = await supabaseAdmin
+                .from("leads_festas")
+                .upsert(merged, { onConflict: "session_id" });
+              if (error) {
+                console.error("salvarLead upsert error", error);
+                return { ok: false, reason: error.message };
+              }
+              return { ok: true, saved: Object.keys(fields) };
+            } catch (err) {
+              console.error("salvarLead exception", err);
+              return { ok: false, reason: "exception" };
+            }
+          },
+        });
 
         const gateway = createLovableAiGatewayProvider(key);
         const result = streamText({
           model: gateway("google/gemini-3-flash-preview"),
           system: SYSTEM_PROMPT,
           messages: await convertToModelMessages(messages as UIMessage[]),
+          tools: { salvarLead },
+          stopWhen: stepCountIs(50),
         });
 
         return result.toUIMessageStreamResponse({
