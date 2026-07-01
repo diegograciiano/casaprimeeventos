@@ -170,14 +170,14 @@ function Index() {
       {/* PACOTES — fundo ink escuro */}
       <section id="pacotes" className="bg-[#14092e] py-24 text-white sm:py-32">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="mb-16 text-center sm:mb-20">
+          <Reveal className="mb-16 text-center sm:mb-20">
             <h2 className="font-display text-4xl font-extrabold sm:text-6xl">
               Nossos <span className="text-[#ffcb03]">Pacotes</span>
             </h2>
             <p className="mt-4 text-lg text-white/60">
               Celebrações sob medida para o tamanho do seu sonho.
             </p>
-          </div>
+          </Reveal>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {[
