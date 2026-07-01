@@ -85,14 +85,14 @@ function Contato() {
           Prefere montar seu pacote agora?
         </h2>
         <p className="mx-auto mt-2 max-w-md text-white/90">
-          Nosso chatbot te guia em menos de 2 minutos.
+          Nosso consultor te guia em menos de 2 minutos.
         </p>
         <Button
           onClick={() => openChat()}
           size="lg"
           className="mt-5 rounded-full bg-white font-display text-pink hover:bg-white/90"
         >
-          Abrir chatbot
+          Conversar com um consultor
         </Button>
       </div>
     </section>
