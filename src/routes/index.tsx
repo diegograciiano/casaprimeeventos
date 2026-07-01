@@ -273,9 +273,8 @@ function Index() {
                 <div className="font-display text-2xl font-bold">Pacote {p.nome}</div>
                 <div className="text-sm text-foreground/70">{p.subtitulo}</div>
 
-                <div className="mt-4 flex items-baseline gap-2">
-                  <span className="font-display text-3xl font-bold text-pink">{p.preco}</span>
-                  <span className="text-xs text-foreground/60">/ {p.pessoas}</span>
+                <div className="mt-4 text-sm text-foreground/70">
+                  Para <span className="font-semibold text-foreground">{p.pessoas}</span> convidados
                 </div>
 
                 <ul className="mt-4 space-y-2 text-sm">
@@ -287,23 +286,9 @@ function Index() {
                   ))}
                 </ul>
 
-                <div className="mt-5 overflow-hidden rounded-xl bg-muted/60">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="bg-pink-soft/60 text-left text-xs">
-                        <th className="px-3 py-1.5 font-semibold">Pessoas</th>
-                        <th className="px-3 py-1.5 font-semibold">Valor</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {p.precos.map((row) => (
-                        <tr key={row.qtd} className="border-t border-white/60">
-                          <td className="px-3 py-1.5">{row.qtd}</td>
-                          <td className="px-3 py-1.5 font-semibold">{row.valor}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="mt-5 rounded-xl bg-pink-soft/40 px-4 py-3 text-center text-sm">
+                  <div className="font-display font-semibold text-pink">Valores sob consulta</div>
+                  <div className="text-xs text-foreground/70">Fale com a gente pelo WhatsApp</div>
                 </div>
 
                 <Button

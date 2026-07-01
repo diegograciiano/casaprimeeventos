@@ -141,9 +141,8 @@ function Pacotes() {
                 {p.subtitulo}
               </div>
               <h2 className="mt-1 font-display text-3xl font-bold">Pacote {p.nome}</h2>
-              <div className="mt-3 flex items-baseline gap-2">
-                <span className="font-display text-3xl font-bold text-pink">{p.preco}</span>
-                <span className="text-sm text-foreground/60">/ {p.pessoas}</span>
+              <div className="mt-3 text-sm text-foreground/70">
+                Para <span className="font-semibold text-foreground">{p.pessoas}</span> convidados
               </div>
 
               <div className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -155,23 +154,9 @@ function Pacotes() {
                 ))}
               </div>
 
-              <div className="mt-5 overflow-hidden rounded-xl bg-muted/60">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-pink-soft/60 text-left text-xs">
-                      <th className="px-3 py-2 font-semibold">Pessoas</th>
-                      <th className="px-3 py-2 font-semibold">Valor</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {p.precos.map((row) => (
-                      <tr key={row.qtd} className="border-t border-white/60">
-                        <td className="px-3 py-2">{row.qtd}</td>
-                        <td className="px-3 py-2 font-semibold">{row.valor}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="mt-5 rounded-xl bg-pink-soft/40 px-4 py-3 text-center text-sm">
+                <div className="font-display font-semibold text-pink">Valores sob consulta</div>
+                <div className="text-xs text-foreground/70">Solicite seu orçamento personalizado pelo WhatsApp</div>
               </div>
 
               <Button
