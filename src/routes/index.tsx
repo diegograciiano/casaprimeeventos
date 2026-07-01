@@ -326,6 +326,7 @@ function Index() {
           </div>
         </div>
       </section>
+      <EscolherPacoteDialog open={escolherOpen} onOpenChange={setEscolherOpen} />
     </>
   );
 }
