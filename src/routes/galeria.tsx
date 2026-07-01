@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { X } from "lucide-react";
+import { Reveal } from "@/hooks/use-reveal";
+
 
 import salaoAzul from "@/assets/salao-azul.jpg.asset.json";
 import salaoRosa from "@/assets/salao-rosa.jpg.asset.json";

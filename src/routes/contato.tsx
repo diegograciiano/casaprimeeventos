@@ -3,6 +3,8 @@ import { MessageCircle, Instagram, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useChatbot } from "@/components/site/ChatbotContext";
 import { INSTAGRAM_HANDLE, INSTAGRAM_URL, WHATSAPP_DISPLAY, waLink } from "@/lib/whatsapp";
+import { Reveal } from "@/hooks/use-reveal";
+
 
 export const Route = createFileRoute("/contato")({
   head: () => ({
