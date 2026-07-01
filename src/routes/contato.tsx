@@ -79,7 +79,7 @@ function Contato() {
         </div>
       </div>
 
-      <div className="mt-10 rounded-3xl bg-gradient-to-br from-pink to-aqua-deep p-8 text-center text-white shadow-2xl">
+      <div className="hover-lift mt-10 rounded-3xl bg-gradient-to-br from-pink to-aqua-deep p-8 text-center text-white shadow-2xl">
         <Phone className="mx-auto h-8 w-8" />
         <h2 className="mt-3 font-display text-2xl font-bold sm:text-3xl">
           Prefere montar seu pacote agora?
