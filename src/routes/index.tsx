@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { pacotes as pacotesDetalhados, inclusoEmTodos, type Pacote } from "@/data/pacotes";
 import { EscolherPacoteDialog } from "@/components/site/EscolherPacoteDialog";
+import { Reveal } from "@/hooks/use-reveal";
 
 import heroPiscina from "@/assets/salao-rosa-hd.jpg.asset.json";
 import salaoAzul from "@/assets/salao-azul.jpg.asset.json";
@@ -96,7 +97,7 @@ function Index() {
 
         <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-16 sm:px-6 md:min-h-[640px] md:grid-cols-2 md:gap-12 md:py-24 lg:py-32">
           {/* Coluna texto */}
-          <div className="flex flex-col justify-center text-left">
+          <Reveal className="flex flex-col justify-center text-left">
             <div className="mb-6 inline-flex w-fit -rotate-2 items-center gap-2 rounded-full bg-[#ffcb03] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-[#14092e] shadow-lg sm:text-xs">
               <Sparkles className="h-3.5 w-3.5 shrink-0" />
               <span>+500 festas inesquecíveis</span>
@@ -126,7 +127,7 @@ function Index() {
                 Escolher Pacote
               </button>
             </div>
-          </div>
+          </Reveal>
 
           {/* Coluna direita reservada para o visual (imagem já é fundo) */}
           <div aria-hidden className="hidden md:block" />
@@ -137,14 +138,17 @@ function Index() {
       <section className="relative overflow-hidden py-24 sm:py-32">
         <div className="absolute inset-0 origin-right -skew-y-3 scale-110 bg-[#faf9fc]" />
         <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="mb-14">
+          <Reveal className="mb-14">
             <h2 className="font-display text-4xl font-extrabold text-[#8641df] sm:text-5xl">
               Por que escolher a Prime?
             </h2>
             <div className="mt-4 h-2 w-24 rounded-full bg-[#ffcb03]" />
-          </div>
+          </Reveal>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <Reveal
+            stagger
+            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {diferenciais.map((d) => (
               <div
                 key={d.title}
@@ -159,23 +163,23 @@ function Index() {
                 <p className="mt-2 text-[#14092e]/70">{d.desc}</p>
               </div>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* PACOTES — fundo ink escuro */}
       <section id="pacotes" className="bg-[#14092e] py-24 text-white sm:py-32">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="mb-16 text-center sm:mb-20">
+          <Reveal className="mb-16 text-center sm:mb-20">
             <h2 className="font-display text-4xl font-extrabold sm:text-6xl">
               Nossos <span className="text-[#ffcb03]">Pacotes</span>
             </h2>
             <p className="mt-4 text-lg text-white/60">
               Celebrações sob medida para o tamanho do seu sonho.
             </p>
-          </div>
+          </Reveal>
 
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          <Reveal stagger className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {[
               {
                 to: "/pacotes/com-buffet" as const,
@@ -231,7 +235,7 @@ function Index() {
                 </div>
               </div>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -283,7 +287,7 @@ function Index() {
 
       {/* GALERIA PREVIEW */}
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-        <div className="mb-10 flex items-end justify-between gap-4">
+        <Reveal className="mb-10 flex items-end justify-between gap-4">
           <div>
             <h2 className="font-display text-3xl font-extrabold text-[#14092e] sm:text-4xl">
               Momentos que a gente ama
@@ -296,8 +300,8 @@ function Index() {
           >
             Ver tudo →
           </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        </Reveal>
+        <Reveal stagger className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {[salaoAzul.url, salaoRosa.url, decoracaoSafari.url, algodaoDoce.url].map(
             (url, i) => (
               <div
@@ -315,13 +319,13 @@ function Index() {
               </div>
             ),
           )}
-        </div>
+        </Reveal>
       </section>
 
       {/* CTA FINAL — WhatsApp */}
       <section className="px-4 pb-24 sm:px-6">
         <div className="mx-auto max-w-4xl">
-          <div className="text-center">
+          <Reveal className="text-center">
             <div className="relative inline-block">
               <div className="absolute inset-0 rounded-full bg-[#8641df] opacity-20 blur-2xl" />
               <a
@@ -346,7 +350,7 @@ function Index() {
                 @casaprimeeventos
               </a>
             </p>
-          </div>
+          </Reveal>
         </div>
       </section>
       <EscolherPacoteDialog open={escolherOpen} onOpenChange={setEscolherOpen} />
