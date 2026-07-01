@@ -61,41 +61,42 @@ const pacotes = [
   {
     id: "Pacote Pirulito (Sem Buffet)",
     nome: "Pirulito",
-    tier: "Basic Prime",
+    tier: "Entradas + Prato",
     inclui: [
-      "12h de locação",
-      "Piscina aquecida",
-      "Brinquedos por 4h",
+      "Entradas variadas (frios, patê, torradas)",
+      "Maminha ao molho limão + Frango 4 queijos",
+      "Bebidas e sobremesa",
+      "Piscina aquecida + brinquedos 4h",
       "Algodão doce e pipoca",
-      "Equipe de apoio",
     ],
   },
   {
     id: "Pacote Diversão (Com Buffet)",
     nome: "Diversão",
-    tier: "Signature Prime",
+    tier: "Buffet Completo",
     destaque: true,
     inclui: [
-      "Tudo do Pirulito",
-      "Buffet completo Kids",
-      "Entradas, prato quente e sobremesa",
-      "Bebidas (refri e suco)",
-      "Decoração básica inclusa",
+      "Todas as entradas do Pirulito",
+      "Lagarto ao molho madeira + Frango à parmegiana",
+      "Batata sauté e salada tropical",
+      "Bebidas variadas e sobremesa",
+      "Piscina aquecida + brinquedos 4h",
     ],
   },
   {
     id: "Pacote Churrasco (Festa Completa)",
     nome: "Churrasco",
-    tier: "Family Prime",
+    tier: "Festa Completa",
     inclui: [
-      "Tudo do Diversão",
-      "Churrasco premium",
-      "Variedade de carnes nobres",
-      "Churrasqueiro incluso",
-      "Ideal p/ festas com adultos",
+      "Picanha, cupim, contra filé, linguiça e tulipa",
+      "Feijão tropeiro, arroz, vinagrete e mandioca",
+      "Patê, torresmo e petiscos de entrada",
+      "Bebidas variadas e sobremesa",
+      "Piscina aquecida + brinquedos 4h",
     ],
   },
 ];
+
 
 function Index() {
   const { openChat } = useChatbot();
