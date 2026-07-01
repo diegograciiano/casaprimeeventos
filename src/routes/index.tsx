@@ -103,35 +103,36 @@ function Index() {
   return (
     <>
       {/* HERO — roxo full-bleed */}
-      <section className="relative overflow-hidden bg-[#8641df] pt-16 pb-28 sm:pt-24 sm:pb-36">
-        <div className="pointer-events-none absolute top-10 right-10 h-64 w-64 rounded-full bg-[#ffcb03] opacity-25 mix-blend-screen blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 -left-24 h-[28rem] w-[28rem] rounded-full bg-[#14092e] opacity-40 blur-3xl" />
+      <section className="relative overflow-hidden bg-[#8641df] pt-12 pb-24 sm:pt-24 sm:pb-36">
+        <div className="pointer-events-none absolute top-10 right-0 h-48 w-48 rounded-full bg-[#ffcb03] opacity-25 mix-blend-screen blur-3xl sm:right-10 sm:h-64 sm:w-64" />
+        <div className="pointer-events-none absolute -bottom-24 -left-24 h-[20rem] w-[20rem] rounded-full bg-[#14092e] opacity-40 blur-3xl sm:h-[28rem] sm:w-[28rem]" />
 
         <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-4 text-center sm:px-6">
-          <div className="mb-8 inline-flex -rotate-2 items-center gap-2 rounded-full bg-[#ffcb03] px-4 py-1.5 text-xs font-black uppercase tracking-wider text-[#14092e] shadow-lg">
-            <Sparkles className="h-3.5 w-3.5" /> +500 festas inesquecíveis
+          <div className="mb-6 inline-flex -rotate-2 items-center gap-2 rounded-full bg-[#ffcb03] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-[#14092e] shadow-lg sm:mb-8 sm:px-4 sm:text-xs">
+            <Sparkles className="h-3.5 w-3.5 shrink-0" />
+            <span>+500 festas inesquecíveis</span>
           </div>
 
-          <h1 className="font-display text-5xl font-extrabold leading-[0.95] text-white sm:text-7xl md:text-[5.5rem]">
+          <h1 className="font-display text-4xl font-extrabold leading-[0.95] text-white [text-wrap:balance] sm:text-7xl md:text-[5.5rem]">
             CASA <span className="text-[#ffcb03]">PRIME</span>
             <br />
             EVENTOS
           </h1>
 
-          <p className="mt-6 max-w-2xl text-lg font-medium leading-relaxed text-white/90 sm:text-xl">
+          <p className="mt-5 max-w-2xl text-base font-medium leading-relaxed text-white/90 sm:mt-6 sm:text-xl">
             Onde a magia da infância encontra o requinte e a sofisticação em Goiânia.
           </p>
 
-          <div className="mt-10 flex w-full flex-col gap-4 sm:w-auto sm:flex-row">
+          <div className="mt-8 flex w-full flex-col gap-3 sm:mt-10 sm:w-auto sm:flex-row sm:gap-4">
             <button
               onClick={() => openChat()}
-              className="rounded-2xl bg-[#ffcb03] px-8 py-4 text-lg font-bold text-[#14092e] shadow-[0_8px_0_0_#b38e00] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_0_0_#b38e00] active:translate-y-1 active:shadow-none"
+              className="rounded-2xl bg-[#ffcb03] px-6 py-3.5 text-base font-bold text-[#14092e] shadow-[0_8px_0_0_#b38e00] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_0_0_#b38e00] active:translate-y-1 active:shadow-none sm:px-8 sm:py-4 sm:text-lg"
             >
               Escolher Pacote
             </button>
             <Link
               to="/galeria"
-              className="rounded-2xl border-2 border-white/40 bg-white/5 px-8 py-4 text-lg font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/15"
+              className="rounded-2xl border-2 border-white/40 bg-white/5 px-6 py-3.5 text-base font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/15 sm:px-8 sm:py-4 sm:text-lg"
             >
               Ver Galeria
             </Link>
