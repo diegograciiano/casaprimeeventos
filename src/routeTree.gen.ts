@@ -11,10 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as PersonalizarRouteImport } from './routes/personalizar'
-import { Route as PacotesRouteImport } from './routes/pacotes'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PacotesComBuffetRouteImport } from './routes/pacotes.com-buffet'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -24,11 +24,6 @@ const SobreRoute = SobreRouteImport.update({
 const PersonalizarRoute = PersonalizarRouteImport.update({
   id: '/personalizar',
   path: '/personalizar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PacotesRoute = PacotesRouteImport.update({
-  id: '/pacotes',
-  path: '/pacotes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GaleriaRoute = GaleriaRouteImport.update({
@@ -46,31 +41,36 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PacotesComBuffetRoute = PacotesComBuffetRouteImport.update({
+  id: '/pacotes/com-buffet',
+  path: '/pacotes/com-buffet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
-  '/pacotes': typeof PacotesRoute
   '/personalizar': typeof PersonalizarRoute
   '/sobre': typeof SobreRoute
+  '/pacotes/com-buffet': typeof PacotesComBuffetRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
-  '/pacotes': typeof PacotesRoute
   '/personalizar': typeof PersonalizarRoute
   '/sobre': typeof SobreRoute
+  '/pacotes/com-buffet': typeof PacotesComBuffetRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
-  '/pacotes': typeof PacotesRoute
   '/personalizar': typeof PersonalizarRoute
   '/sobre': typeof SobreRoute
+  '/pacotes/com-buffet': typeof PacotesComBuffetRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -78,28 +78,34 @@ export interface FileRouteTypes {
     | '/'
     | '/contato'
     | '/galeria'
-    | '/pacotes'
     | '/personalizar'
     | '/sobre'
+    | '/pacotes/com-buffet'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contato' | '/galeria' | '/pacotes' | '/personalizar' | '/sobre'
+  to:
+    | '/'
+    | '/contato'
+    | '/galeria'
+    | '/personalizar'
+    | '/sobre'
+    | '/pacotes/com-buffet'
   id:
     | '__root__'
     | '/'
     | '/contato'
     | '/galeria'
-    | '/pacotes'
     | '/personalizar'
     | '/sobre'
+    | '/pacotes/com-buffet'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContatoRoute: typeof ContatoRoute
   GaleriaRoute: typeof GaleriaRoute
-  PacotesRoute: typeof PacotesRoute
   PersonalizarRoute: typeof PersonalizarRoute
   SobreRoute: typeof SobreRoute
+  PacotesComBuffetRoute: typeof PacotesComBuffetRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,13 +122,6 @@ declare module '@tanstack/react-router' {
       path: '/personalizar'
       fullPath: '/personalizar'
       preLoaderRoute: typeof PersonalizarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pacotes': {
-      id: '/pacotes'
-      path: '/pacotes'
-      fullPath: '/pacotes'
-      preLoaderRoute: typeof PacotesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/galeria': {
@@ -146,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pacotes/com-buffet': {
+      id: '/pacotes/com-buffet'
+      path: '/pacotes/com-buffet'
+      fullPath: '/pacotes/com-buffet'
+      preLoaderRoute: typeof PacotesComBuffetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -153,9 +159,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContatoRoute: ContatoRoute,
   GaleriaRoute: GaleriaRoute,
-  PacotesRoute: PacotesRoute,
   PersonalizarRoute: PersonalizarRoute,
   SobreRoute: SobreRoute,
+  PacotesComBuffetRoute: PacotesComBuffetRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -7,7 +7,7 @@ import salaoAzul from "@/assets/salao-azul.jpg.asset.json";
 import salaoRosa from "@/assets/salao-rosa.jpg.asset.json";
 import algodaoDoce from "@/assets/algodao-doce.jpg.asset.json";
 
-export const Route = createFileRoute("/pacotes")({
+export const Route = createFileRoute("/pacotes/com-buffet")({
   head: () => ({
     meta: [
       { title: "Pacotes de Festa — Casa Prime Eventos" },
