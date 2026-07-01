@@ -63,3 +63,39 @@ export const getLeadSummary = createServerFn({ method: "POST" })
     }
     return { message: lines.join("\n") };
   });
+
+// Idempotent bootstrap of the fixed CRM admin account.
+// Credentials are intentionally fixed for the Casa Prime internal panel.
+export const bootstrapCrmAdmin = createServerFn({ method: "POST" }).handler(async () => {
+  const email = "casaprime@casaprime.local";
+  const password = "eventos2k26";
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+  // Check if user already exists
+  const { data: list } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 200 });
+  let user = list?.users.find((u) => u.email === email);
+
+  if (!user) {
+    const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+    });
+    if (createErr) return { ok: false, reason: createErr.message };
+    user = created.user ?? undefined;
+  }
+
+  if (!user) return { ok: false, reason: "no_user" };
+
+  // Ensure admin role
+  const { data: existingRole } = await supabaseAdmin
+    .from("user_roles")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (!existingRole) {
+    await supabaseAdmin.from("user_roles").insert({ user_id: user.id, role: "admin" });
+  }
+  return { ok: true };
+});
