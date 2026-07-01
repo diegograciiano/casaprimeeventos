@@ -17,6 +17,7 @@ import { Route as PacotesIndexRouteImport } from './routes/pacotes.index'
 import { Route as PacotesSemBuffetRouteImport } from './routes/pacotes.sem-buffet'
 import { Route as PacotesFestaCompletaRouteImport } from './routes/pacotes.festa-completa'
 import { Route as PacotesComBuffetRouteImport } from './routes/pacotes.com-buffet'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -58,12 +59,18 @@ const PacotesComBuffetRoute = PacotesComBuffetRouteImport.update({
   path: '/pacotes/com-buffet',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
+  '/api/chat': typeof ApiChatRoute
   '/pacotes/com-buffet': typeof PacotesComBuffetRoute
   '/pacotes/festa-completa': typeof PacotesFestaCompletaRoute
   '/pacotes/sem-buffet': typeof PacotesSemBuffetRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
+  '/api/chat': typeof ApiChatRoute
   '/pacotes/com-buffet': typeof PacotesComBuffetRoute
   '/pacotes/festa-completa': typeof PacotesFestaCompletaRoute
   '/pacotes/sem-buffet': typeof PacotesSemBuffetRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
+  '/api/chat': typeof ApiChatRoute
   '/pacotes/com-buffet': typeof PacotesComBuffetRoute
   '/pacotes/festa-completa': typeof PacotesFestaCompletaRoute
   '/pacotes/sem-buffet': typeof PacotesSemBuffetRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/galeria'
     | '/sobre'
+    | '/api/chat'
     | '/pacotes/com-buffet'
     | '/pacotes/festa-completa'
     | '/pacotes/sem-buffet'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/galeria'
     | '/sobre'
+    | '/api/chat'
     | '/pacotes/com-buffet'
     | '/pacotes/festa-completa'
     | '/pacotes/sem-buffet'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/galeria'
     | '/sobre'
+    | '/api/chat'
     | '/pacotes/com-buffet'
     | '/pacotes/festa-completa'
     | '/pacotes/sem-buffet'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   ContatoRoute: typeof ContatoRoute
   GaleriaRoute: typeof GaleriaRoute
   SobreRoute: typeof SobreRoute
+  ApiChatRoute: typeof ApiChatRoute
   PacotesComBuffetRoute: typeof PacotesComBuffetRoute
   PacotesFestaCompletaRoute: typeof PacotesFestaCompletaRoute
   PacotesSemBuffetRoute: typeof PacotesSemBuffetRoute
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PacotesComBuffetRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContatoRoute: ContatoRoute,
   GaleriaRoute: GaleriaRoute,
   SobreRoute: SobreRoute,
+  ApiChatRoute: ApiChatRoute,
   PacotesComBuffetRoute: PacotesComBuffetRoute,
   PacotesFestaCompletaRoute: PacotesFestaCompletaRoute,
   PacotesSemBuffetRoute: PacotesSemBuffetRoute,
