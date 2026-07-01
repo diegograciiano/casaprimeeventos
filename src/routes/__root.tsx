@@ -10,8 +10,6 @@ import {
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
-import "@fontsource-variable/syne/index.css";
-import "@fontsource-variable/plus-jakarta-sans/index.css";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
