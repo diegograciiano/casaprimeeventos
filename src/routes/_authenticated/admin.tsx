@@ -17,6 +17,13 @@ import {
 import { listLeads, updateLeadStatus, LEAD_STATUSES, type LeadStatus } from "@/lib/leads.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "CRM · Casa Prime Eventos" }] }),
@@ -34,6 +41,9 @@ type Lead = {
   data_festa: string | null;
   qtd_pessoas: number | null;
   pacote: string | null;
+  tema: string | null;
+  restricoes: string | null;
+  session_id: string | null;
   updated_at: string;
   created_at: string;
 };
@@ -62,6 +72,7 @@ function AdminPage() {
   });
 
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 8 } }),
@@ -134,7 +145,7 @@ function AdminPage() {
           <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd}>
             <div className="flex gap-4 overflow-x-auto pb-4">
               {COLUMNS.map((col) => (
-                <Column key={col.id} col={col} leads={grouped[col.id]} />
+                <Column key={col.id} col={col} leads={grouped[col.id]} onOpen={setSelectedId} />
               ))}
             </div>
             <DragOverlay>
@@ -142,6 +153,11 @@ function AdminPage() {
             </DragOverlay>
           </DndContext>
         )}
+
+        <LeadDialog
+          lead={selectedId ? leads.find((l) => l.id === selectedId) ?? null : null}
+          onClose={() => setSelectedId(null)}
+        />
       </div>
     </div>
   );
@@ -150,9 +166,11 @@ function AdminPage() {
 function Column({
   col,
   leads,
+  onOpen,
 }: {
   col: { id: LeadStatus; title: string; accent: string };
   leads: Lead[];
+  onOpen: (id: string) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: col.id });
   return (
@@ -176,22 +194,36 @@ function Column({
           <p className="p-4 text-center text-xs text-muted-foreground">Sem leads</p>
         )}
         {leads.map((lead) => (
-          <LeadCard key={lead.id} lead={lead} />
+          <LeadCard key={lead.id} lead={lead} onOpen={onOpen} />
         ))}
       </div>
     </div>
   );
 }
 
-function LeadCard({ lead, dragging }: { lead: Lead; dragging?: boolean }) {
+function waLink(phone: string | null | undefined, text?: string) {
+  const digits = (phone ?? "").replace(/\D/g, "");
+  const base = `https://wa.me/55${digits}`;
+  return text ? `${base}?text=${encodeURIComponent(text)}` : base;
+}
+
+function LeadCard({
+  lead,
+  dragging,
+  onOpen,
+}: {
+  lead: Lead;
+  dragging?: boolean;
+  onOpen?: (id: string) => void;
+}) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: lead.id });
-  const wa = `https://wa.me/55${(lead.telefone ?? "").replace(/\D/g, "")}`;
   return (
     <div
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      className={`cursor-grab rounded-xl border bg-white p-3 shadow-sm active:cursor-grabbing ${
+      onClick={() => !isDragging && onOpen?.(lead.id)}
+      className={`cursor-pointer rounded-xl border bg-white p-3 shadow-sm hover:border-primary/40 ${
         isDragging ? "opacity-40" : ""
       } ${dragging ? "shadow-lg" : ""}`}
     >
@@ -202,7 +234,7 @@ function LeadCard({ lead, dragging }: { lead: Lead; dragging?: boolean }) {
         </span>
       </div>
       <a
-        href={wa}
+        href={waLink(lead.telefone)}
         target="_blank"
         rel="noreferrer"
         onPointerDown={(e) => e.stopPropagation()}
@@ -218,5 +250,83 @@ function LeadCard({ lead, dragging }: { lead: Lead; dragging?: boolean }) {
         {lead.pacote && <p>🎁 {lead.pacote}</p>}
       </div>
     </div>
+  );
+}
+
+function Field({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div>
+      <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="text-sm">{value ?? "—"}</p>
+    </div>
+  );
+}
+
+function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void }) {
+  const open = !!lead;
+  const wa = lead
+    ? waLink(
+        lead.telefone,
+        `Olá ${lead.responsavel_nome}! Aqui é da Casa Prime Eventos, sobre a festa${
+          lead.crianca_nome ? ` do(a) ${lead.crianca_nome}` : ""
+        }. 🎉`,
+      )
+    : "#";
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-lg">
+        {lead && (
+          <>
+            <DialogHeader>
+              <DialogTitle>{lead.responsavel_nome}</DialogTitle>
+              <DialogDescription>
+                Lead recebido em{" "}
+                {new Date(lead.created_at).toLocaleString("pt-BR")}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid grid-cols-2 gap-4 py-2">
+              <Field
+                label="WhatsApp"
+                value={
+                  <a
+                    href={waLink(lead.telefone)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    {lead.telefone}
+                  </a>
+                }
+              />
+              <Field label="E-mail" value={lead.email} />
+              <Field label="Aniversariante" value={lead.crianca_nome} />
+              <Field label="Idade" value={lead.idade} />
+              <Field label="Data da festa" value={lead.data_festa} />
+              <Field label="Nº de convidados" value={lead.qtd_pessoas} />
+              <Field label="Pacote" value={lead.pacote} />
+              <Field label="Status" value={lead.status} />
+              <div className="col-span-2">
+                <Field label="Tema / sonho" value={lead.tema} />
+              </div>
+              <div className="col-span-2">
+                <Field label="Restrições / observações" value={lead.restricoes} />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="outline" onClick={onClose}>
+                Fechar
+              </Button>
+              <Button asChild>
+                <a href={wa} target="_blank" rel="noreferrer">
+                  Abrir WhatsApp
+                </a>
+              </Button>
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }
