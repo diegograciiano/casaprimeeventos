@@ -8,6 +8,18 @@ import { useChatbot } from "./ChatbotContext";
 import { waLink } from "@/lib/whatsapp";
 
 const TRANSFER_MARK = "[TRANSFERIR_WHATSAPP]";
+const OPCOES_RE = /\[OPCOES:\s*([^\]]+)\]/i;
+
+function parseOptions(text: string): { clean: string; options: string[] } {
+  const match = text.match(OPCOES_RE);
+  if (!match) return { clean: text, options: [] };
+  const options = match[1]
+    .split("|")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .slice(0, 5);
+  return { clean: text.replace(OPCOES_RE, "").trim(), options };
+}
 
 const INITIAL: UIMessage[] = [
   {
@@ -16,11 +28,12 @@ const INITIAL: UIMessage[] = [
     parts: [
       {
         type: "text",
-        text: "Olá! Sou a Sofia, consultora da Casa Prime Eventos 🎈 Que bom te ver por aqui! Me conta: para quem é a festa e como você imagina esse dia especial?",
+        text: "Olá! Sou a Sofia, consultora da Casa Prime Eventos 🎈 Antes de tudo, como posso te chamar?",
       },
     ],
   },
 ];
+
 
 function textOf(m: UIMessage): string {
   return m.parts
