@@ -3,7 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useChatbot } from "./ChatbotContext";
-import logo from "@/assets/logo-casa-prime.png.asset.json";
+import logo from "@/assets/icon-casa-prime.png.asset.json";
 
 const nav = [
   { to: "/", label: "Início" },
@@ -20,22 +20,14 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-white/40 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
+        <Link to="/" className="flex items-center" onClick={() => setOpen(false)} aria-label="Casa Prime Eventos — Início">
           <img
             src={logo.url}
             alt="Casa Prime Eventos"
-            width={40}
-            height={40}
-            className="h-10 w-10 object-contain"
+            width={44}
+            height={44}
+            className="h-11 w-11 object-contain"
           />
-          <div className="leading-tight">
-            <div className="font-display text-lg font-bold text-foreground">
-              Casa Prime
-            </div>
-            <div className="-mt-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">
-              Eventos
-            </div>
-          </div>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
