@@ -4,7 +4,7 @@ import { INSTAGRAM_HANDLE, INSTAGRAM_URL, WHATSAPP_DISPLAY, waLink } from "@/lib
 
 export function Footer() {
   return (
-    <footer className="mt-16 bg-gradient-to-b from-aqua-deep to-[oklch(0.32_0.1_240)] text-white">
+    <footer className="mt-16 bg-[#14092e] text-white">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3">
         <div>
           <div className="flex items-center gap-2">
