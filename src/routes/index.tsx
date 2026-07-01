@@ -235,7 +235,7 @@ function Index() {
                 </div>
               </div>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
