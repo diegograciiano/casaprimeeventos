@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { useChatbot } from "@/components/site/ChatbotContext";
 import { waLink } from "@/lib/whatsapp";
 
-import heroPiscina from "@/assets/salao-rosa-hero.png.asset.json";
+import heroPiscina from "@/assets/salao-rosa-hd.jpg.asset.json";
 import salaoAzul from "@/assets/salao-azul.jpg.asset.json";
 import salaoRosa from "@/assets/salao-rosa.jpg.asset.json";
 import decoracaoSafari from "@/assets/decoracao-safari.jpg.asset.json";
@@ -186,7 +186,6 @@ function Index() {
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/40 to-transparent p-4">
                 <div className="rounded-2xl bg-white/90 p-3 backdrop-blur">
-                  <div className="text-xs font-semibold text-pink">Pacote Pirulito</div>
                   <div className="font-display text-xl font-bold">12h de festa completa</div>
                   <div className="text-xs text-foreground/70">Consulte valores no WhatsApp</div>
                 </div>
