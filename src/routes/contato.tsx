@@ -96,7 +96,7 @@ function Contato() {
         >
           Conversar com um consultor
         </Button>
-      </div>
+      </Reveal>
     </section>
   );
 }
