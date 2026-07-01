@@ -98,7 +98,7 @@ function Index() {
         <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-16 sm:px-6 md:min-h-[640px] md:grid-cols-2 md:gap-12 md:py-24 lg:py-32">
           {/* Coluna texto */}
           <Reveal className="flex flex-col justify-center text-left">
-            <div className="mb-6 inline-flex w-fit -rotate-2 items-center gap-2 rounded-full bg-[#ffcb03] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-[#14092e] shadow-lg sm:text-xs">
+            <div className="badge-shine mb-6 inline-flex w-fit -rotate-2 items-center gap-2 rounded-full bg-[#ffcb03] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-[#14092e] shadow-lg sm:text-xs">
               <Sparkles className="h-3.5 w-3.5 shrink-0" />
               <span>+500 festas inesquecíveis</span>
             </div>
