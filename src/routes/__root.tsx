@@ -10,13 +10,8 @@ import {
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
-import "@fontsource/fredoka/400.css";
-import "@fontsource/fredoka/500.css";
-import "@fontsource/fredoka/600.css";
-import "@fontsource/fredoka/700.css";
-import "@fontsource/nunito/400.css";
-import "@fontsource/nunito/600.css";
-import "@fontsource/nunito/700.css";
+import "@fontsource-variable/syne/index.css";
+import "@fontsource-variable/plus-jakarta-sans/index.css";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -96,7 +91,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "A melhor festa infantil da sua vida acontece aqui. Piscina aquecida, brinquedos, buffet e estrutura premium. Solicite seu orçamento pelo WhatsApp.",
       },
       { name: "author", content: "Casa Prime Eventos" },
-      { name: "theme-color", content: "#FF69B4" },
+      { name: "theme-color", content: "#8641df" },
       { property: "og:title", content: "Casa Prime Eventos — A sua casa de diversão" },
       {
         property: "og:description",
@@ -138,7 +133,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ChatbotProvider>
-        <div className="flex min-h-screen flex-col bg-watercolor">
+        <div className="flex min-h-screen flex-col bg-background">
           <Header />
           <main className="flex-1">
             <Outlet />

@@ -6,13 +6,13 @@
 
 /*
  * Casa Prime Eventos — Design System
- * Cores: Azul água #5CE1E6, Rosa #FF69B4, Amarelo dourado #FFD700
- * Fontes: Fredoka (títulos), Nunito (corpo)
+ * Paleta: Roxo #8641df, Dourado #ffcb03, Ink #14092e, Branco
+ * Fontes: Syne (display), Plus Jakarta Sans (corpo)
  */
 
 @theme inline {
-  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Fredoka", "Nunito", ui-sans-serif, sans-serif;
+  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Syne Variable", "Plus Jakarta Sans Variable", ui-sans-serif, sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -43,12 +43,18 @@
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
 
-  --color-aqua: var(--aqua);
-  --color-aqua-deep: var(--aqua-deep);
-  --color-pink: var(--pink);
-  --color-pink-soft: var(--pink-soft);
+  /* Tokens de marca (nomes preservados p/ retrocompat) */
+  --color-purple: var(--purple);
+  --color-purple-soft: var(--purple-soft);
+  --color-ink: var(--ink);
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
+
+  /* Aliases legados — apontam para os novos tokens */
+  --color-pink: var(--purple);
+  --color-pink-soft: var(--purple-soft);
+  --color-aqua: var(--purple-soft);
+  --color-aqua-deep: var(--ink);
   --color-whatsapp: var(--whatsapp);
 
   --color-chart-1: var(--chart-1);
@@ -70,80 +76,79 @@
 :root {
   --radius: 1rem;
 
-  --background: oklch(0.985 0.02 220);
-  --foreground: oklch(0.22 0.06 260);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.18 0.09 295); /* ink #14092e */
 
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.06 260);
+  --card-foreground: oklch(0.18 0.09 295);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.22 0.06 260);
+  --popover-foreground: oklch(0.18 0.09 295);
 
-  /* Rosa vibrante como primary (CTA principal) */
-  --primary: oklch(0.68 0.22 350);
+  /* Roxo como primary (CTA principal) */
+  --primary: oklch(0.53 0.24 295); /* #8641df */
   --primary-foreground: oklch(1 0 0);
 
-  /* Azul água como secondary */
-  --secondary: oklch(0.86 0.13 200);
-  --secondary-foreground: oklch(0.22 0.08 240);
+  /* Dourado como secondary */
+  --secondary: oklch(0.87 0.17 92); /* #ffcb03 */
+  --secondary-foreground: oklch(0.18 0.09 295);
 
-  --muted: oklch(0.96 0.02 220);
-  --muted-foreground: oklch(0.45 0.04 250);
+  --muted: oklch(0.97 0.005 300);
+  --muted-foreground: oklch(0.45 0.02 295);
 
-  --accent: oklch(0.9 0.14 90);
-  --accent-foreground: oklch(0.25 0.08 60);
+  --accent: oklch(0.87 0.17 92);
+  --accent-foreground: oklch(0.18 0.09 295);
 
   --destructive: oklch(0.6 0.24 27);
   --destructive-foreground: oklch(1 0 0);
 
-  --border: oklch(0.9 0.03 220);
-  --input: oklch(0.9 0.03 220);
-  --ring: oklch(0.68 0.22 350);
+  --border: oklch(0.92 0.01 295);
+  --input: oklch(0.92 0.01 295);
+  --ring: oklch(0.53 0.24 295);
 
   /* Cores da marca */
-  --aqua: oklch(0.86 0.13 200);
-  --aqua-deep: oklch(0.72 0.15 210);
-  --pink: oklch(0.68 0.22 350);
-  --pink-soft: oklch(0.9 0.1 350);
-  --gold: oklch(0.86 0.17 90);
-  --gold-soft: oklch(0.94 0.09 90);
-  --whatsapp: oklch(0.62 0.17 150);
+  --purple: oklch(0.53 0.24 295);      /* #8641df */
+  --purple-soft: oklch(0.93 0.06 295);
+  --ink: oklch(0.18 0.09 295);         /* #14092e */
+  --gold: oklch(0.87 0.17 92);         /* #ffcb03 */
+  --gold-soft: oklch(0.95 0.09 92);
+  --whatsapp: oklch(0.68 0.17 148);
 
-  --chart-1: oklch(0.86 0.13 200);
-  --chart-2: oklch(0.68 0.22 350);
-  --chart-3: oklch(0.86 0.17 90);
-  --chart-4: oklch(0.7 0.18 300);
-  --chart-5: oklch(0.7 0.2 30);
+  --chart-1: oklch(0.53 0.24 295);
+  --chart-2: oklch(0.87 0.17 92);
+  --chart-3: oklch(0.18 0.09 295);
+  --chart-4: oklch(0.65 0.2 320);
+  --chart-5: oklch(0.7 0.15 250);
 
-  --sidebar: oklch(0.985 0.02 220);
-  --sidebar-foreground: oklch(0.22 0.06 260);
-  --sidebar-primary: oklch(0.68 0.22 350);
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.18 0.09 295);
+  --sidebar-primary: oklch(0.53 0.24 295);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.9 0.14 90);
-  --sidebar-accent-foreground: oklch(0.25 0.08 60);
-  --sidebar-border: oklch(0.9 0.03 220);
-  --sidebar-ring: oklch(0.68 0.22 350);
+  --sidebar-accent: oklch(0.87 0.17 92);
+  --sidebar-accent-foreground: oklch(0.18 0.09 295);
+  --sidebar-border: oklch(0.92 0.01 295);
+  --sidebar-ring: oklch(0.53 0.24 295);
 }
 
 .dark {
-  --background: oklch(0.2 0.05 260);
-  --foreground: oklch(0.98 0.01 220);
-  --card: oklch(0.25 0.06 260);
-  --card-foreground: oklch(0.98 0.01 220);
-  --popover: oklch(0.25 0.06 260);
-  --popover-foreground: oklch(0.98 0.01 220);
-  --primary: oklch(0.72 0.22 350);
-  --primary-foreground: oklch(0.15 0.05 260);
-  --secondary: oklch(0.72 0.15 210);
-  --secondary-foreground: oklch(0.15 0.05 260);
-  --muted: oklch(0.3 0.04 260);
-  --muted-foreground: oklch(0.75 0.03 220);
-  --accent: oklch(0.86 0.17 90);
-  --accent-foreground: oklch(0.15 0.05 260);
+  --background: oklch(0.18 0.09 295);
+  --foreground: oklch(0.98 0.01 295);
+  --card: oklch(0.22 0.08 295);
+  --card-foreground: oklch(0.98 0.01 295);
+  --popover: oklch(0.22 0.08 295);
+  --popover-foreground: oklch(0.98 0.01 295);
+  --primary: oklch(0.63 0.24 295);
+  --primary-foreground: oklch(0.15 0.05 295);
+  --secondary: oklch(0.87 0.17 92);
+  --secondary-foreground: oklch(0.15 0.05 295);
+  --muted: oklch(0.28 0.06 295);
+  --muted-foreground: oklch(0.75 0.03 295);
+  --accent: oklch(0.87 0.17 92);
+  --accent-foreground: oklch(0.15 0.05 295);
   --destructive: oklch(0.7 0.2 27);
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.72 0.22 350);
+  --ring: oklch(0.63 0.24 295);
 }
 
 @layer base {
@@ -164,18 +169,14 @@
   h4,
   h5 {
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
+    font-weight: 800;
   }
 }
 
-/* Fundo aquarela com nuvens e estrelas */
+/* Fundo neutro (mantém classe .bg-watercolor como no-op p/ retrocompat) */
 .bg-watercolor {
-  background:
-    radial-gradient(ellipse 60% 40% at 10% 15%, oklch(1 0 0 / 0.9), transparent 60%),
-    radial-gradient(ellipse 50% 35% at 90% 25%, oklch(1 0 0 / 0.7), transparent 60%),
-    radial-gradient(ellipse 55% 40% at 30% 85%, oklch(1 0 0 / 0.6), transparent 60%),
-    radial-gradient(ellipse 70% 50% at 80% 90%, oklch(0.94 0.09 90 / 0.35), transparent 60%),
-    linear-gradient(180deg, oklch(0.92 0.09 200) 0%, oklch(0.96 0.05 200) 50%, oklch(0.98 0.03 220) 100%);
+  background-color: var(--color-background);
 }
 
 /* Hexágono para colmeia */
@@ -192,9 +193,17 @@
 }
 
 @keyframes pop-in {
-  0% { opacity: 0; transform: scale(0.9) translateY(8px); }
+  0% { opacity: 0; transform: scale(0.95) translateY(8px); }
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 .animate-pop-in {
-  animation: pop-in 0.35s ease-out both;
+  animation: pop-in 0.4s ease-out both;
+}
+
+@keyframes fade-up {
+  0% { opacity: 0; transform: translateY(16px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out both;
 }
