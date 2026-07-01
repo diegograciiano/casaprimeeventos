@@ -9,7 +9,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3">
         <div>
           <div className="flex items-center gap-2">
-            <img src={logo.url} alt="" width={40} height={40} className="h-10 w-10 object-contain" />
+            <img src={logo.url} alt="" width={40} height={40} className="h-10 w-10 object-contain brightness-0 invert" />
             <div className="font-display text-xl font-bold">Casa Prime Eventos</div>
           </div>
           <p className="mt-3 text-sm text-white/85">
