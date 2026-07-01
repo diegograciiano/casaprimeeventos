@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, X, PartyPopper } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useChatbot } from "./ChatbotContext";
+import logo from "@/assets/logo-casa-prime.png.asset.json";
 
 const nav = [
   { to: "/", label: "Início" },
