@@ -11,7 +11,7 @@ export const Route = createFileRoute("/contato")({
       {
         name: "description",
         content:
-          "Fale conosco pelo WhatsApp, Instagram ou abra nosso chatbot para montar seu pacote em minutos.",
+          "Fale conosco pelo WhatsApp, Instagram ou converse com um consultor para montar seu pacote em minutos.",
       },
       { property: "og:title", content: "Contato — Casa Prime Eventos" },
       {
