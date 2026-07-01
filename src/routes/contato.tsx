@@ -3,6 +3,8 @@ import { MessageCircle, Instagram, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useChatbot } from "@/components/site/ChatbotContext";
 import { INSTAGRAM_HANDLE, INSTAGRAM_URL, WHATSAPP_DISPLAY, waLink } from "@/lib/whatsapp";
+import { Reveal } from "@/hooks/use-reveal";
+
 
 export const Route = createFileRoute("/contato")({
   head: () => ({
@@ -27,7 +29,7 @@ function Contato() {
   const { openChat } = useChatbot();
   return (
     <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6 md:py-16">
-      <div className="text-center">
+      <Reveal className="text-center">
         <div className="text-xs font-semibold uppercase tracking-widest text-pink">
           Contato
         </div>
@@ -37,14 +39,14 @@ function Contato() {
         <p className="mx-auto mt-3 max-w-xl text-foreground/70">
           Escolha o canal que preferir. Respondemos rápido!
         </p>
-      </div>
+      </Reveal>
 
-      <div className="mt-10 grid gap-4 sm:grid-cols-2">
+      <Reveal stagger className="mt-10 grid gap-4 sm:grid-cols-2">
         <a
           href={waLink("Olá Casa Prime! Quero informações para minha festa.")}
           target="_blank"
           rel="noopener noreferrer"
-          className="group rounded-3xl bg-gradient-to-br from-whatsapp to-[oklch(0.55_0.15_150)] p-6 text-white shadow-xl transition hover:-translate-y-1"
+          className="hover-lift group rounded-3xl bg-gradient-to-br from-whatsapp to-[oklch(0.55_0.15_150)] p-6 text-white shadow-xl transition"
         >
           <MessageCircle className="h-8 w-8" />
           <div className="mt-3 font-display text-xl font-semibold">WhatsApp</div>
@@ -56,7 +58,7 @@ function Contato() {
           href={INSTAGRAM_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="group rounded-3xl bg-gradient-to-br from-pink to-[oklch(0.65_0.25_310)] p-6 text-white shadow-xl transition hover:-translate-y-1"
+          className="hover-lift group rounded-3xl bg-gradient-to-br from-pink to-[oklch(0.65_0.25_310)] p-6 text-white shadow-xl transition"
         >
           <Instagram className="h-8 w-8" />
           <div className="mt-3 font-display text-xl font-semibold">Instagram</div>
@@ -64,7 +66,7 @@ function Contato() {
           <div className="mt-3 text-xs text-white/80">Confira fotos e novidades</div>
         </a>
 
-        <div className="rounded-3xl bg-white p-6 shadow-md ring-1 ring-white/60 sm:col-span-2">
+        <div className="hover-lift rounded-3xl bg-white p-6 shadow-md ring-1 ring-white/60 sm:col-span-2">
           <div className="flex items-start gap-4">
             <div className="grid h-11 w-11 place-items-center rounded-xl bg-gold-soft">
               <MapPin className="h-5 w-5 text-foreground" />
@@ -77,9 +79,9 @@ function Contato() {
             </div>
           </div>
         </div>
-      </div>
+      </Reveal>
 
-      <div className="hover-lift mt-10 rounded-3xl bg-gradient-to-br from-pink to-aqua-deep p-8 text-center text-white shadow-2xl">
+      <Reveal className="hover-lift mt-10 rounded-3xl bg-gradient-to-br from-pink to-aqua-deep p-8 text-center text-white shadow-2xl">
         <Phone className="mx-auto h-8 w-8" />
         <h2 className="mt-3 font-display text-2xl font-bold sm:text-3xl">
           Prefere montar seu pacote agora?
@@ -94,7 +96,7 @@ function Contato() {
         >
           Conversar com um consultor
         </Button>
-      </div>
+      </Reveal>
     </section>
   );
 }

@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { X } from "lucide-react";
+import { Reveal } from "@/hooks/use-reveal";
+
 
 import salaoAzul from "@/assets/salao-azul.jpg.asset.json";
 import salaoRosa from "@/assets/salao-rosa.jpg.asset.json";
@@ -39,7 +41,7 @@ function Galeria() {
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-      <div className="text-center">
+      <Reveal className="text-center">
         <div className="text-xs font-semibold uppercase tracking-widest text-pink">
           Galeria
         </div>
@@ -49,14 +51,14 @@ function Galeria() {
         <p className="mx-auto mt-3 max-w-xl text-foreground/70">
           Toca em uma foto para ampliar.
         </p>
-      </div>
+      </Reveal>
 
-      <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+      <Reveal stagger className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
         {fotos.map((f, i) => (
           <button
             key={f.url}
             onClick={() => setLightbox(f.url)}
-            className={`group overflow-hidden rounded-2xl bg-muted shadow-md transition hover:shadow-xl ${
+            className={`hover-lift group overflow-hidden rounded-2xl bg-muted shadow-md transition hover:shadow-xl ${
               i === 0 ? "col-span-2 row-span-2" : ""
             }`}
           >
@@ -68,7 +70,7 @@ function Galeria() {
             />
           </button>
         ))}
-      </div>
+      </Reveal>
 
       {lightbox && (
         <div
