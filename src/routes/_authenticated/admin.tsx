@@ -320,7 +320,7 @@ function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void 
               </Button>
               <Button asChild>
                 <a href={wa} target="_blank" rel="noreferrer">
-                  Abrir WhatsApp
+                  Iniciar conversa com {lead.responsavel_nome.split(" ")[0]}
                 </a>
               </Button>
             </div>
