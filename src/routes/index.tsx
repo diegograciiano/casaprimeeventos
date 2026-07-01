@@ -287,7 +287,7 @@ function Index() {
 
       {/* GALERIA PREVIEW */}
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-        <div className="mb-10 flex items-end justify-between gap-4">
+        <Reveal className="mb-10 flex items-end justify-between gap-4">
           <div>
             <h2 className="font-display text-3xl font-extrabold text-[#14092e] sm:text-4xl">
               Momentos que a gente ama
@@ -300,8 +300,8 @@ function Index() {
           >
             Ver tudo →
           </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        </Reveal>
+        <Reveal stagger className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {[salaoAzul.url, salaoRosa.url, decoracaoSafari.url, algodaoDoce.url].map(
             (url, i) => (
               <div
@@ -319,7 +319,7 @@ function Index() {
               </div>
             ),
           )}
-        </div>
+        </Reveal>
       </section>
 
       {/* CTA FINAL — WhatsApp */}
