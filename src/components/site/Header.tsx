@@ -80,7 +80,7 @@ export function Header() {
             <Button
               onClick={() => {
                 setOpen(false);
-                openChat();
+                setPacoteOpen(true);
               }}
               className="mt-2 rounded-full font-display"
             >
@@ -89,6 +89,7 @@ export function Header() {
           </nav>
         </div>
       )}
+      <EscolherPacoteDialog open={pacoteOpen} onOpenChange={setPacoteOpen} />
     </header>
   );
 }
