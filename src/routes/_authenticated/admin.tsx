@@ -123,7 +123,7 @@ function AdminPage() {
             <Link to="/" className="text-sm text-muted-foreground hover:underline">
               ← site
             </Link>
-            <h1 className="font-display text-2xl sm:text-3xl font-bold">CRM · Leads da Sofia</h1>
+            <h1 className="font-display text-2xl sm:text-3xl font-bold">CRM · Casa Prime Eventos</h1>
             <p className="text-sm text-muted-foreground">
               Arraste os cards entre as colunas. {leads.length} lead(s).
             </p>
