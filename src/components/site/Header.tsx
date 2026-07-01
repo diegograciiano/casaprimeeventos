@@ -1,0 +1,96 @@
+import { Link } from "@tanstack/react-router";
+import { Menu, X, PartyPopper } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useChatbot } from "./ChatbotContext";
+
+const nav = [
+  { to: "/", label: "Início" },
+  { to: "/pacotes", label: "Pacotes" },
+  { to: "/galeria", label: "Galeria" },
+  { to: "/sobre", label: "Sobre" },
+  { to: "/contato", label: "Contato" },
+] as const;
+
+export function Header() {
+  const [open, setOpen] = useState(false);
+  const { openChat } = useChatbot();
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-white/40 bg-white/80 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+        <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
+          <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-pink to-aqua-deep text-white shadow-md">
+            <PartyPopper className="h-5 w-5" />
+          </div>
+          <div className="leading-tight">
+            <div className="font-display text-lg font-bold text-foreground">
+              Casa Prime
+            </div>
+            <div className="-mt-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">
+              Eventos
+            </div>
+          </div>
+        </Link>
+
+        <nav className="hidden items-center gap-1 md:flex">
+          {nav.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              activeOptions={{ exact: item.to === "/" }}
+              activeProps={{ className: "text-pink" }}
+              inactiveProps={{ className: "text-foreground/70 hover:text-foreground" }}
+              className="rounded-full px-3 py-1.5 text-sm font-semibold transition-colors"
+            >
+              {item.label}
+            </Link>
+          ))}
+          <Button
+            onClick={() => openChat()}
+            className="ml-2 rounded-full font-display"
+          >
+            Escolher Pacote
+          </Button>
+        </nav>
+
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="rounded-full p-2 text-foreground md:hidden"
+          aria-label="Abrir menu"
+        >
+          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </div>
+
+      {open && (
+        <div className="border-t border-white/40 bg-white/95 md:hidden">
+          <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
+            {nav.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                activeOptions={{ exact: item.to === "/" }}
+                onClick={() => setOpen(false)}
+                activeProps={{ className: "bg-pink-soft text-pink" }}
+                inactiveProps={{ className: "text-foreground/80" }}
+                className="rounded-xl px-3 py-2.5 text-base font-semibold"
+              >
+                {item.label}
+              </Link>
+            ))}
+            <Button
+              onClick={() => {
+                setOpen(false);
+                openChat();
+              }}
+              className="mt-2 rounded-full font-display"
+            >
+              Escolher Pacote
+            </Button>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}
