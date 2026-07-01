@@ -138,14 +138,17 @@ function Index() {
       <section className="relative overflow-hidden py-24 sm:py-32">
         <div className="absolute inset-0 origin-right -skew-y-3 scale-110 bg-[#faf9fc]" />
         <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="mb-14">
+          <Reveal className="mb-14">
             <h2 className="font-display text-4xl font-extrabold text-[#8641df] sm:text-5xl">
               Por que escolher a Prime?
             </h2>
             <div className="mt-4 h-2 w-24 rounded-full bg-[#ffcb03]" />
-          </div>
+          </Reveal>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <Reveal
+            stagger
+            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {diferenciais.map((d) => (
               <div
                 key={d.title}
@@ -160,7 +163,7 @@ function Index() {
                 <p className="mt-2 text-[#14092e]/70">{d.desc}</p>
               </div>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
