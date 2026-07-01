@@ -175,11 +175,6 @@ function Pacotes() {
                 loading="lazy"
                 className="aspect-[4/3] h-full w-full object-cover"
               />
-              {p.destaque && (
-                <div className="absolute right-3 top-3 rounded-full bg-[#ffcb03] px-3 py-1 text-xs font-black uppercase tracking-wider text-[#14092e] shadow">
-                  Mais escolhido
-                </div>
-              )}
             </div>
 
             <div>
