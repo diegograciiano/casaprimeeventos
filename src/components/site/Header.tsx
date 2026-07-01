@@ -16,7 +16,7 @@ const nav = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
-  const { openChat } = useChatbot();
+  const [pacoteOpen, setPacoteOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/40 bg-white/80 backdrop-blur-md">
