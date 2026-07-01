@@ -176,17 +176,40 @@ function Index() {
           </div>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {pacotesDetalhados.map((p) => (
+            {[
+              {
+                to: "/pacotes/com-buffet" as const,
+                subtitulo: "Buffet incluso",
+                nome: "Pacotes com Buffet",
+                descricao:
+                  "Pirulito, Diversão e Churrasco: cardápios completos, prontos para servir.",
+              },
+              {
+                to: "/pacotes/sem-buffet" as const,
+                subtitulo: "Só o espaço e a estrutura",
+                nome: "Pacotes sem Buffet",
+                descricao:
+                  "Aluguel do espaço com toda a estrutura. Você organiza o cardápio do seu jeito.",
+              },
+              {
+                to: "/pacotes/festa-completa" as const,
+                subtitulo: "Tudo pronto para celebrar",
+                nome: "Festa Completa",
+                descricao:
+                  "Decoração, buffet, brinquedos, equipe e mais em um só pacote.",
+              },
+            ].map((p) => (
               <div
-                key={p.id}
+                key={p.to}
                 className="relative flex flex-col items-center rounded-[2.5rem] border border-white/10 bg-[#8641df]/10 p-10 text-center"
               >
                 <div className="mb-3 text-xs font-black uppercase tracking-widest text-[#ffcb03]">
                   {p.subtitulo}
                 </div>
-                <h3 className="mb-8 font-display text-4xl font-bold">
-                  Pacote {p.nome}
+                <h3 className="mb-6 font-display text-4xl font-bold">
+                  {p.nome}
                 </h3>
+                <p className="mb-10 text-white/80">{p.descricao}</p>
                 <ul className="mb-10 space-y-3 text-left text-white/85">
                   {inclusoEmTodos.map((i) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
@@ -199,12 +222,12 @@ function Index() {
                   <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#ffcb03]">
                     Valores sob consulta
                   </p>
-                  <button
-                    onClick={() => setPacoteAberto(p)}
-                    className="w-full rounded-xl border border-white/25 px-8 py-4 font-bold text-white transition hover:bg-white hover:text-[#14092e]"
+                  <Link
+                    to={p.to}
+                    className="block w-full rounded-xl border border-white/25 px-8 py-4 font-bold text-white transition hover:bg-white hover:text-[#14092e]"
                   >
                     Ver Detalhes
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
