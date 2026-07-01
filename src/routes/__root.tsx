@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -133,19 +134,21 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isBareLayout = pathname.startsWith("/admin") || pathname.startsWith("/auth");
 
   return (
     <QueryClientProvider client={queryClient}>
       <ChatbotProvider>
         <div className="flex min-h-screen flex-col bg-background">
-          <Header />
+          {!isBareLayout && <Header />}
           <main className="flex-1">
             <Outlet />
           </main>
-          <Footer />
+          {!isBareLayout && <Footer />}
         </div>
-        <WhatsAppButton />
-        <Chatbot />
+        {!isBareLayout && <WhatsAppButton />}
+        {!isBareLayout && <Chatbot />}
         <Toaster richColors position="top-center" />
       </ChatbotProvider>
     </QueryClientProvider>
