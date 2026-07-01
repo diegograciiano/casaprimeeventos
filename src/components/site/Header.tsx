@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, X, PartyPopper } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useChatbot } from "./ChatbotContext";
+import logo from "@/assets/logo-casa-prime.png.asset.json";
 
 const nav = [
   { to: "/", label: "Início" },
@@ -20,9 +21,13 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-white/40 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
-          <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-pink to-aqua-deep text-white shadow-md">
-            <PartyPopper className="h-5 w-5" />
-          </div>
+          <img
+            src={logo.url}
+            alt="Casa Prime Eventos"
+            width={40}
+            height={40}
+            className="h-10 w-10 object-contain"
+          />
           <div className="leading-tight">
             <div className="font-display text-lg font-bold text-foreground">
               Casa Prime

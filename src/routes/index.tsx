@@ -102,55 +102,57 @@ function Index() {
 
   return (
     <>
-      {/* HERO — roxo full-bleed */}
-      <section className="relative overflow-hidden bg-[#8641df] pt-12 pb-24 sm:pt-24 sm:pb-36">
-        <div className="pointer-events-none absolute top-10 right-0 h-48 w-48 rounded-full bg-[#ffcb03] opacity-25 mix-blend-screen blur-3xl sm:right-10 sm:h-64 sm:w-64" />
-        <div className="pointer-events-none absolute -bottom-24 -left-24 h-[20rem] w-[20rem] rounded-full bg-[#14092e] opacity-40 blur-3xl sm:h-[28rem] sm:w-[28rem]" />
+      {/* HERO — split 2 blocos: texto esquerda + imagem fundo com degradê */}
+      <section className="relative isolate overflow-hidden bg-[#14092e]">
+        {/* Imagem de fundo */}
+        <img
+          src={heroPiscina.url}
+          alt="Salão decorado em rosa com balões para festa infantil"
+          width={1600}
+          height={1024}
+          loading="eager"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        {/* Degradê roxo cobrindo o texto (esquerda) e desaparecendo à direita */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#14092e] via-[#8641df]/85 via-40% to-transparent md:from-[#14092e] md:via-[#8641df]/90 md:via-45% md:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#14092e]/70 to-transparent md:hidden" />
 
-        <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-4 text-center sm:px-6">
-          <div className="mb-6 inline-flex -rotate-2 items-center gap-2 rounded-full bg-[#ffcb03] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-[#14092e] shadow-lg sm:mb-8 sm:px-4 sm:text-xs">
-            <Sparkles className="h-3.5 w-3.5 shrink-0" />
-            <span>+500 festas inesquecíveis</span>
+        <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-16 sm:px-6 md:min-h-[640px] md:grid-cols-2 md:gap-12 md:py-24 lg:py-32">
+          {/* Coluna texto */}
+          <div className="flex flex-col justify-center text-left">
+            <div className="mb-6 inline-flex w-fit -rotate-2 items-center gap-2 rounded-full bg-[#ffcb03] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-[#14092e] shadow-lg sm:text-xs">
+              <Sparkles className="h-3.5 w-3.5 shrink-0" />
+              <span>+500 festas inesquecíveis</span>
+            </div>
+
+            <h1 className="font-display text-4xl font-extrabold leading-[0.95] text-white [text-wrap:balance] sm:text-6xl lg:text-7xl">
+              CASA <span className="text-[#ffcb03]">PRIME</span>
+              <br />
+              EVENTOS
+            </h1>
+
+            <p className="mt-5 max-w-lg text-base font-medium leading-relaxed text-white/90 sm:mt-6 sm:text-lg">
+              Onde a magia da infância encontra o requinte e a sofisticação em Goiânia.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
+              <button
+                onClick={() => openChat()}
+                className="rounded-2xl bg-[#ffcb03] px-6 py-3.5 text-base font-bold text-[#14092e] shadow-[0_8px_0_0_#b38e00] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_0_0_#b38e00] active:translate-y-1 active:shadow-none sm:px-8 sm:py-4 sm:text-lg"
+              >
+                Escolher Pacote
+              </button>
+              <Link
+                to="/galeria"
+                className="rounded-2xl border-2 border-white/40 bg-white/5 px-6 py-3.5 text-center text-base font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/15 sm:px-8 sm:py-4 sm:text-lg"
+              >
+                Ver Galeria
+              </Link>
+            </div>
           </div>
 
-          <h1 className="font-display text-4xl font-extrabold leading-[0.95] text-white [text-wrap:balance] sm:text-7xl md:text-[5.5rem]">
-            CASA <span className="text-[#ffcb03]">PRIME</span>
-            <br />
-            EVENTOS
-          </h1>
-
-          <p className="mt-5 max-w-2xl text-base font-medium leading-relaxed text-white/90 sm:mt-6 sm:text-xl">
-            Onde a magia da infância encontra o requinte e a sofisticação em Goiânia.
-          </p>
-
-          <div className="mt-8 flex w-full flex-col gap-3 sm:mt-10 sm:w-auto sm:flex-row sm:gap-4">
-            <button
-              onClick={() => openChat()}
-              className="rounded-2xl bg-[#ffcb03] px-6 py-3.5 text-base font-bold text-[#14092e] shadow-[0_8px_0_0_#b38e00] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_0_0_#b38e00] active:translate-y-1 active:shadow-none sm:px-8 sm:py-4 sm:text-lg"
-            >
-              Escolher Pacote
-            </button>
-            <Link
-              to="/galeria"
-              className="rounded-2xl border-2 border-white/40 bg-white/5 px-6 py-3.5 text-base font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/15 sm:px-8 sm:py-4 sm:text-lg"
-            >
-              Ver Galeria
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* FOTO DESTAQUE flutuando entre hero e diferenciais */}
-      <section className="relative -mt-20 px-4 sm:px-6">
-        <div className="mx-auto max-w-5xl overflow-hidden rounded-[2rem] shadow-2xl ring-4 ring-white">
-          <img
-            src={heroPiscina.url}
-            alt="Salão decorado em rosa com balões e mesas postas para festa infantil"
-            width={1600}
-            height={1024}
-            loading="eager"
-            className="h-[280px] w-full object-cover sm:h-[440px]"
-          />
+          {/* Coluna direita reservada para o visual (imagem já é fundo) */}
+          <div aria-hidden className="hidden md:block" />
         </div>
       </section>
 
