@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { useChatbot } from "@/components/site/ChatbotContext";
 import { waLink } from "@/lib/whatsapp";
 
-import heroPiscina from "@/assets/hero-piscina.jpg";
+import heroPiscina from "@/assets/salao-rosa-hero.png.asset.json";
 import salaoAzul from "@/assets/salao-azul.jpg.asset.json";
 import salaoRosa from "@/assets/salao-rosa.jpg.asset.json";
 import decoracaoSafari from "@/assets/decoracao-safari.jpg.asset.json";
@@ -178,8 +178,8 @@ function Index() {
           <div className="relative">
             <div className="animate-float relative overflow-hidden rounded-[2rem] shadow-2xl ring-4 ring-white/60">
               <img
-                src={heroPiscina}
-                alt="Piscina com brinquedos infláveis coloridos"
+                src={heroPiscina.url}
+                alt="Salão decorado em rosa com balões e mesas postas para festa infantil"
                 width={1600}
                 height={1024}
                 className="h-full w-full object-cover"
