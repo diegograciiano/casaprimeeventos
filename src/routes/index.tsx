@@ -325,7 +325,7 @@ function Index() {
       {/* CTA FINAL — WhatsApp */}
       <section className="px-4 pb-24 sm:px-6">
         <div className="mx-auto max-w-4xl">
-          <div className="text-center">
+          <Reveal className="text-center">
             <div className="relative inline-block">
               <div className="absolute inset-0 rounded-full bg-[#8641df] opacity-20 blur-2xl" />
               <a
