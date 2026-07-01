@@ -1,6 +1,38 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+export const LEAD_STATUSES = [
+  "novo",
+  "em_atendimento",
+  "agendada",
+  "finalizada",
+  "nao_fechou",
+] as const;
+export type LeadStatus = (typeof LEAD_STATUSES)[number];
+
+export const updateLeadStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { id: string; status: string }) => {
+    if (!data?.id || typeof data.id !== "string") throw new Error("Invalid id");
+    if (!LEAD_STATUSES.includes(data.status as LeadStatus)) throw new Error("Invalid status");
+    return { id: data.id, status: data.status as LeadStatus };
+  })
+  .handler(async ({ context, data }) => {
+    const { supabase, userId } = context;
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Forbidden");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("leads_festas")
+      .update({ status: data.status, updated_at: new Date().toISOString() })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 export const listLeads = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
