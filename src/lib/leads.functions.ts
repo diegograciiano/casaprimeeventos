@@ -18,13 +18,15 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
     return { id: data.id, status: data.status as LeadStatus };
   })
   .handler(async ({ context, data }) => {
-    const { supabase, userId } = context;
-    const { data: isAdmin } = await supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Error("Forbidden");
+    const { userId } = context;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: role } = await supabaseAdmin
+      .from("user_roles")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (!role) throw new Error("Forbidden");
     const { error } = await supabaseAdmin
       .from("leads_festas")
       .update({ status: data.status, updated_at: new Date().toISOString() })
