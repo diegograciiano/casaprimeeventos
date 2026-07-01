@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
-import type { Database } from "@/integrations/supabase/types";
+
 
 const LeadSchema = z.object({
   crianca_nome: z.string().trim().max(120).optional().nullable(),
@@ -23,7 +23,7 @@ export const submitLead = createServerFn({ method: "POST" })
     if (!url || !key) {
       throw new Error("Backend não configurado");
     }
-    const supabase = createClient<Database>(url, key, {
+    const supabase = createClient(url, key, {
       auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
     });
 
