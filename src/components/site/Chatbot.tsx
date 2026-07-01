@@ -2,10 +2,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { X, Send, PartyPopper } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useChatbot } from "./ChatbotContext";
 import { waLink } from "@/lib/whatsapp";
+import { getLeadSummary } from "@/lib/leads.functions";
 
 const TRANSFER_MARK = "[TRANSFERIR_WHATSAPP]";
 const OPCOES_RE = /\[OPCOES:\s*([^\]]+)\]/i;
@@ -83,8 +86,16 @@ export function Chatbot() {
   const shouldTransfer = lastAssistantText.includes(TRANSFER_MARK);
   const { options: lastOptions } = parseOptions(lastAssistantText);
   const lastAssistantId = lastAssistant?.id;
+  const fetchSummary = useServerFn(getLeadSummary);
+  const { data: summary } = useQuery({
+    queryKey: ["lead-summary", sessionId],
+    queryFn: () => fetchSummary({ data: { sessionId } }),
+    enabled: shouldTransfer,
+    staleTime: 0,
+  });
   const transferUrl = waLink(
-    "Olá Casa Prime! Vim pelo chat e gostaria de continuar meu atendimento personalizado 🎉",
+    summary?.message ??
+      "Olá Casa Prime! Vim pelo chat e gostaria de continuar meu atendimento personalizado 🎉",
   );
 
   if (!open) return null;
