@@ -74,6 +74,7 @@ const diferenciais = [
 function Index() {
   const { openChat } = useChatbot();
   const [pacoteAberto, setPacoteAberto] = useState<Pacote | null>(null);
+  const [escolherOpen, setEscolherOpen] = useState(false);
 
 
   return (
