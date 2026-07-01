@@ -145,7 +145,7 @@ function AdminPage() {
           <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd}>
             <div className="flex gap-4 overflow-x-auto pb-4">
               {COLUMNS.map((col) => (
-                <Column key={col.id} col={col} leads={grouped[col.id]} />
+                <Column key={col.id} col={col} leads={grouped[col.id]} onOpen={setSelectedId} />
               ))}
             </div>
             <DragOverlay>
@@ -153,6 +153,11 @@ function AdminPage() {
             </DragOverlay>
           </DndContext>
         )}
+
+        <LeadDialog
+          lead={selectedId ? leads.find((l) => l.id === selectedId) ?? null : null}
+          onClose={() => setSelectedId(null)}
+        />
       </div>
     </div>
   );
