@@ -46,9 +46,9 @@ const diferenciais = [
     desc: "Algodão doce e pipoca fresquinhos durante toda a festa.",
   },
   {
-    icon: Car,
-    title: "Estacionamento",
-    desc: "Comodidade e segurança total para você e todos os convidados.",
+    icon: Palette,
+    title: "Decoração Temática",
+    desc: "Cenografia personalizada e caprichada para cada festa.",
   },
   {
     icon: Users,
