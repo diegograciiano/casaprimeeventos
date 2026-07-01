@@ -59,7 +59,7 @@ function Sobre() {
     <>
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
         <div className="grid gap-10 md:grid-cols-2 md:items-center">
-          <div>
+          <Reveal>
             <div className="text-xs font-semibold uppercase tracking-widest text-pink">
               Nossa história
             </div>
@@ -76,29 +76,31 @@ function Sobre() {
               simplesmente aproveitar.
             </p>
             <div className="mt-6">
-              <Button onClick={() => openChat()} size="lg" className="rounded-full font-display">
+              <Button onClick={() => openChat()} size="lg" className="btn-shine rounded-full font-display">
                 Quero fazer minha festa
               </Button>
             </div>
-          </div>
-          <div className="overflow-hidden rounded-3xl shadow-xl ring-4 ring-white/60">
+          </Reveal>
+          <Reveal className="hover-lift overflow-hidden rounded-3xl shadow-xl ring-4 ring-white/60">
             <img
               src={decoracaoSafari.url}
               alt="Decoração safari na Casa Prime"
               loading="lazy"
               className="h-full w-full object-cover"
             />
-          </div>
+          </Reveal>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-        <h2 className="font-display text-3xl font-bold">Nossa estrutura</h2>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Reveal>
+          <h2 className="font-display text-3xl font-bold">Nossa estrutura</h2>
+        </Reveal>
+        <Reveal stagger className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {estrutura.map((e) => (
             <div
               key={e.title}
-              className="rounded-2xl bg-white/80 p-5 shadow-sm ring-1 ring-white/60 backdrop-blur"
+              className="hover-lift rounded-2xl bg-white/80 p-5 shadow-sm ring-1 ring-white/60 backdrop-blur"
             >
               <div className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-pink-soft to-aqua/50 text-pink">
                 <e.icon className="h-5 w-5" />
@@ -107,16 +109,18 @@ function Sobre() {
               <p className="mt-1 text-sm text-foreground/70">{e.desc}</p>
             </div>
           ))}
-        </div>
+        </Reveal>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-        <h2 className="font-display text-3xl font-bold">Informações úteis</h2>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <Reveal>
+          <h2 className="font-display text-3xl font-bold">Informações úteis</h2>
+        </Reveal>
+        <Reveal stagger className="mt-6 grid gap-4 sm:grid-cols-2">
           {informacoes.map((i) => (
             <div
               key={i.title}
-              className="flex gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-white/60"
+              className="hover-lift flex gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-white/60"
             >
               <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gold-soft text-foreground">
                 <i.icon className="h-5 w-5" />
@@ -127,7 +131,7 @@ function Sobre() {
               </div>
             </div>
           ))}
-        </div>
+        </Reveal>
       </section>
     </>
   );
