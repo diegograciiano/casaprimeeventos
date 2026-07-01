@@ -74,19 +74,25 @@ export function Chatbot() {
 
   // Detect transfer marker on last assistant message
   const lastAssistant = [...messages].reverse().find((m) => m.role === "assistant");
-  const shouldTransfer = lastAssistant ? textOf(lastAssistant).includes(TRANSFER_MARK) : false;
+  const lastAssistantText = lastAssistant ? textOf(lastAssistant) : "";
+  const shouldTransfer = lastAssistantText.includes(TRANSFER_MARK);
+  const { options: lastOptions } = parseOptions(lastAssistantText);
+  const lastAssistantId = lastAssistant?.id;
   const transferUrl = waLink(
     "Olá Casa Prime! Vim pelo chat e gostaria de continuar meu atendimento personalizado 🎉",
   );
 
   if (!open) return null;
 
+  const send = (text: string) => {
+    if (!text.trim() || isBusy) return;
+    sendMessage({ text: text.trim() });
+    setInput("");
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const t = input.trim();
-    if (!t || isBusy) return;
-    sendMessage({ text: t });
-    setInput("");
+    send(input);
   };
 
   return (
@@ -121,8 +127,9 @@ export function Chatbot() {
         >
           {messages.map((m) => {
             const raw = textOf(m);
-            const text = raw.replace(TRANSFER_MARK, "").trim();
-            if (!text) return null;
+            const withoutTransfer = raw.replace(TRANSFER_MARK, "").trim();
+            const { clean } = parseOptions(withoutTransfer);
+            if (!clean) return null;
             return (
               <div
                 key={m.id}
@@ -135,7 +142,7 @@ export function Chatbot() {
                       : "rounded-bl-sm bg-white text-foreground"
                   }`}
                 >
-                  {text}
+                  {clean}
                 </div>
               </div>
             );
@@ -146,6 +153,20 @@ export function Chatbot() {
               <div className="rounded-2xl bg-white px-4 py-2 text-sm text-muted-foreground shadow-sm">
                 <span className="animate-pulse">Sofia está digitando…</span>
               </div>
+            </div>
+          )}
+
+          {!isBusy && lastOptions.length > 0 && !shouldTransfer && (
+            <div key={lastAssistantId} className="flex flex-col gap-2 pt-1">
+              {lastOptions.map((opt) => (
+                <button
+                  key={opt}
+                  onClick={() => send(opt)}
+                  className="rounded-2xl border-2 border-pink/30 bg-white px-4 py-3 text-left text-sm font-semibold text-foreground transition hover:border-pink hover:bg-pink-soft"
+                >
+                  {opt}
+                </button>
+              ))}
             </div>
           )}
 
@@ -162,6 +183,7 @@ export function Chatbot() {
             </div>
           )}
         </div>
+
 
         <div className="border-t bg-white p-3">
           <form onSubmit={handleSubmit} className="flex gap-2">
