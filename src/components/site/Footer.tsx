@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, MessageCircle, MapPin, PartyPopper } from "lucide-react";
+import { Instagram, MessageCircle, MapPin } from "lucide-react";
+import logo from "@/assets/icon-casa-prime.png.asset.json";
 import { INSTAGRAM_HANDLE, INSTAGRAM_URL, WHATSAPP_DISPLAY, waLink } from "@/lib/whatsapp";
 
 export function Footer() {
