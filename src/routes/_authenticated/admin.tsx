@@ -41,6 +41,9 @@ type Lead = {
   data_festa: string | null;
   qtd_pessoas: number | null;
   pacote: string | null;
+  tema: string | null;
+  restricoes: string | null;
+  session_id: string | null;
   updated_at: string;
   created_at: string;
 };
