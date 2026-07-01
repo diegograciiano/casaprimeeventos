@@ -15,6 +15,9 @@ import { Route as PacotesRouteImport } from './routes/pacotes'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PacotesSemBuffetRouteImport } from './routes/pacotes.sem-buffet'
+import { Route as PacotesFestaCompletaRouteImport } from './routes/pacotes.festa-completa'
+import { Route as PacotesComBuffetRouteImport } from './routes/pacotes.com-buffet'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -46,31 +49,55 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PacotesSemBuffetRoute = PacotesSemBuffetRouteImport.update({
+  id: '/sem-buffet',
+  path: '/sem-buffet',
+  getParentRoute: () => PacotesRoute,
+} as any)
+const PacotesFestaCompletaRoute = PacotesFestaCompletaRouteImport.update({
+  id: '/festa-completa',
+  path: '/festa-completa',
+  getParentRoute: () => PacotesRoute,
+} as any)
+const PacotesComBuffetRoute = PacotesComBuffetRouteImport.update({
+  id: '/com-buffet',
+  path: '/com-buffet',
+  getParentRoute: () => PacotesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
-  '/pacotes': typeof PacotesRoute
+  '/pacotes': typeof PacotesRouteWithChildren
   '/personalizar': typeof PersonalizarRoute
   '/sobre': typeof SobreRoute
+  '/pacotes/com-buffet': typeof PacotesComBuffetRoute
+  '/pacotes/festa-completa': typeof PacotesFestaCompletaRoute
+  '/pacotes/sem-buffet': typeof PacotesSemBuffetRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
-  '/pacotes': typeof PacotesRoute
+  '/pacotes': typeof PacotesRouteWithChildren
   '/personalizar': typeof PersonalizarRoute
   '/sobre': typeof SobreRoute
+  '/pacotes/com-buffet': typeof PacotesComBuffetRoute
+  '/pacotes/festa-completa': typeof PacotesFestaCompletaRoute
+  '/pacotes/sem-buffet': typeof PacotesSemBuffetRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
-  '/pacotes': typeof PacotesRoute
+  '/pacotes': typeof PacotesRouteWithChildren
   '/personalizar': typeof PersonalizarRoute
   '/sobre': typeof SobreRoute
+  '/pacotes/com-buffet': typeof PacotesComBuffetRoute
+  '/pacotes/festa-completa': typeof PacotesFestaCompletaRoute
+  '/pacotes/sem-buffet': typeof PacotesSemBuffetRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,8 +108,20 @@ export interface FileRouteTypes {
     | '/pacotes'
     | '/personalizar'
     | '/sobre'
+    | '/pacotes/com-buffet'
+    | '/pacotes/festa-completa'
+    | '/pacotes/sem-buffet'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contato' | '/galeria' | '/pacotes' | '/personalizar' | '/sobre'
+  to:
+    | '/'
+    | '/contato'
+    | '/galeria'
+    | '/pacotes'
+    | '/personalizar'
+    | '/sobre'
+    | '/pacotes/com-buffet'
+    | '/pacotes/festa-completa'
+    | '/pacotes/sem-buffet'
   id:
     | '__root__'
     | '/'
@@ -91,13 +130,16 @@ export interface FileRouteTypes {
     | '/pacotes'
     | '/personalizar'
     | '/sobre'
+    | '/pacotes/com-buffet'
+    | '/pacotes/festa-completa'
+    | '/pacotes/sem-buffet'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContatoRoute: typeof ContatoRoute
   GaleriaRoute: typeof GaleriaRoute
-  PacotesRoute: typeof PacotesRoute
+  PacotesRoute: typeof PacotesRouteWithChildren
   PersonalizarRoute: typeof PersonalizarRoute
   SobreRoute: typeof SobreRoute
 }
@@ -146,14 +188,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pacotes/sem-buffet': {
+      id: '/pacotes/sem-buffet'
+      path: '/sem-buffet'
+      fullPath: '/pacotes/sem-buffet'
+      preLoaderRoute: typeof PacotesSemBuffetRouteImport
+      parentRoute: typeof PacotesRoute
+    }
+    '/pacotes/festa-completa': {
+      id: '/pacotes/festa-completa'
+      path: '/festa-completa'
+      fullPath: '/pacotes/festa-completa'
+      preLoaderRoute: typeof PacotesFestaCompletaRouteImport
+      parentRoute: typeof PacotesRoute
+    }
+    '/pacotes/com-buffet': {
+      id: '/pacotes/com-buffet'
+      path: '/com-buffet'
+      fullPath: '/pacotes/com-buffet'
+      preLoaderRoute: typeof PacotesComBuffetRouteImport
+      parentRoute: typeof PacotesRoute
+    }
   }
 }
+
+interface PacotesRouteChildren {
+  PacotesComBuffetRoute: typeof PacotesComBuffetRoute
+  PacotesFestaCompletaRoute: typeof PacotesFestaCompletaRoute
+  PacotesSemBuffetRoute: typeof PacotesSemBuffetRoute
+}
+
+const PacotesRouteChildren: PacotesRouteChildren = {
+  PacotesComBuffetRoute: PacotesComBuffetRoute,
+  PacotesFestaCompletaRoute: PacotesFestaCompletaRoute,
+  PacotesSemBuffetRoute: PacotesSemBuffetRoute,
+}
+
+const PacotesRouteWithChildren =
+  PacotesRoute._addFileChildren(PacotesRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContatoRoute: ContatoRoute,
   GaleriaRoute: GaleriaRoute,
-  PacotesRoute: PacotesRoute,
+  PacotesRoute: PacotesRouteWithChildren,
   PersonalizarRoute: PersonalizarRoute,
   SobreRoute: SobreRoute,
 }
