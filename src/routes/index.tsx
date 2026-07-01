@@ -114,7 +114,7 @@ function Index() {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
               <button
-                onClick={() => openChat()}
+                onClick={() => setEscolherOpen(true)}
                 className="rounded-2xl bg-[#ffcb03] px-6 py-3.5 text-base font-bold text-[#14092e] shadow-[0_8px_0_0_#b38e00] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_0_0_#b38e00] active:translate-y-1 active:shadow-none sm:px-8 sm:py-4 sm:text-lg"
               >
                 Escolher Pacote
