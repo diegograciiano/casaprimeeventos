@@ -1,21 +1,14 @@
-import { MessageCircle } from "lucide-react";
-import { WHATSAPP_NUMBER, waLink } from "@/lib/whatsapp";
+import { useChatbot } from "./ChatbotContext";
 
 export function WhatsAppButton() {
-  const msg =
-    "Olá Casa Prime! 👋 Quero informações para fazer a festa do meu filho(a).";
+  const { openChat } = useChatbot();
   return (
-    <a
-      href={waLink(msg)}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`Falar no WhatsApp ${WHATSAPP_NUMBER}`}
-      className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-whatsapp px-4 py-3 text-white shadow-lg shadow-black/20 transition-transform hover:scale-105 active:scale-95 sm:bottom-6 sm:right-6"
+    <button
+      onClick={() => openChat()}
+      aria-label="Fazer uma reserva"
+      className="fixed bottom-5 right-5 z-50 rounded-2xl border-2 border-white/40 bg-white/10 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-black/30 backdrop-blur-md transition-colors hover:bg-white/20 sm:bottom-6 sm:right-6 sm:text-base"
     >
-      <MessageCircle className="h-6 w-6" aria-hidden />
-      <span className="hidden pr-1 text-sm font-semibold sm:inline">
-        WhatsApp
-      </span>
-    </a>
+      Fazer uma Reserva
+    </button>
   );
 }
