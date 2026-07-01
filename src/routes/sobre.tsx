@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useChatbot } from "@/components/site/ChatbotContext";
+import { Reveal } from "@/hooks/use-reveal";
+
 
 import decoracaoSafari from "@/assets/decoracao-safari.jpg.asset.json";
 
