@@ -45,7 +45,7 @@ export function Header() {
             </Link>
           ))}
           <Button
-            onClick={() => openChat()}
+            onClick={() => setPacoteOpen(true)}
             className="ml-2 rounded-full font-display"
           >
             Escolher Pacote
