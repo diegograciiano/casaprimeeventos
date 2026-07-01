@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   Sparkles,
   Waves,
@@ -13,6 +14,15 @@ import {
 } from "lucide-react";
 import { useChatbot } from "@/components/site/ChatbotContext";
 import { waLink } from "@/lib/whatsapp";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { pacotes as pacotesDetalhados, inclusoEmTodos, type Pacote } from "@/data/pacotes";
 
 import heroPiscina from "@/assets/salao-rosa-hd.jpg.asset.json";
 import salaoAzul from "@/assets/salao-azul.jpg.asset.json";
@@ -23,6 +33,7 @@ import algodaoDoce from "@/assets/algodao-doce.jpg.asset.json";
 export const Route = createFileRoute("/")({
   component: Index,
 });
+
 
 const diferenciais = [
   {
