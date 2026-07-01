@@ -4,7 +4,7 @@ import {
   Waves,
   Clock,
   IceCream,
-  Car,
+  Palette,
   Users,
   Check,
   ArrowRight,
