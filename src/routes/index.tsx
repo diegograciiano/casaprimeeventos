@@ -116,13 +116,13 @@ function Index() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
               <button
                 onClick={() => openChat()}
-                className="rounded-2xl bg-[#ffcb03] px-6 py-3.5 text-base font-bold text-[#14092e] shadow-[0_8px_0_0_#b38e00] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_0_0_#b38e00] active:translate-y-1 active:shadow-none sm:px-8 sm:py-4 sm:text-lg"
+                className="btn-shine rounded-2xl bg-[#ffcb03] px-6 py-3.5 text-base font-bold text-[#14092e] shadow-[0_8px_0_0_#b38e00] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_0_0_#b38e00] active:translate-y-1 active:shadow-none sm:px-8 sm:py-4 sm:text-lg"
               >
                 Fazer uma Reserva
               </button>
               <button
                 onClick={() => setEscolherOpen(true)}
-                className="rounded-2xl border-2 border-white/40 bg-white/5 px-6 py-3.5 text-center text-base font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/15 sm:px-8 sm:py-4 sm:text-lg"
+                className="btn-shine rounded-2xl border-2 border-white/40 bg-white/5 px-6 py-3.5 text-center text-base font-bold text-white backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-white/70 hover:bg-white/15 sm:px-8 sm:py-4 sm:text-lg"
               >
                 Escolher Pacote
               </button>
