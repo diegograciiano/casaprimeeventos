@@ -174,27 +174,20 @@ function Index() {
           </div>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {pacotes.map((p) => (
+            {pacotesDetalhados.map((p) => (
               <div
                 key={p.id}
-                className={
-                  p.destaque
-                    ? "relative flex transform flex-col items-center rounded-[2.5rem] bg-[#8641df] p-10 text-center shadow-2xl shadow-[#8641df]/40 lg:-translate-y-6"
-                    : "relative flex flex-col items-center rounded-[2.5rem] border border-white/10 bg-[#8641df]/10 p-10 text-center"
-                }
+                className="relative flex flex-col items-center rounded-[2.5rem] border border-white/10 bg-[#8641df]/10 p-10 text-center"
               >
-                {p.destaque && (
-                  <div className="absolute -top-4 rounded-full bg-[#ffcb03] px-5 py-1.5 text-[10px] font-black uppercase tracking-widest text-[#14092e]">
-                    Mais popular
-                  </div>
-                )}
                 <div className="mb-3 text-xs font-black uppercase tracking-widest text-[#ffcb03]">
-                  {p.tier}
+                  {p.subtitulo}
                 </div>
-                <h3 className="mb-8 font-display text-4xl font-bold">{p.nome}</h3>
-                <ul className="mb-10 space-y-3 text-white/85">
-                  {p.inclui.map((i) => (
-                    <li key={i} className="flex items-start justify-center gap-2 text-sm">
+                <h3 className="mb-8 font-display text-4xl font-bold">
+                  Pacote {p.nome}
+                </h3>
+                <ul className="mb-10 space-y-3 text-left text-white/85">
+                  {inclusoEmTodos.map((i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm">
                       <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#ffcb03]" />
                       <span>{i}</span>
                     </li>
@@ -205,14 +198,10 @@ function Index() {
                     Valores sob consulta
                   </p>
                   <button
-                    onClick={() => openChat(p.id)}
-                    className={
-                      p.destaque
-                        ? "w-full rounded-xl bg-[#ffcb03] px-8 py-4 font-bold text-[#14092e] shadow-lg shadow-black/20 transition hover:brightness-110"
-                        : "w-full rounded-xl border border-white/25 px-8 py-4 font-bold text-white transition hover:bg-white hover:text-[#14092e]"
-                    }
+                    onClick={() => setPacoteAberto(p)}
+                    className="w-full rounded-xl border border-white/25 px-8 py-4 font-bold text-white transition hover:bg-white hover:text-[#14092e]"
                   >
-                    {p.destaque ? "Solicitar Orçamento" : "Ver Detalhes"}
+                    Ver Detalhes
                   </button>
                 </div>
               </div>
@@ -220,6 +209,52 @@ function Index() {
           </div>
         </div>
       </section>
+
+      <Dialog open={!!pacoteAberto} onOpenChange={(o) => !o && setPacoteAberto(null)}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+          <DialogHeader>
+            <div className="text-xs font-black uppercase tracking-widest text-[#8641df]">
+              {pacoteAberto?.subtitulo}
+            </div>
+            <DialogTitle className="font-display text-3xl font-bold text-[#14092e]">
+              Pacote {pacoteAberto?.nome}
+            </DialogTitle>
+            <DialogDescription>
+              Confira tudo que está incluso neste pacote.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-4 grid gap-6 sm:grid-cols-2">
+            {pacoteAberto?.secoes.map((sec) => (
+              <div key={sec.titulo}>
+                <div className="mb-2 inline-block rounded-full bg-[#8641df]/10 px-3 py-1 font-display text-xs font-bold uppercase tracking-wider text-[#8641df]">
+                  {sec.titulo}
+                </div>
+                <ul className="space-y-1.5">
+                  {sec.itens.map((i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-[#14092e]/80">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#8641df]" />
+                      <span>{i}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <DialogFooter className="mt-6">
+            <button
+              onClick={() => {
+                if (pacoteAberto) openChat(pacoteAberto.id);
+                setPacoteAberto(null);
+              }}
+              className="w-full rounded-xl bg-[#ffcb03] px-8 py-4 font-bold text-[#14092e] shadow-lg shadow-black/20 transition hover:brightness-110"
+            >
+              Solicitar Orçamento
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* GALERIA PREVIEW */}
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
