@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ChefHat, Sparkles, PartyPopper } from "lucide-react";
 
-export const Route = createFileRoute("/pacotes")({
+export const Route = createFileRoute("/pacotes/")({
   head: () => ({
     meta: [
       { title: "Pacotes — Casa Prime Eventos" },
