@@ -3,7 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useChatbot } from "./ChatbotContext";
-import logo from "@/assets/logo-casa-prime.png.asset.json";
+import logo from "@/assets/icon-casa-prime.png.asset.json";
 
 const nav = [
   { to: "/", label: "Início" },
