@@ -44,7 +44,7 @@ const pacotes = [
     id: "Pacote Pirulito (Sem Buffet)",
     nome: "Pirulito",
     subtitulo: "Sem Buffet",
-    preco: "R$ 5.890",
+    preco: "Consulte",
     pessoas: "80 pessoas",
     cor: "from-gold to-accent",
     ring: "ring-gold",
@@ -186,9 +186,9 @@ function Index() {
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/40 to-transparent p-4">
                 <div className="rounded-2xl bg-white/90 p-3 backdrop-blur">
-                  <div className="text-xs font-semibold text-pink">A partir de</div>
-                  <div className="font-display text-2xl font-bold">R$ 5.890</div>
-                  <div className="text-xs text-foreground/70">80 pessoas • Pacote Pirulito</div>
+                  <div className="text-xs font-semibold text-pink">Pacote Pirulito</div>
+                  <div className="font-display text-xl font-bold">12h de festa completa</div>
+                  <div className="text-xs text-foreground/70">Consulte valores no WhatsApp</div>
                 </div>
               </div>
             </div>
