@@ -23,6 +23,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { pacotes as pacotesDetalhados, inclusoEmTodos, type Pacote } from "@/data/pacotes";
+import { EscolherPacoteDialog } from "@/components/site/EscolherPacoteDialog";
 
 import heroPiscina from "@/assets/salao-rosa-hd.jpg.asset.json";
 import salaoAzul from "@/assets/salao-azul.jpg.asset.json";
