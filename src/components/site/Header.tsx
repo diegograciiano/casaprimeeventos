@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useChatbot } from "./ChatbotContext";
+import { EscolherPacoteDialog } from "./EscolherPacoteDialog";
 import logo from "@/assets/icon-casa-prime.png.asset.json";
 
 const nav = [
@@ -16,7 +16,7 @@ const nav = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
-  const { openChat } = useChatbot();
+  const [pacoteOpen, setPacoteOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/40 bg-white/80 backdrop-blur-md">
@@ -45,7 +45,7 @@ export function Header() {
             </Link>
           ))}
           <Button
-            onClick={() => openChat()}
+            onClick={() => setPacoteOpen(true)}
             className="ml-2 rounded-full font-display"
           >
             Escolher Pacote
@@ -80,7 +80,7 @@ export function Header() {
             <Button
               onClick={() => {
                 setOpen(false);
-                openChat();
+                setPacoteOpen(true);
               }}
               className="mt-2 rounded-full font-display"
             >
@@ -89,6 +89,7 @@ export function Header() {
           </nav>
         </div>
       )}
+      <EscolherPacoteDialog open={pacoteOpen} onOpenChange={setPacoteOpen} />
     </header>
   );
 }
