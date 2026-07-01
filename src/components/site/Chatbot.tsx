@@ -1,304 +1,242 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { X, Send, Sparkles, PartyPopper } from "lucide-react";
+import { X, Send, PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { submitLead } from "@/lib/leads.functions";
-import { waLink } from "@/lib/whatsapp";
 import { useChatbot } from "./ChatbotContext";
 
 type Msg = { from: "bot" | "user"; text: string };
 
-const PACOTES = [
-  { id: "Pacote Pirulito (Sem Buffet)", short: "Pirulito" },
-  { id: "Pacote Diversão (Com Buffet)", short: "Diversão" },
-  { id: "Pacote Churrasco (Festa Completa)", short: "Churrasco" },
-];
+type InputKind = "text" | "date" | "number";
+type ChoiceItem = { content: string; next: string };
+type Block =
+  | { kind: "bot"; text: string }
+  | { kind: "choice"; items: ChoiceItem[] }
+  | { kind: "input"; type: InputKind; variable: "nome" | "data" | "convidados"; placeholder: string }
+  | { kind: "redirect"; urlTemplate: string };
 
-const PACOTE_RESUMO: Record<string, string> = {
-  "Pacote Pirulito (Sem Buffet)":
-    "12h de locação, piscina aquecida, brinquedos 4h, algodão doce e pipoca 4h, estacionamento e equipe completa. Valores sob consulta.",
-  "Pacote Diversão (Com Buffet)":
-    "Tudo do Pirulito + buffet completo (entradas, prato principal, bebidas e sobremesa). Ideal para quem quer festa completa sem preocupação.",
-  "Pacote Churrasco (Festa Completa)":
-    "Festa completa com churrasco premium, buffet, bebidas, sobremesas, brinquedos 4h, piscina aquecida e toda a estrutura.",
+type Group = { id: string; blocks: Block[]; next?: string };
+
+const FLOW: Record<string, Group> = {
+  welcome: {
+    id: "welcome",
+    blocks: [
+      { kind: "bot", text: "Olá! Seja muito bem-vindo(a) à Casa Prime Eventos! 🎈" },
+      { kind: "bot", text: "Onde a magia da infância encontra o requinte e a sofisticação em Goiânia." },
+      {
+        kind: "choice",
+        items: [
+          { content: "Fazer um orçamento", next: "dados" },
+          { content: "Conhecer os pacotes", next: "pacoteTipo" },
+          { content: "Falar com um consultor", next: "final" },
+        ],
+      },
+    ],
+  },
+  dados: {
+    id: "dados",
+    blocks: [
+      { kind: "bot", text: "Para começarmos, qual o seu nome?" },
+      { kind: "input", type: "text", variable: "nome", placeholder: "Seu nome" },
+      { kind: "bot", text: "Prazer em te conhecer, {{nome}}! Qual a data pretendida para a festa?" },
+      { kind: "input", type: "date", variable: "data", placeholder: "dd/mm/aaaa" },
+      { kind: "bot", text: "E qual o número estimado de convidados?" },
+      { kind: "input", type: "number", variable: "convidados", placeholder: "Ex: 80" },
+    ],
+    next: "pacoteTipo",
+  },
+  pacoteTipo: {
+    id: "pacoteTipo",
+    blocks: [
+      { kind: "bot", text: "Qual tipo de pacote você tem interesse?" },
+      {
+        kind: "choice",
+        items: [
+          { content: "Pacotes COM Buffet", next: "comBuffet" },
+          { content: "Pacotes SEM Buffet", next: "semBuffet" },
+          { content: "Festa Completa (Tudo incluso)", next: "final" },
+        ],
+      },
+    ],
+  },
+  comBuffet: {
+    id: "comBuffet",
+    blocks: [
+      { kind: "bot", text: "Temos opções deliciosas! Qual cardápio mais te agrada?" },
+      {
+        kind: "choice",
+        items: [
+          { content: "Pacote Pirulito (Entradas + Prato Principal)", next: "final" },
+          { content: "Pacote Diversão (Buffet Completo)", next: "final" },
+          { content: "Pacote Churrasco (Picanha e Grill)", next: "final" },
+        ],
+      },
+    ],
+  },
+  semBuffet: {
+    id: "semBuffet",
+    blocks: [
+      {
+        kind: "bot",
+        text: "Ótima escolha! Nossos pacotes sem buffet variam pelo número de pessoas. Qual se encaixa melhor?",
+      },
+      {
+        kind: "choice",
+        items: [
+          { content: "Bombom (Até 60 pessoas)", next: "final" },
+          { content: "Chiclete (Até 80 pessoas)", next: "final" },
+          { content: "Sorvete (Até 90 pessoas)", next: "final" },
+          { content: "Churros (Até 120 pessoas)", next: "final" },
+        ],
+      },
+    ],
+  },
+  final: {
+    id: "final",
+    blocks: [
+      {
+        kind: "bot",
+        text: "Perfeito! Vou te encaminhar agora para um de nossos consultores no WhatsApp para finalizar seu orçamento personalizado.",
+      },
+      { kind: "bot", text: "Aguarde um instante..." },
+      {
+        kind: "redirect",
+        urlTemplate:
+          "https://wa.me/5562993454663?text=Olá! Me chamo {{nome}}, gostaria de um orçamento para o dia {{data}} para {{convidados}} pessoas.",
+      },
+    ],
+  },
 };
 
-type Step =
-  | "welcome"
-  | "pessoas"
-  | "pacote"
-  | "confirmaPacote"
-  | "tema"
-  | "restricoes"
-  | "nome"
-  | "telefone"
-  | "email"
-  | "resumo"
-  | "enviando"
-  | "done";
+type Vars = { nome?: string; data?: string; convidados?: string; pacote?: string };
 
-const STEP_ORDER: Step[] = [
-  "welcome",
-  "pessoas",
-  "pacote",
-  "confirmaPacote",
-  "tema",
-  "restricoes",
-  "nome",
-  "telefone",
-  "email",
-  "resumo",
-];
+function interpolate(t: string, vars: Vars) {
+  return t
+    .replace(/\{\{nome\}\}/g, vars.nome || "")
+    .replace(/\{\{data\}\}/g, vars.data || "")
+    .replace(/\{\{convidados\}\}/g, vars.convidados || "");
+}
 
 export function Chatbot() {
-  const { open, closeChat, initialPacote } = useChatbot();
+  const { open, closeChat } = useChatbot();
   const send = useServerFn(submitLead);
 
-  const [step, setStep] = useState<Step>("welcome");
+  const [groupId, setGroupId] = useState<string>("welcome");
+  const [blockIdx, setBlockIdx] = useState(0);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
-
-  const [criancaNome, setCriancaNome] = useState("");
-  const [dataFesta, setDataFesta] = useState("");
-  const [qtdPessoas, setQtdPessoas] = useState<number | null>(null);
-  const [pacote, setPacote] = useState<string | undefined>(undefined);
-  const [tema, setTema] = useState("");
-  const [restricoes, setRestricoes] = useState("");
-  const [nome, setNome] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [email, setEmail] = useState("");
+  const [vars, setVars] = useState<Vars>({});
+  const [done, setDone] = useState(false);
+  const leadSentRef = useRef(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const progress = useMemo(() => {
-    const i = STEP_ORDER.indexOf(step);
-    if (i < 0) return 100;
-    return Math.round(((i + 1) / STEP_ORDER.length) * 100);
-  }, [step]);
-
-  const pushBot = (text: string) =>
-    setMessages((m) => [...m, { from: "bot", text }]);
-  const pushUser = (text: string) =>
-    setMessages((m) => [...m, { from: "user", text }]);
+  const currentGroup = FLOW[groupId];
+  const currentBlock: Block | undefined = currentGroup?.blocks[blockIdx];
 
   // Reset ao abrir
   useEffect(() => {
     if (!open) return;
-    setStep("welcome");
-    setMessages([
-      {
-        from: "bot",
-        text: "Olá! 😊 Eu sou a assistente da Casa Prime Eventos. Vamos montar a festa dos sonhos do seu filho(a)?",
-      },
-      {
-        from: "bot",
-        text: "Qual o nome da criança e a data aproximada da festa? (ex: Helena — 15/03/2026)",
-      },
-    ]);
-    setCriancaNome("");
-    setDataFesta("");
-    setQtdPessoas(null);
-    setPacote(initialPacote);
-    setTema("");
-    setRestricoes("");
-    setNome("");
-    setTelefone("");
-    setEmail("");
+    setGroupId("welcome");
+    setBlockIdx(0);
+    setMessages([]);
     setInput("");
-  }, [open, initialPacote]);
+    setVars({});
+    setDone(false);
+    leadSentRef.current = false;
+  }, [open]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages, step]);
+  }, [messages, blockIdx, groupId]);
 
+  // Auto-advance through bot messages
   useEffect(() => {
-    if (open) setTimeout(() => inputRef.current?.focus(), 150);
-  }, [open, step]);
+    if (!open || !currentBlock) return;
+    if (currentBlock.kind === "bot") {
+      const text = interpolate(currentBlock.text, vars);
+      const t = setTimeout(() => {
+        setMessages((m) => [...m, { from: "bot", text }]);
+        advance();
+      }, 400);
+      return () => clearTimeout(t);
+    }
+    if (currentBlock.kind === "redirect") {
+      const url = interpolate(currentBlock.urlTemplate, vars);
+      // fire-and-forget lead save
+      if (!leadSentRef.current) {
+        leadSentRef.current = true;
+        send({
+          data: {
+            responsavel_nome: vars.nome || "Contato via chat",
+            telefone: "55 62 99345-4663",
+            crianca_nome: undefined,
+            data_festa: vars.data,
+            qtd_pessoas: vars.convidados ? Number(vars.convidados) : undefined,
+            pacote: vars.pacote,
+          },
+        }).catch(() => {});
+      }
+      const t = setTimeout(() => {
+        window.open(url, "_blank", "noopener,noreferrer");
+        setDone(true);
+      }, 800);
+      return () => clearTimeout(t);
+    }
+    // choice/input → wait for user
+    setTimeout(() => inputRef.current?.focus(), 100);
+  }, [open, groupId, blockIdx]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const advance = () => {
+    const g = FLOW[groupId];
+    if (!g) return;
+    if (blockIdx + 1 < g.blocks.length) {
+      setBlockIdx(blockIdx + 1);
+    } else if (g.next) {
+      setGroupId(g.next);
+      setBlockIdx(0);
+    }
+  };
+
+  const goTo = (nextGroupId: string) => {
+    setGroupId(nextGroupId);
+    setBlockIdx(0);
+  };
+
+  const handleChoice = (item: ChoiceItem) => {
+    setMessages((m) => [...m, { from: "user", text: item.content }]);
+    // if choosing a specific package name, store it
+    if (groupId === "comBuffet" || groupId === "semBuffet" || groupId === "pacoteTipo") {
+      setVars((v) => ({ ...v, pacote: item.content }));
+    }
+    goTo(item.next);
+  };
+
+  const submitInput = () => {
+    if (!currentBlock || currentBlock.kind !== "input") return;
+    const value = input.trim();
+    if (currentBlock.type === "number") {
+      const n = parseInt(value.replace(/\D/g, ""), 10);
+      if (!n) return toast.error("Digite um número válido");
+    } else if (value.length < 2) {
+      return toast.error("Preencha o campo");
+    }
+    setMessages((m) => [...m, { from: "user", text: value }]);
+    setVars((v) => ({ ...v, [currentBlock.variable]: value }));
+    setInput("");
+    advance();
+  };
+
+  const activeChoice =
+    currentBlock?.kind === "choice" && !done ? currentBlock : null;
+  const activeInput = currentBlock?.kind === "input" && !done ? currentBlock : null;
+
+  const placeholder = useMemo(() => activeInput?.placeholder ?? "Digite aqui...", [activeInput]);
 
   if (!open) return null;
-
-  const advanceFromWelcome = () => {
-    if (input.trim().length < 2) {
-      toast.error("Conta pra mim o nome da criança e a data 🎂");
-      return;
-    }
-    const value = input.trim();
-    pushUser(value);
-    const parts = value.split(/[-—,]/);
-    setCriancaNome(parts[0]?.trim() ?? value);
-    setDataFesta(parts[1]?.trim() ?? "");
-    setInput("");
-    setTimeout(() => {
-      pushBot(`Que festa linda vai ser! 🎉 Quantas pessoas vão participar? (mínimo 50)`);
-      setStep("pessoas");
-    }, 300);
-  };
-
-  const advancePessoas = () => {
-    const n = parseInt(input.replace(/\D/g, ""), 10);
-    if (!n || n < 50) {
-      toast.error("O mínimo é 50 pessoas 🙂");
-      return;
-    }
-    pushUser(`${n} pessoas`);
-    setQtdPessoas(n);
-    setInput("");
-    setTimeout(() => {
-      pushBot("Perfeito! Qual pacote combina mais com a sua festa?");
-      setStep("pacote");
-    }, 300);
-  };
-
-  const choosePacote = (p: string) => {
-    pushUser(p);
-    setPacote(p);
-    setTimeout(() => {
-      pushBot(`Ótima escolha! ✨ Sobre o ${p}:`);
-      pushBot(PACOTE_RESUMO[p]);
-      pushBot("Podemos seguir com esse pacote?");
-      setStep("confirmaPacote");
-    }, 300);
-  };
-
-  const confirmPacote = (yes: boolean) => {
-    pushUser(yes ? "Sim, seguir com esse pacote" : "Quero ver outro");
-    if (!yes) {
-      setTimeout(() => {
-        pushBot("Sem problemas! Qual outro pacote?");
-        setStep("pacote");
-      }, 250);
-      return;
-    }
-    setTimeout(() => {
-      pushBot("Vai ter algum tema de decoração? (ex: Safari, Princesas, Super-heróis)");
-      setStep("tema");
-    }, 300);
-  };
-
-  const advanceTema = () => {
-    const v = input.trim() || "A combinar";
-    pushUser(v);
-    setTema(v);
-    setInput("");
-    setTimeout(() => {
-      pushBot("Alguma restrição alimentar dos convidados? (ex: sem lactose, vegetariano — ou 'nenhuma')");
-      setStep("restricoes");
-    }, 300);
-  };
-
-  const advanceRestricoes = () => {
-    const v = input.trim() || "Nenhuma";
-    pushUser(v);
-    setRestricoes(v);
-    setInput("");
-    setTimeout(() => {
-      pushBot("Agora só faltam seus dados. Qual seu nome completo?");
-      setStep("nome");
-    }, 300);
-  };
-
-  const advanceNome = () => {
-    if (input.trim().length < 2) {
-      toast.error("Digite seu nome completo 🙂");
-      return;
-    }
-    pushUser(input.trim());
-    setNome(input.trim());
-    setInput("");
-    setTimeout(() => {
-      pushBot("Perfeito! Qual o melhor telefone/WhatsApp para contato?");
-      setStep("telefone");
-    }, 300);
-  };
-
-  const advanceTelefone = () => {
-    const clean = input.replace(/\D/g, "");
-    if (clean.length < 10) {
-      toast.error("Telefone inválido — inclua DDD");
-      return;
-    }
-    pushUser(input.trim());
-    setTelefone(input.trim());
-    setInput("");
-    setTimeout(() => {
-      pushBot("E o seu e-mail? (ou digite 'pular')");
-      setStep("email");
-    }, 300);
-  };
-
-  const advanceEmail = () => {
-    const v = input.trim();
-    const skip = v.toLowerCase() === "pular" || v === "";
-    if (!skip && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
-      toast.error("E-mail inválido — ou digite 'pular'");
-      return;
-    }
-    pushUser(skip ? "(sem e-mail)" : v);
-    setEmail(skip ? "" : v);
-    setInput("");
-    setTimeout(() => {
-      pushBot("Deixa eu confirmar tudo com você 👇");
-      setStep("resumo");
-    }, 300);
-  };
-
-  const buildResumo = () => `
-🎉 *Nova reserva — Casa Prime Eventos*
-
-👶 Criança: ${criancaNome}
-📅 Data: ${dataFesta || "a combinar"}
-👥 Pessoas: ${qtdPessoas}
-🎁 Pacote: ${pacote}
-🎨 Tema: ${tema}
-🥗 Restrições: ${restricoes}
-
-👤 Responsável: ${nome}
-📱 Telefone: ${telefone}
-${email ? `✉️ E-mail: ${email}` : ""}
-`.trim();
-
-  const submit = async () => {
-    setStep("enviando");
-    try {
-      await send({
-        data: {
-          crianca_nome: criancaNome,
-          data_festa: dataFesta,
-          qtd_pessoas: qtdPessoas ?? undefined,
-          pacote,
-          tema,
-          restricoes,
-          responsavel_nome: nome,
-          telefone,
-          email: email || undefined,
-        },
-      });
-      pushBot("🎊 Reserva registrada! Nossa equipe já foi avisada.");
-      pushBot("Clique no botão abaixo para enviar o resumo direto no nosso WhatsApp e agilizar seu atendimento.");
-      setStep("done");
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : "Erro ao enviar";
-      toast.error(msg);
-      pushBot("Ops, tive um problema para salvar. Mas você pode enviar seu resumo pelo WhatsApp agora mesmo 👇");
-      setStep("done");
-    }
-  };
-
-  const handleTextSubmit = () => {
-    if (step === "welcome") return advanceFromWelcome();
-    if (step === "pessoas") return advancePessoas();
-    if (step === "tema") return advanceTema();
-    if (step === "restricoes") return advanceRestricoes();
-    if (step === "nome") return advanceNome();
-    if (step === "telefone") return advanceTelefone();
-    if (step === "email") return advanceEmail();
-  };
-
-  const showTextInput = ["welcome", "pessoas", "tema", "restricoes", "nome", "telefone", "email"].includes(step);
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
@@ -311,7 +249,7 @@ ${email ? `✉️ E-mail: ${email}` : ""}
             </div>
             <div>
               <div className="font-display text-base font-semibold leading-tight">
-                Quero fazer minha festa na Casa Prime!
+                Casa Prime Eventos
               </div>
               <div className="text-xs opacity-90">Responde em segundos ⚡</div>
             </div>
@@ -325,15 +263,10 @@ ${email ? `✉️ E-mail: ${email}` : ""}
           </button>
         </div>
 
-        <Progress value={progress} className="h-1 rounded-none bg-pink-soft" />
-
         {/* Messages */}
         <div ref={scrollRef} className="flex-1 space-y-2 overflow-y-auto bg-muted/30 p-4">
           {messages.map((m, i) => (
-            <div
-              key={i}
-              className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}
-            >
+            <div key={i} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
               <div
                 className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-sm shadow-sm ${
                   m.from === "user"
@@ -346,76 +279,36 @@ ${email ? `✉️ E-mail: ${email}` : ""}
             </div>
           ))}
 
-          {/* Quick buttons */}
-          {step === "pacote" && (
+          {activeChoice && (
             <div className="flex flex-col gap-2 pt-2">
-              {PACOTES.map((p) => (
+              {activeChoice.items.map((it) => (
                 <button
-                  key={p.id}
-                  onClick={() => choosePacote(p.id)}
+                  key={it.content}
+                  onClick={() => handleChoice(it)}
                   className="rounded-2xl border-2 border-pink/30 bg-white px-4 py-3 text-left text-sm font-semibold text-foreground transition hover:border-pink hover:bg-pink-soft"
                 >
-                  🎁 {p.id}
+                  {it.content}
                 </button>
               ))}
             </div>
           )}
 
-          {step === "confirmaPacote" && (
-            <div className="flex gap-2 pt-2">
-              <Button onClick={() => confirmPacote(true)} className="flex-1">
-                Sim, seguir
-              </Button>
-              <Button onClick={() => confirmPacote(false)} variant="outline" className="flex-1">
-                Ver outro
-              </Button>
-            </div>
-          )}
-
-          {step === "resumo" && (
-            <div className="animate-pop-in rounded-2xl border-2 border-dashed border-pink/40 bg-white p-4">
-              <div className="mb-2 flex items-center gap-1.5 font-display font-semibold text-pink">
-                <Sparkles className="h-4 w-4" /> Resumo da sua festa
-              </div>
-              <pre className="whitespace-pre-wrap font-sans text-sm text-foreground">
-                {buildResumo()}
-              </pre>
-              <div className="mt-3 flex gap-2">
-                <Button onClick={submit} className="flex-1">Confirmar reserva</Button>
-                <Button variant="outline" onClick={() => setStep("nome")}>Editar</Button>
-              </div>
-            </div>
-          )}
-
-          {step === "enviando" && (
+          {done && (
             <div className="flex justify-start">
               <div className="rounded-2xl bg-white px-4 py-2 text-sm shadow-sm">
-                Enviando<span className="animate-pulse">...</span>
+                Abrimos o WhatsApp em uma nova aba 💬
               </div>
-            </div>
-          )}
-
-          {step === "done" && (
-            <div className="pt-2">
-              <a
-                href={waLink(buildResumo())}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-whatsapp px-4 py-3 font-semibold text-white shadow-lg transition hover:brightness-110"
-              >
-                <Send className="h-4 w-4" /> Enviar resumo no WhatsApp
-              </a>
             </div>
           )}
         </div>
 
         {/* Input */}
-        {showTextInput && (
+        {activeInput && (
           <div className="border-t bg-white p-3">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                handleTextSubmit();
+                submitInput();
               }}
               className="flex gap-2"
             >
@@ -423,14 +316,13 @@ ${email ? `✉️ E-mail: ${email}` : ""}
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={
-                  step === "welcome"
-                    ? "Ex: Helena — 15/03/2026"
-                    : step === "pessoas"
-                    ? "Quantidade de pessoas"
-                    : step === "telefone"
-                    ? "(62) 99999-9999"
-                    : "Digite aqui..."
+                placeholder={placeholder}
+                type={
+                  activeInput.type === "date"
+                    ? "date"
+                    : activeInput.type === "number"
+                    ? "number"
+                    : "text"
                 }
                 className="rounded-full"
               />
