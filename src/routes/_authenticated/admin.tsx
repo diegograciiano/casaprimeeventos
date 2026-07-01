@@ -17,6 +17,13 @@ import {
 import { listLeads, updateLeadStatus, LEAD_STATUSES, type LeadStatus } from "@/lib/leads.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "CRM · Casa Prime Eventos" }] }),
