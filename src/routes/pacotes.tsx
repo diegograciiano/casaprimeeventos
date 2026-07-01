@@ -14,7 +14,7 @@ export const Route = createFileRoute("/pacotes")({
       {
         name: "description",
         content:
-          "Conheça os pacotes da Casa Prime: Pirulito (sem buffet), Diversão (com buffet) e Churrasco. A partir de R$ 5.890 para 80 pessoas.",
+          "Conheça os pacotes da Casa Prime: Pirulito (sem buffet), Diversão (com buffet) e Churrasco. Consulte valores personalizados pelo WhatsApp.",
       },
       { property: "og:title", content: "Pacotes de Festa — Casa Prime Eventos" },
       {
@@ -31,7 +31,7 @@ const pacotes = [
     id: "Pacote Pirulito (Sem Buffet)",
     nome: "Pirulito",
     subtitulo: "Sem Buffet",
-    preco: "R$ 5.890",
+    preco: "Consulte",
     pessoas: "80 pessoas",
     img: algodaoDoce.url,
     cor: "from-gold to-accent",

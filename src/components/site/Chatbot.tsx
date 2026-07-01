@@ -19,7 +19,7 @@ const PACOTES = [
 
 const PACOTE_RESUMO: Record<string, string> = {
   "Pacote Pirulito (Sem Buffet)":
-    "12h de locação, piscina aquecida, brinquedos 4h, algodão doce e pipoca 4h, estacionamento e equipe completa. A partir de R$ 5.890 (80 pessoas).",
+    "12h de locação, piscina aquecida, brinquedos 4h, algodão doce e pipoca 4h, estacionamento e equipe completa. Valores sob consulta.",
   "Pacote Diversão (Com Buffet)":
     "Tudo do Pirulito + buffet completo (entradas, prato principal, bebidas e sobremesa). Ideal para quem quer festa completa sem preocupação.",
   "Pacote Churrasco (Festa Completa)":
