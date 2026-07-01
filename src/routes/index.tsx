@@ -8,11 +8,9 @@ import {
   Users,
   Check,
   ArrowRight,
-  Camera,
   Gamepad2,
   MessageCircle,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useChatbot } from "@/components/site/ChatbotContext";
 import { waLink } from "@/lib/whatsapp";
 
