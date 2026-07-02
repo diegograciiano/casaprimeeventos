@@ -242,11 +242,11 @@ function Index() {
                   {p.nome}
                 </h3>
                 <p className="mb-10 text-white/80">{p.descricao}</p>
-                <ul className="mb-10 w-full space-y-3 text-left text-white/85">
+                <ul className="mb-10 w-full space-y-3 !text-left text-white/85">
                   {inclusoEmTodos.map((i) => (
-                    <li key={i} className="flex items-start gap-2 text-left text-sm">
+                    <li key={i} className="flex items-start gap-2 !text-left text-sm">
                       <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#ffcb03]" />
-                      <span className="min-w-0 flex-1 text-left">{i}</span>
+                      <span className="min-w-0 flex-1 !text-left">{i}</span>
                     </li>
                   ))}
                 </ul>
