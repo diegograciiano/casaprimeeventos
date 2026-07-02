@@ -87,16 +87,16 @@ export function Chatbot() {
   const { options: lastOptions } = parseOptions(lastAssistantText);
   const lastAssistantId = lastAssistant?.id;
   const fetchSummary = useServerFn(getLeadSummary);
-  const { data: summary } = useQuery({
-    queryKey: ["lead-summary", sessionId],
+  const { data: summary, refetch: refetchSummary } = useQuery({
+    queryKey: ["lead-summary", sessionId, lastAssistantId],
     queryFn: () => fetchSummary({ data: { sessionId } }),
-    enabled: shouldTransfer,
+    enabled: shouldTransfer && !isBusy,
     staleTime: 0,
+    refetchOnMount: "always",
   });
-  const transferUrl = waLink(
-    summary?.message ??
-      "Olá Casa Prime! Vim pelo chat e gostaria de continuar meu atendimento personalizado 🎉",
-  );
+  const fallbackMsg =
+    "Olá Casa Prime! Vim pelo chat e gostaria de continuar meu atendimento personalizado 🎉";
+  const transferUrl = waLink(summary?.message ?? fallbackMsg);
 
   if (!open) return null;
 
