@@ -133,14 +133,14 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isBareLayout = pathname.startsWith("/admin") || pathname.startsWith("/auth");
+  const isBareLayout = pathname.startsWith("/admin") || pathname.startsWith("/auth") || pathname.startsWith("/relatorios") || pathname.startsWith("/agenda");
 
   return (
     <QueryClientProvider client={queryClient}>
       <ChatbotProvider>
         <div className="flex min-h-screen flex-col bg-background">
           {!isBareLayout && <Header />}
-          <main className={`flex-1 ${typeof window !== "undefined" && /^\/(admin|relatorios|agenda|auth)/.test(window.location.pathname) ? "admin-area" : ""}`}>
+          <main className={`flex-1 ${isBareLayout ? "admin-area" : ""}`}>
             <Outlet />
           </main>
           {!isBareLayout && <Footer />}
