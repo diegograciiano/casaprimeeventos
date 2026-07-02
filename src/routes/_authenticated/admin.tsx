@@ -148,6 +148,7 @@ function AdminPage() {
             </p>
           </div>
           <div className="flex gap-2">
+            <Button onClick={() => setNewOpen(true)}>+ Novo lead</Button>
             <Button variant="outline" asChild>
               <Link to="/agenda">Agenda</Link>
             </Button>
