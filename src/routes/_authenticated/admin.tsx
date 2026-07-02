@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   DndContext,
   PointerSensor,
@@ -14,7 +14,8 @@ import {
   DragOverlay,
   type DragStartEvent,
 } from "@dnd-kit/core";
-import { listLeads, updateLeadStatus, LEAD_STATUSES, type LeadStatus } from "@/lib/leads.functions";
+import { listLeads, updateLeadStatus, updateLeadValor, LEAD_STATUSES, type LeadStatus } from "@/lib/leads.functions";
+import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,9 +45,17 @@ type Lead = {
   tema: string | null;
   restricoes: string | null;
   session_id: string | null;
+  valor: number | string | null;
   updated_at: string;
   created_at: string;
 };
+
+function formatBRL(v: number | string | null | undefined) {
+  if (v === null || v === undefined || v === "") return "—";
+  const n = typeof v === "number" ? v : Number(v);
+  if (!isFinite(n)) return "—";
+  return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
 
 const COLUMNS: { id: LeadStatus; title: string; accent: string }[] = [
   { id: "novo", title: "Novo contato", accent: "bg-blue-500" },
@@ -129,6 +138,9 @@ function AdminPage() {
             </p>
           </div>
           <div className="flex gap-2">
+            <Button variant="outline" asChild>
+              <Link to="/relatorios">Relatórios</Link>
+            </Button>
             <Button variant="outline" onClick={() => refetch()}>Atualizar</Button>
             <Button variant="ghost" onClick={signOut}>Sair</Button>
           </div>
@@ -251,6 +263,9 @@ function LeadCard({
         {lead.data_festa && <p>📅 {lead.data_festa}</p>}
         {lead.qtd_pessoas && <p>👥 {lead.qtd_pessoas} pessoas</p>}
         {lead.pacote && <p>🎁 {lead.pacote}</p>}
+        {lead.valor != null && lead.valor !== "" && (
+          <p className="font-semibold text-emerald-600">💰 {formatBRL(lead.valor)}</p>
+        )}
       </div>
     </div>
   );
@@ -278,6 +293,15 @@ function guessArticlePtBr(nome: string): "do" | "da" {
 
 function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void }) {
   const open = !!lead;
+  const qc = useQueryClient();
+  const saveValor = useServerFn(updateLeadValor);
+  const [valorInput, setValorInput] = useState<string>("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setValorInput(lead?.valor != null && lead.valor !== "" ? String(lead.valor) : "");
+  }, [lead?.id, lead?.valor]);
+
   const wa = lead
     ? waLink(
         lead.telefone,
@@ -286,6 +310,22 @@ function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void 
         }. 🎉`,
       )
     : "#";
+
+  const onSaveValor = async () => {
+    if (!lead) return;
+    const raw = valorInput.replace(/\./g, "").replace(",", ".").trim();
+    const v = raw === "" ? null : Number(raw);
+    if (v !== null && (!isFinite(v) || v < 0)) return;
+    setSaving(true);
+    try {
+      await saveValor({ data: { id: lead.id, valor: v } });
+      qc.setQueryData<{ leads: Lead[] }>(["leads"], (old) =>
+        old ? { leads: old.leads.map((l) => (l.id === lead.id ? { ...l, valor: v } : l)) } : old,
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-lg">
@@ -325,6 +365,28 @@ function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void 
               </div>
               <div className="col-span-2">
                 <Field label="Restrições / observações" value={lead.restricoes} />
+              </div>
+              <div className="col-span-2 rounded-lg border bg-muted/30 p-3">
+                <p className="text-[11px] uppercase tracking-wide text-muted-foreground mb-1">
+                  Valor fechado
+                </p>
+                <div className="flex gap-2">
+                  <Input
+                    inputMode="decimal"
+                    placeholder="Ex: 3500,00"
+                    value={valorInput}
+                    onChange={(e) => setValorInput(e.target.value)}
+                    className="max-w-[180px]"
+                  />
+                  <Button onClick={onSaveValor} disabled={saving}>
+                    {saving ? "Salvando…" : "Salvar valor"}
+                  </Button>
+                </div>
+                {lead.valor != null && lead.valor !== "" && (
+                  <p className="mt-2 text-sm text-emerald-600 font-semibold">
+                    Atual: {formatBRL(lead.valor)}
+                  </p>
+                )}
               </div>
             </div>
 
