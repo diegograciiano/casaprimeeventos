@@ -162,13 +162,13 @@ export const getLeadSummary = createServerFn({ method: "POST" })
       .maybeSingle();
 
     const lines: string[] = [
-      "Olá Casa Prime! 🎉 Conversei com a Sofia e gostaria de continuar meu atendimento.",
+      "Ola Casa Prime! Conversei com a Sofia e gostaria de continuar meu atendimento.",
       "",
-      "*Resumo do que preenchi:*",
+      "Resumo do que preenchi:",
     ];
     const add = (label: string, v: unknown) => {
       if (v !== null && v !== undefined && String(v).trim() !== "") {
-        lines.push(`• *${label}:* ${v}`);
+        lines.push(`- ${label}: ${v}`);
       }
     };
     if (lead) {

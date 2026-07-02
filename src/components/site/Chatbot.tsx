@@ -103,7 +103,7 @@ export function Chatbot() {
     refetchOnMount: "always",
   });
   const fallbackMsg =
-    "Olá Casa Prime! Vim pelo chat e gostaria de continuar meu atendimento personalizado 🎉";
+    "Ola Casa Prime! Vim pelo chat e gostaria de continuar meu atendimento personalizado.";
   const transferUrl = waLink(summary?.message ?? fallbackMsg);
 
   if (!open) return null;
