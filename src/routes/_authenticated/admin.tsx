@@ -14,8 +14,17 @@ import {
   DragOverlay,
   type DragStartEvent,
 } from "@dnd-kit/core";
-import { listLeads, updateLeadStatus, updateLeadValor, LEAD_STATUSES, type LeadStatus } from "@/lib/leads.functions";
+import {
+  listLeads,
+  updateLeadStatus,
+  updateLeadValor,
+  deleteLead,
+  createLeadManual,
+  LEAD_STATUSES,
+  type LeadStatus,
+} from "@/lib/leads.functions";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
