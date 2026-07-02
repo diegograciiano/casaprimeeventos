@@ -422,24 +422,25 @@
 
 /* Mobile: centralizar todas as informações do site (exceto admin/auth) */
 @media (max-width: 767px) {
-  main,
-  main .text-left,
-  main .text-right {
+  main:not(.admin-area),
+  main:not(.admin-area) .text-left,
+  main:not(.admin-area) .text-right {
     text-align: center !important;
   }
-  main .items-start {
+  main:not(.admin-area) .items-start {
     align-items: center !important;
   }
-  main .justify-start {
+  main:not(.admin-area) .justify-start {
     justify-content: center !important;
   }
-  main .w-fit,
-  main .mx-0,
-  main .ml-0 {
+  main:not(.admin-area) .w-fit,
+  main:not(.admin-area) .mx-0,
+  main:not(.admin-area) .ml-0 {
     margin-left: auto !important;
     margin-right: auto !important;
   }
-  main ul, main ol {
+  main:not(.admin-area) ul,
+  main:not(.admin-area) ol {
     list-style-position: inside;
     padding-left: 0;
   }
