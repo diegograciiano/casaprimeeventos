@@ -192,6 +192,12 @@ export function Chatbot() {
                 href={transferUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  const { data } = await refetchSummary();
+                  const url = waLink(data?.message ?? fallbackMsg);
+                  window.open(url, "_blank", "noopener,noreferrer");
+                }}
                 className="flex w-full items-center justify-center gap-2 rounded-2xl bg-whatsapp px-4 py-3 font-semibold text-white shadow-lg transition hover:brightness-110"
               >
                 <Send className="h-4 w-4" /> Continuar no WhatsApp
