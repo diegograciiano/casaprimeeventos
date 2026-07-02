@@ -17,7 +17,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 export function Footer() {
   return (
     <footer className="mt-16 bg-[#14092e] text-white">
-      <div className="mx-auto grid max-w-6xl gap-8 px-6 py-10 text-center md:grid-cols-3 md:gap-8 md:py-12 md:text-left">
+      <div className="mx-auto grid max-w-6xl gap-8 px-6 py-10 text-center md:grid-cols-2 md:gap-8 md:py-12 md:text-left">
         {/* Marca */}
         <div className="flex flex-col items-center md:items-start">
           <div className="flex items-center gap-3">
@@ -39,17 +39,8 @@ export function Footer() {
           </p>
         </div>
 
-        {/* Navegação */}
-        <div className="flex flex-col items-center md:items-start">
-          <SectionTitle>Navegação</SectionTitle>
-          <ul className="mt-4 grid grid-cols-2 gap-x-8 gap-y-1.5 text-sm text-white/75">
-            <li><Link to="/" className="transition-colors hover:text-[#ffcb03]">Início</Link></li>
-            <li><Link to="/pacotes" className="transition-colors hover:text-[#ffcb03]">Pacotes</Link></li>
-            <li><Link to="/galeria" className="transition-colors hover:text-[#ffcb03]">Galeria</Link></li>
-            <li><Link to="/sobre" className="transition-colors hover:text-[#ffcb03]">Sobre</Link></li>
-            <li><Link to="/contato" className="transition-colors hover:text-[#ffcb03]">Contato</Link></li>
-          </ul>
-        </div>
+
+
 
         {/* Contato */}
         <div className="flex flex-col items-center md:items-start">
