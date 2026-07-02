@@ -263,6 +263,9 @@ function LeadCard({
         {lead.data_festa && <p>📅 {lead.data_festa}</p>}
         {lead.qtd_pessoas && <p>👥 {lead.qtd_pessoas} pessoas</p>}
         {lead.pacote && <p>🎁 {lead.pacote}</p>}
+        {lead.valor != null && lead.valor !== "" && (
+          <p className="font-semibold text-emerald-600">💰 {formatBRL(lead.valor)}</p>
+        )}
       </div>
     </div>
   );
