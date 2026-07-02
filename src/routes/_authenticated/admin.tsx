@@ -184,6 +184,7 @@ function AdminPage() {
           lead={selectedId ? leads.find((l) => l.id === selectedId) ?? null : null}
           onClose={() => setSelectedId(null)}
         />
+        <NewLeadDialog open={newOpen} onClose={() => setNewOpen(false)} />
       </div>
     </div>
   );
