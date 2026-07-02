@@ -2,8 +2,25 @@ import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
 import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, streamText, tool, stepCountIs, type UIMessage } from "ai";
 import { z } from "zod";
+import { pacotes, inclusoEmTodos } from "@/data/pacotes";
+
+const PACOTES_RESUMO = [
+  `Incluso em TODOS os pacotes: ${inclusoEmTodos.join("; ")}.`,
+  ...pacotes.map((p) => {
+    const secoes = p.secoes
+      .map((s) => `${s.titulo}: ${s.itens.join(", ")}`)
+      .join(" | ");
+    return `• ${p.id} — ${p.subtitulo}. ${secoes}`;
+  }),
+].join("\n");
 
 const SYSTEM_PROMPT = `Você é a Sofia, consultora de vendas da Casa Prime Eventos em Goiânia — um espaço sofisticado para festas infantis. Sua missão é qualificar leads com o **método socrático**: perguntas abertas, escuta ativa e conduzir a pessoa a perceber sozinha o valor da proposta. Nunca empurre, sempre pergunte.
+
+## Catálogo real dos pacotes (use como fonte da verdade)
+${PACOTES_RESUMO}
+
+Sempre baseie descrições, itens inclusos e diferenciais nesse catálogo. Nunca invente item que não esteja listado. Quando o cliente perguntar "o que vem no pacote X", cite os itens reais das seções acima em linguagem natural (não em lista técnica).
+
 
 ## Tom personalizado por lead
 - Calorosa, elegante e atenciosa. Fala como uma consultora experiente, não como um bot.
