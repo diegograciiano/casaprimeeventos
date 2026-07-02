@@ -265,13 +265,24 @@ function Field({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
+function guessArticlePtBr(nome: string): "do" | "da" {
+  const first = nome.trim().split(/\s+/)[0]?.toLowerCase() ?? "";
+  const clean = first.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const femExceptions = new Set(["beatriz", "isis", "iris", "ines", "carmen", "miriam", "cris", "mercedes", "dolores"]);
+  const mascExceptions = new Set(["luca", "noa", "isa", "juca", "cassia", "costa"]);
+  const endsA = /a$/.test(clean);
+  if (femExceptions.has(clean)) return "da";
+  if (mascExceptions.has(clean)) return "do";
+  return endsA ? "da" : "do";
+}
+
 function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void }) {
   const open = !!lead;
   const wa = lead
     ? waLink(
         lead.telefone,
         `Olá ${lead.responsavel_nome}! Aqui é da Casa Prime Eventos, sobre a festa${
-          lead.crianca_nome ? ` do(a) ${lead.crianca_nome}` : ""
+          lead.crianca_nome ? ` ${guessArticlePtBr(lead.crianca_nome)} ${lead.crianca_nome}` : ""
         }. 🎉`,
       )
     : "#";
