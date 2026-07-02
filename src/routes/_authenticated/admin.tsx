@@ -138,6 +138,9 @@ function AdminPage() {
             </p>
           </div>
           <div className="flex gap-2">
+            <Button variant="outline" asChild>
+              <Link to="/relatorios">Relatórios</Link>
+            </Button>
             <Button variant="outline" onClick={() => refetch()}>Atualizar</Button>
             <Button variant="ghost" onClick={signOut}>Sair</Button>
           </div>
