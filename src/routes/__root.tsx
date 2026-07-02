@@ -140,7 +140,7 @@ function RootComponent() {
       <ChatbotProvider>
         <div className="flex min-h-screen flex-col bg-background">
           {!isBareLayout && <Header />}
-          <main className="flex-1">
+          <main className={`flex-1 ${typeof window !== "undefined" && /^\/(admin|relatorios|agenda|auth)/.test(window.location.pathname) ? "admin-area" : ""}`}>
             <Outlet />
           </main>
           {!isBareLayout && <Footer />}
