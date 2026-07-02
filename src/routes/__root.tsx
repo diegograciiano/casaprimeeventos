@@ -104,8 +104,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Onde a magia da infância encontra o requinte e a sofisticação em Goiânia." },
       { property: "og:description", content: "Onde a magia da infância encontra o requinte e a sofisticação em Goiânia." },
       { name: "twitter:description", content: "Onde a magia da infância encontra o requinte e a sofisticação em Goiânia." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/02f6843b-133c-498b-8e96-3b216bc58085/id-preview-1be824f3--644486b6-e35d-4a12-818f-13ddd1ad1094.lovable.app-1782935637705.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/02f6843b-133c-498b-8e96-3b216bc58085/id-preview-1be824f3--644486b6-e35d-4a12-818f-13ddd1ad1094.lovable.app-1782935637705.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
