@@ -326,6 +326,21 @@ function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void 
       )
     : "#";
 
+  const removeLead = useServerFn(deleteLead);
+  const onDelete = async () => {
+    if (!lead) return;
+    if (!confirm(`Excluir o lead de ${lead.responsavel_nome}? Esta ação não pode ser desfeita.`)) return;
+    try {
+      await removeLead({ data: { id: lead.id } });
+      qc.setQueryData<{ leads: Lead[] }>(["leads"], (old) =>
+        old ? { leads: old.leads.filter((l) => l.id !== lead.id) } : old,
+      );
+      onClose();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Erro ao excluir");
+    }
+  };
+
   const onSaveValor = async () => {
     if (!lead) return;
     const raw = valorInput.replace(/\./g, "").replace(",", ".").trim();
