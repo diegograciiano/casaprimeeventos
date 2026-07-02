@@ -233,20 +233,20 @@ function Index() {
             ].map((p) => (
               <div
                 key={p.to}
-                className="card-glow relative flex flex-col items-center rounded-[2.5rem] border border-white/10 bg-[#8641df]/10 p-10 text-center"
+                className="card-glow relative flex flex-col items-center rounded-[2.5rem] border border-white/10 bg-[#8641df]/10 p-10"
               >
-                <div className="mb-3 text-xs font-black uppercase tracking-widest text-[#ffcb03]">
+                <div className="mb-3 text-center text-xs font-black uppercase tracking-widest text-[#ffcb03]">
                   {p.subtitulo}
                 </div>
-                <h3 className="mb-6 font-display text-4xl font-bold">
+                <h3 className="mb-6 text-center font-display text-4xl font-bold">
                   {p.nome}
                 </h3>
-                <p className="mb-10 text-white/80">{p.descricao}</p>
-                <ul className="mb-10 w-full space-y-3 !text-left text-white/85">
+                <p className="mb-10 text-center text-white/80">{p.descricao}</p>
+                <ul className="mb-10 w-full space-y-3 text-left text-white/85">
                   {inclusoEmTodos.map((i) => (
-                    <li key={i} className="flex items-start gap-2 !text-left text-sm">
+                    <li key={i} className="flex items-start gap-2 text-sm">
                       <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#ffcb03]" />
-                      <span className="min-w-0 flex-1 !text-left">{i}</span>
+                      <span className="min-w-0 flex-1">{i}</span>
                     </li>
                   ))}
                 </ul>
