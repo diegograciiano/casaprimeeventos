@@ -367,6 +367,28 @@ function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void 
               <div className="col-span-2">
                 <Field label="Restrições / observações" value={lead.restricoes} />
               </div>
+              <div className="col-span-2 rounded-lg border bg-muted/30 p-3">
+                <p className="text-[11px] uppercase tracking-wide text-muted-foreground mb-1">
+                  Valor fechado
+                </p>
+                <div className="flex gap-2">
+                  <Input
+                    inputMode="decimal"
+                    placeholder="Ex: 3500,00"
+                    value={valorInput}
+                    onChange={(e) => setValorInput(e.target.value)}
+                    className="max-w-[180px]"
+                  />
+                  <Button onClick={onSaveValor} disabled={saving}>
+                    {saving ? "Salvando…" : "Salvar valor"}
+                  </Button>
+                </div>
+                {lead.valor != null && lead.valor !== "" && (
+                  <p className="mt-2 text-sm text-emerald-600 font-semibold">
+                    Atual: {formatBRL(lead.valor)}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
