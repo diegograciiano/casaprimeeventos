@@ -5,7 +5,7 @@ import { INSTAGRAM_HANDLE, INSTAGRAM_URL, WHATSAPP_DISPLAY, waLink } from "@/lib
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-col items-center md:items-start">
+    <div className="flex flex-col items-center md:items-end">
       <div className="font-display text-xs font-semibold uppercase tracking-[0.18em] text-white">
         {children}
       </div>
@@ -43,7 +43,7 @@ export function Footer() {
 
 
         {/* Contato */}
-        <div className="flex flex-col items-center md:items-start">
+        <div className="flex flex-col items-center md:items-end md:text-right">
           <SectionTitle>Contato</SectionTitle>
           <ul className="mt-4 space-y-2.5 text-sm text-white/85">
             <li>
