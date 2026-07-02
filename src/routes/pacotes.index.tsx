@@ -29,6 +29,7 @@ const opcoes = [
     descricao:
       "Pirulito, Diversão e Churrasco: cardápios completos, prontos para servir.",
     icon: ChefHat,
+    inclui: ["Cardápio completo", "Equipe de cozinha", "Bebidas inclusas"],
   },
   {
     to: "/pacotes/sem-buffet",
@@ -36,6 +37,7 @@ const opcoes = [
     descricao:
       "Aluguel do espaço com estrutura, sem a parte de alimentação. Você organiza o cardápio.",
     icon: Sparkles,
+    inclui: ["Espaço completo", "Piscina aquecida", "Brinquedos inclusos"],
   },
   {
     to: "/pacotes/festa-completa",
@@ -43,8 +45,15 @@ const opcoes = [
     descricao:
       "Tudo em um só lugar: decoração, buffet, brinquedos, equipe e mais.",
     icon: PartyPopper,
+    inclui: ["Decoração temática", "Buffet + bebidas", "Recreação e monitores"],
   },
 ] as const;
+
+const beneficios = [
+  { icon: CalendarCheck, titulo: "Data garantida", texto: "Reserva confirmada no ato, sem stress." },
+  { icon: Users, titulo: "Equipe dedicada", texto: "Recepção, cozinha e recreação treinadas." },
+  { icon: ShieldCheck, titulo: "Estrutura segura", texto: "Espaço fechado com piscina aquecida e monitores." },
+];
 
 function PacotesHub() {
   return (
