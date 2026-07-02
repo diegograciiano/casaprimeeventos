@@ -222,8 +222,11 @@ export function Chatbot() {
             <Input
               ref={inputRef}
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Escreva sua mensagem…"
+              onChange={(e) =>
+                setInput(isAskingPhone ? maskPhoneBR(e.target.value) : e.target.value)
+              }
+              inputMode={isAskingPhone ? "tel" : "text"}
+              placeholder={isAskingPhone ? "(62) 99999-9999" : "Escreva sua mensagem…"}
               className="rounded-full"
               disabled={isBusy}
             />
