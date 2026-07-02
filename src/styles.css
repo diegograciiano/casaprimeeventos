@@ -419,3 +419,19 @@
     transform: none !important;
   }
 }
+
+/* Mobile: centralizar todas as informações do site (exceto admin/auth) */
+@media (max-width: 767px) {
+  main {
+    text-align: center;
+  }
+  main .items-start {
+    align-items: center;
+  }
+  main .justify-start {
+    justify-content: center;
+  }
+  main ul, main ol {
+    list-style-position: inside;
+  }
+}
