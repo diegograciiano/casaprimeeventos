@@ -35,6 +35,28 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const updateLeadValor = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { id: string; valor: number | null }) => {
+    if (!data?.id || typeof data.id !== "string") throw new Error("Invalid id");
+    const v = data.valor;
+    if (v !== null && (typeof v !== "number" || !isFinite(v) || v < 0)) throw new Error("Invalid valor");
+    return { id: data.id, valor: v };
+  })
+  .handler(async ({ context, data }) => {
+    const { userId } = context;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: role } = await supabaseAdmin
+      .from("user_roles").select("id").eq("user_id", userId).eq("role", "admin").maybeSingle();
+    if (!role) throw new Error("Forbidden");
+    const { error } = await supabaseAdmin
+      .from("leads_festas")
+      .update({ valor: data.valor, updated_at: new Date().toISOString() })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 export const listLeads = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
