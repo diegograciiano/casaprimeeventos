@@ -162,13 +162,15 @@ export const getLeadSummary = createServerFn({ method: "POST" })
       .maybeSingle();
 
     const lines: string[] = [
-      "Ola Casa Prime! Conversei com a Sofia e gostaria de continuar meu atendimento.",
+      "Ola, Casa Prime!",
       "",
-      "Resumo do que preenchi:",
+      "Conversei com a Sofia pelo site e gostaria de continuar meu atendimento por aqui.",
     ];
+
+    const info: string[] = [];
     const add = (label: string, v: unknown) => {
       if (v !== null && v !== undefined && String(v).trim() !== "") {
-        lines.push(`- ${label}: ${v}`);
+        info.push(`• ${label}: ${v}`);
       }
     };
     if (lead) {
@@ -180,11 +182,19 @@ export const getLeadSummary = createServerFn({ method: "POST" })
       add("Data pretendida", lead.data_festa);
       add("Convidados", lead.qtd_pessoas);
       add("Pacote de interesse", lead.pacote);
-      add("Tema/sonho", lead.tema);
-      add("Observações", lead.restricoes);
+      add("Tema", lead.tema);
+      add("Observacoes", lead.restricoes);
     }
+
+    if (info.length) {
+      lines.push("", "*Resumo do atendimento:*", ...info);
+    }
+
+    lines.push("", "Aguardo o retorno de voces. Obrigado!");
+
     return { message: lines.join("\n") };
   });
+
 
 // Idempotent bootstrap of the fixed CRM admin account.
 // Credentials are intentionally fixed for the Casa Prime internal panel.
