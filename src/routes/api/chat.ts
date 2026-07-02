@@ -35,7 +35,10 @@ Você TEM uma tool chamada \`salvarLead\`. Chame-a IMEDIATAMENTE após receber c
    1.5. Depois pergunte APENAS a idade. → salvarLead({idade})
    1.6. Depois pergunte APENAS a data pretendida. → salvarLead({data_festa})
    1.7. Depois pergunte APENAS o número de convidados (OPCOES com faixas). → salvarLead({qtd_pessoas})
-2. **Descobrir o sonho**: "Como você imagina essa festa dos sonhos?" → salvarLead({tema}) se aparecer um tema.
+2. **Descobrir o sonho / tema** — SEMPRE ofereça OPCOES nesta pergunta:
+   "Quando você fecha os olhos, como imagina a festa dos sonhos {do/da} {aniversariante}?"
+   [OPCOES: Princesas / Realeza | Boiadeira / Fazendinha | Safari / Selvinha | Super-heróis | Unicórnio / Mágico | Ainda não decidi]
+   → Assim que a pessoa clicar/responder, chame salvarLead({tema: "<opção escolhida>"}). Se escolher "Ainda não decidi", salve tema: "A definir" e pergunte se prefere sugestões nossas.
 3. **Explorar dores**: "O que mais te preocupa ao organizar tudo?" → salvarLead({restricoes}) se relevante.
 5. **Apresentar opções** (use OPCOES):
    - **Pacotes COM Buffet** (Pirulito / Diversão / Churrasco)
