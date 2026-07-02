@@ -124,7 +124,14 @@ function AgendaPage() {
     [leads],
   );
 
-  const eventDays = useMemo(() => dated.map((d) => d.date), [dated]);
+  const eventDays = useMemo(
+    () => dated.filter((d) => d.lead.status !== "agendada").map((d) => d.date),
+    [dated],
+  );
+  const reservedDays = useMemo(
+    () => dated.filter((d) => d.lead.status === "agendada").map((d) => d.date),
+    [dated],
+  );
   const semData = useMemo(() => leads.filter((l) => !parseDataFesta(l.data_festa)), [leads]);
 
   const doDia = useMemo(
@@ -140,7 +147,7 @@ function AgendaPage() {
             <Link to="/admin" className="text-sm text-muted-foreground hover:underline">← CRM</Link>
             <h1 className="font-display text-2xl sm:text-3xl font-bold">Agenda de festas</h1>
             <p className="text-sm text-muted-foreground">
-              Datas preenchidas pelos leads. {dated.length} com data · {semData.length} sem data.
+              {reservedDays.length} reservadas · {eventDays.length} em negociação · {semData.length} sem data.
             </p>
           </div>
           <div className="flex gap-2">
@@ -159,13 +166,23 @@ function AgendaPage() {
                 locale={ptBR}
                 selected={selected}
                 onSelect={setSelected}
-                modifiers={{ hasEvent: eventDays }}
+                modifiers={{ hasEvent: eventDays, reserved: reservedDays }}
                 modifiersClassNames={{
                   hasEvent:
                     "relative font-semibold text-primary after:absolute after:bottom-1 after:left-1/2 after:h-1 after:w-1 after:-translate-x-1/2 after:rounded-full after:bg-primary",
+                  reserved:
+                    "relative font-bold text-white bg-emerald-600 hover:bg-emerald-600 focus:bg-emerald-600 rounded-md",
                 }}
                 className={cn("p-3 pointer-events-auto")}
               />
+              <div className="mt-2 flex flex-wrap gap-3 px-2 pb-1 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <span className="inline-block h-3 w-3 rounded bg-emerald-600" /> Reservada
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" /> Em negociação
+                </span>
+              </div>
             </div>
 
             <div className="space-y-3">
@@ -188,7 +205,16 @@ function AgendaPage() {
                         <p className="text-sm text-muted-foreground">🎂 {lead.crianca_nome}</p>
                       )}
                     </div>
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-xs">{lead.status}</span>
+                    <span
+                      className={cn(
+                        "rounded-full px-2 py-0.5 text-xs",
+                        lead.status === "agendada"
+                          ? "bg-emerald-600 text-white"
+                          : "bg-muted",
+                      )}
+                    >
+                      {lead.status === "agendada" ? "Reservada" : lead.status}
+                    </span>
                   </div>
                   <div className="mt-2 space-y-0.5 text-xs text-muted-foreground">
                     {lead.qtd_pessoas && <p>👥 {lead.qtd_pessoas} pessoas</p>}
