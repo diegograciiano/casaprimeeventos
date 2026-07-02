@@ -48,7 +48,9 @@ function Galeria() {
         <h1 className="mt-2 font-display text-4xl font-bold sm:text-5xl">
           Momentos que a gente ama
         </h1>
-        <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-purple" />
+        <div className="mt-4 flex justify-center">
+          <div className="h-1 w-16 rounded-full bg-purple" />
+        </div>
         <p className="mx-auto mt-3 max-w-xl text-foreground/70">
           Toca em uma foto para ampliar.
         </p>
