@@ -168,7 +168,7 @@ export const getLeadSummary = createServerFn({ method: "POST" })
     ];
     const add = (label: string, v: unknown) => {
       if (v !== null && v !== undefined && String(v).trim() !== "") {
-        lines.push(`• *${label}:* ${v}`);
+        lines.push(`- ${label}: ${v}`);
       }
     };
     if (lead) {
