@@ -24,12 +24,13 @@ export function Footer() {
             <img
               src={logo.url}
               alt=""
-              width={40}
-              height={40}
-              className="h-10 w-10 object-contain brightness-0 invert"
+              width={56}
+              height={56}
+              className="h-14 w-14 object-contain brightness-0 invert"
             />
-            <div className="font-display text-lg font-bold leading-tight">
-              Casa Prime <span className="text-[#ffcb03]">Eventos</span>
+            <div className="font-display text-2xl font-bold leading-tight">
+              Casa Prime<br />
+              <span className="text-[#ffcb03]">Eventos</span>
             </div>
           </div>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/70">
