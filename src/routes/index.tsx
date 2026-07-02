@@ -246,7 +246,7 @@ function Index() {
                   {inclusoEmTodos.map((i) => (
                     <li key={i} className="flex items-start gap-2 text-left text-sm">
                       <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#ffcb03]" />
-                      <span className="text-left">{i}</span>
+                      <span className="min-w-0 flex-1 text-left">{i}</span>
                     </li>
                   ))}
                 </ul>
