@@ -43,7 +43,7 @@ export function Footer() {
 
 
         {/* Contato */}
-        <div className="flex flex-col items-center md:items-start">
+        <div className="flex flex-col items-center md:items-end md:text-right">
           <SectionTitle>Contato</SectionTitle>
           <ul className="mt-4 space-y-2.5 text-sm text-white/85">
             <li>
