@@ -83,7 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Casa Prime Eventos — Espaço de festas infantis em Goiânia" },
+      { title: "Casa Prime Eventos — Espaço de festas infantil em Goiânia" },
       {
         name: "description",
         content:
@@ -91,7 +91,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { name: "author", content: "Casa Prime Eventos" },
       { name: "theme-color", content: "#8641df" },
-      { property: "og:title", content: "Casa Prime Eventos — Espaço de festas infantis em Goiânia" },
+      { property: "og:title", content: "Casa Prime Eventos — Espaço de festas infantil em Goiânia" },
       {
         property: "og:description",
         content:
@@ -100,10 +100,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Casa Prime Eventos" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Casa Prime Eventos — Espaço de festas infantis em Goiânia" },
-      { name: "description", content: "Create a modern, visually appealing website for Casa Prime Eventos, a children's party venue." },
-      { property: "og:description", content: "Create a modern, visually appealing website for Casa Prime Eventos, a children's party venue." },
-      { name: "twitter:description", content: "Create a modern, visually appealing website for Casa Prime Eventos, a children's party venue." },
+      { name: "twitter:title", content: "Casa Prime Eventos — Espaço de festas infantil em Goiânia" },
+      { name: "description", content: "Onde a magia da infância encontra o requinte e a sofisticação em Goiânia." },
+      { property: "og:description", content: "Onde a magia da infância encontra o requinte e a sofisticação em Goiânia." },
+      { name: "twitter:description", content: "Onde a magia da infância encontra o requinte e a sofisticação em Goiânia." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/02f6843b-133c-498b-8e96-3b216bc58085/id-preview-1be824f3--644486b6-e35d-4a12-818f-13ddd1ad1094.lovable.app-1782935637705.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/02f6843b-133c-498b-8e96-3b216bc58085/id-preview-1be824f3--644486b6-e35d-4a12-818f-13ddd1ad1094.lovable.app-1782935637705.png" },
     ],
