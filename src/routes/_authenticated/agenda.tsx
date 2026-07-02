@@ -43,8 +43,16 @@ const MESES: Record<string, number> = {
 function parseDataFesta(s: string | null): Date | null {
   if (!s) return null;
   const raw = s.trim().toLowerCase();
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const rollYear = (mo: number, d: number) => {
+    const dt = new Date(currentYear, mo, d);
+    return dt.getTime() < new Date(currentYear, now.getMonth(), now.getDate()).getTime()
+      ? currentYear + 1
+      : currentYear;
+  };
   // dd/mm/yyyy or dd-mm-yyyy
-  let m = raw.match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
+  let m = raw.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
   if (m) {
     const d = +m[1], mo = +m[2] - 1;
     let y = +m[3];
@@ -52,24 +60,46 @@ function parseDataFesta(s: string | null): Date | null {
     const dt = new Date(y, mo, d);
     return isNaN(dt.getTime()) ? null : dt;
   }
+  // dd/mm (sem ano) → assume próximo ano se já passou
+  m = raw.match(/^(\d{1,2})[\/\-.](\d{1,2})$/);
+  if (m) {
+    const d = +m[1], mo = +m[2] - 1;
+    if (mo < 0 || mo > 11 || d < 1 || d > 31) return null;
+    const dt = new Date(rollYear(mo, d), mo, d);
+    return isNaN(dt.getTime()) ? null : dt;
+  }
   // yyyy-mm-dd
-  m = raw.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+  m = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
   if (m) {
     const dt = new Date(+m[1], +m[2] - 1, +m[3]);
     return isNaN(dt.getTime()) ? null : dt;
   }
-  // "30 de agosto de 2026" | "30 agosto 2026"
-  m = raw.match(/(\d{1,2})\s*(?:de\s+)?([a-zç]+)\s*(?:de\s+)?(\d{2,4})/);
+  // "30 de agosto de 2026" | "30 agosto" | "agosto 30"
+  m = raw.match(/(\d{1,2})\s*(?:de\s+)?([a-zç]+)(?:\s*(?:de\s+)?(\d{2,4}))?/);
   if (m) {
     const mesKey = m[2].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    const mo = MESES[mesKey] ?? MESES[m[2]];
+    const mo = MESES[mesKey];
     if (mo === undefined) return null;
-    let y = +m[3];
+    const d = +m[1];
+    let y = m[3] ? +m[3] : rollYear(mo, d);
     if (y < 100) y += 2000;
-    const dt = new Date(y, mo, +m[1]);
+    const dt = new Date(y, mo, d);
+    return isNaN(dt.getTime()) ? null : dt;
+  }
+  // "agosto 30" / "agosto de 2026"
+  m = raw.match(/^([a-zç]+)\s*(?:de\s+)?(\d{1,2})(?:\s*(?:de\s+)?(\d{2,4}))?$/);
+  if (m) {
+    const mesKey = m[1].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const mo = MESES[mesKey];
+    if (mo === undefined) return null;
+    const d = +m[2];
+    let y = m[3] ? +m[3] : rollYear(mo, d);
+    if (y < 100) y += 2000;
+    const dt = new Date(y, mo, d);
     return isNaN(dt.getTime()) ? null : dt;
   }
   return null;
+
 }
 
 function sameDay(a: Date, b: Date) {
