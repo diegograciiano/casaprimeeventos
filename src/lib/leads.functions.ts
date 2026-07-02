@@ -161,36 +161,44 @@ export const getLeadSummary = createServerFn({ method: "POST" })
       .eq("session_id", data.sessionId)
       .maybeSingle();
 
-    const lines: string[] = [
-      "Ola, Casa Prime!",
-      "",
-      "Conversei com a Sofia pelo site e gostaria de continuar meu atendimento por aqui.",
-    ];
+    const nome =
+      lead?.responsavel_nome && lead.responsavel_nome !== "Lead em qualificação"
+        ? lead.responsavel_nome.split(" ")[0]
+        : null;
+    const aniversariante = lead?.crianca_nome?.trim() || null;
+
+    const apresentacao = nome
+      ? `Olá, Casa Prime! 👋 Meu nome é ${nome}${
+          aniversariante ? ` e estou organizando a festa ${/a$/i.test(aniversariante) ? "da" : "do"} ${aniversariante}` : ""
+        }. Acabei de conversar com a Sofia pelo site e gostaria de continuar o atendimento por aqui. 💛`
+      : "Olá, Casa Prime! 👋 Vim pelo site depois de conversar com a Sofia e gostaria de continuar meu atendimento por aqui. 💛";
+
+    const lines: string[] = [apresentacao];
 
     const info: string[] = [];
-    const add = (label: string, v: unknown) => {
+    const add = (icon: string, label: string, v: unknown) => {
       if (v !== null && v !== undefined && String(v).trim() !== "") {
-        info.push(`• ${label}: ${v}`);
+        info.push(`${icon} *${label}:* ${v}`);
       }
     };
     if (lead) {
-      add("Nome", lead.responsavel_nome);
-      add("WhatsApp", lead.telefone);
-      add("E-mail", lead.email);
-      add("Aniversariante", lead.crianca_nome);
-      add("Idade", lead.idade);
-      add("Data pretendida", lead.data_festa);
-      add("Convidados", lead.qtd_pessoas);
-      add("Pacote de interesse", lead.pacote);
-      add("Tema", lead.tema);
-      add("Observacoes", lead.restricoes);
+      add("👤", "Responsável", lead.responsavel_nome !== "Lead em qualificação" ? lead.responsavel_nome : null);
+      add("📱", "WhatsApp", lead.telefone !== "0000000000" ? lead.telefone : null);
+      add("✉️", "E-mail", lead.email);
+      add("🎂", "Aniversariante", lead.crianca_nome);
+      add("🎈", "Idade", lead.idade ? `${lead.idade} anos` : null);
+      add("📅", "Data pretendida", lead.data_festa);
+      add("👥", "Convidados", lead.qtd_pessoas);
+      add("🎁", "Pacote de interesse", lead.pacote);
+      add("🎨", "Tema", lead.tema);
+      add("📝", "Observações", lead.restricoes);
     }
 
     if (info.length) {
-      lines.push("", "*Resumo do atendimento:*", ...info);
+      lines.push("", "*✨ Resumo do meu atendimento:*", ...info);
     }
 
-    lines.push("", "Aguardo o retorno de voces. Obrigado!");
+    lines.push("", "Podemos seguir daqui? Obrigado(a)! 🎉");
 
     return { message: lines.join("\n") };
   });
