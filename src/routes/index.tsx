@@ -31,9 +31,36 @@ import salaoAzul from "@/assets/salao-azul.jpg.asset.json";
 import salaoRosa from "@/assets/salao-rosa.jpg.asset.json";
 import decoracaoSafari from "@/assets/decoracao-safari.jpg.asset.json";
 import algodaoDoce from "@/assets/algodao-doce.jpg.asset.json";
+import ogImage from "@/assets/og-casa-prime.jpg.asset.json";
+
+const OG_IMAGE_URL = `https://casaprimeeventos.com.br${ogImage.url}`;
 
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [
+      { title: "Casa Prime Eventos — Espaço de festas infantis em Goiânia" },
+      {
+        name: "description",
+        content:
+          "Onde a magia da infância encontra o requinte e a sofisticação em Goiânia. Piscina aquecida, brinquedos, buffet e estrutura premium.",
+      },
+      { property: "og:title", content: "Casa Prime Eventos — Espaço de festas infantis em Goiânia" },
+      {
+        property: "og:description",
+        content:
+          "Onde a magia da infância encontra o requinte e a sofisticação em Goiânia.",
+      },
+      { property: "og:image", content: OG_IMAGE_URL },
+      { property: "og:image:width", content: "1216" },
+      { property: "og:image:height", content: "640" },
+      { property: "og:url", content: "https://casaprimeeventos.com.br/" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: OG_IMAGE_URL },
+    ],
+    links: [{ rel: "canonical", href: "https://casaprimeeventos.com.br/" }],
+  }),
 });
 
 
