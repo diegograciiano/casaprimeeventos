@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ChefHat, Sparkles, PartyPopper } from "lucide-react";
+import { ArrowRight, ChefHat, Sparkles, PartyPopper, Check, MessageCircle, CalendarCheck, Users, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { waLink } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/pacotes/")({
   head: () => ({
