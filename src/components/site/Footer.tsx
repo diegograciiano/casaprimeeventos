@@ -83,7 +83,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-1 px-6 py-4 text-xs text-white/60 sm:flex-row">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-1 px-6 py-4 pb-24 text-xs text-white/60 sm:flex-row sm:pb-4">
           <span>© {new Date().getFullYear()} Casa Prime Eventos. Todos os direitos reservados.</span>
           <span className="text-white/50">A sua casa de diversão.</span>
         </div>

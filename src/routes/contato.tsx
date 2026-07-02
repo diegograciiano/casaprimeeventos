@@ -34,7 +34,7 @@ function Contato() {
           Contato
         </div>
         <h1 className="mt-2 font-display text-4xl font-bold sm:text-5xl">
-          Vamos conversar? 💬
+          Vamos conversar?
         </h1>
         <p className="mx-auto mt-3 max-w-xl text-foreground/70">
           Escolha o canal que preferir. Respondemos rápido!

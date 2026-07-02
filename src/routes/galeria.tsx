@@ -57,13 +57,11 @@ function Galeria() {
       </Reveal>
 
       <Reveal stagger className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-        {fotos.map((f, i) => (
+        {fotos.map((f) => (
           <button
             key={f.url}
             onClick={() => setLightbox(f.url)}
-            className={`hover-lift group overflow-hidden rounded-2xl bg-muted shadow-md transition hover:shadow-xl ${
-              i === 0 ? "col-span-2 row-span-2" : ""
-            }`}
+            className="hover-lift group overflow-hidden rounded-2xl bg-muted shadow-md transition hover:shadow-xl"
           >
             <img
               src={f.url}
