@@ -127,11 +127,13 @@ export const Route = createFileRoute("/api/chat")({
 
         const gateway = createLovableAiGatewayProvider(key);
         const result = streamText({
-          model: gateway("google/gemini-3-flash-preview"),
+          model: gateway("google/gemini-2.5-flash"),
           system: SYSTEM_PROMPT,
           messages: await convertToModelMessages(messages as UIMessage[]),
           tools: { salvarLead },
-          stopWhen: stepCountIs(50),
+          stopWhen: stepCountIs(12),
+          temperature: 0.7,
+          maxOutputTokens: 400,
         });
 
         return result.toUIMessageStreamResponse({
