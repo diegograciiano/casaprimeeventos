@@ -38,11 +38,19 @@ const INITIAL: UIMessage[] = [
 ];
 
 
+function stripRepetition(s: string): string {
+  // Detect a short substring (3..30 chars) repeated >=5x in a row and cut it.
+  const m = s.match(/(.{3,30}?)\1{4,}/);
+  if (m && m.index !== undefined) return s.slice(0, m.index + m[1].length) + "…";
+  return s;
+}
+
 function textOf(m: UIMessage): string {
-  return m.parts
+  const raw = m.parts
     .map((p) => (p.type === "text" ? p.text : ""))
     .join("")
     .trim();
+  return stripRepetition(raw);
 }
 
 export function Chatbot() {
