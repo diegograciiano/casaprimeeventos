@@ -7,10 +7,9 @@ import logo from "@/assets/icon-casa-prime.png.asset.json";
 
 const nav = [
   { to: "/", label: "Início" },
-  { to: "/pacotes", label: "Pacotes" },
-  
-  { to: "/galeria", label: "Galeria" },
   { to: "/sobre", label: "Sobre" },
+  { to: "/pacotes", label: "Pacotes" },
+  { to: "/galeria", label: "Galeria" },
   { to: "/contato", label: "Contato" },
 ] as const;
 
