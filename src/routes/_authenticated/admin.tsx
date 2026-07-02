@@ -420,18 +420,128 @@ function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void 
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2">
-              <Button variant="outline" onClick={onClose}>
-                Fechar
+            <div className="flex flex-wrap justify-between gap-2 pt-2">
+              <Button variant="destructive" onClick={onDelete}>
+                Excluir lead
               </Button>
-              <Button asChild>
-                <a href={wa} target="_blank" rel="noreferrer">
-                  Iniciar conversa com {lead.responsavel_nome.split(" ")[0]}
-                </a>
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={onClose}>
+                  Fechar
+                </Button>
+                <Button asChild>
+                  <a href={wa} target="_blank" rel="noreferrer">
+                    Iniciar conversa com {lead.responsavel_nome.split(" ")[0]}
+                  </a>
+                </Button>
+              </div>
             </div>
           </>
         )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function NewLeadDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const qc = useQueryClient();
+  const create = useServerFn(createLeadManual);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({
+    responsavel_nome: "",
+    telefone: "",
+    email: "",
+    crianca_nome: "",
+    idade: "",
+    data_festa: "",
+    qtd_pessoas: "",
+    pacote: "",
+    tema: "",
+    restricoes: "",
+    valor: "",
+    status: "novo" as LeadStatus,
+  });
+
+  useEffect(() => {
+    if (!open) {
+      setForm({
+        responsavel_nome: "", telefone: "", email: "", crianca_nome: "",
+        idade: "", data_festa: "", qtd_pessoas: "", pacote: "", tema: "",
+        restricoes: "", valor: "", status: "novo",
+      });
+    }
+  }, [open]);
+
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const submit = async () => {
+    if (form.responsavel_nome.trim().length < 2) return alert("Nome do responsável é obrigatório");
+    if (form.telefone.trim().length < 8) return alert("Telefone inválido");
+    setSaving(true);
+    try {
+      const valorNum = form.valor
+        ? Number(form.valor.replace(/\./g, "").replace(",", "."))
+        : null;
+      await create({
+        data: {
+          responsavel_nome: form.responsavel_nome,
+          telefone: form.telefone,
+          email: form.email || null,
+          crianca_nome: form.crianca_nome || null,
+          idade: form.idade ? Number(form.idade) : null,
+          data_festa: form.data_festa || null,
+          qtd_pessoas: form.qtd_pessoas ? Number(form.qtd_pessoas) : null,
+          pacote: form.pacote || null,
+          tema: form.tema || null,
+          restricoes: form.restricoes || null,
+          valor: valorNum !== null && isFinite(valorNum) ? valorNum : null,
+          status: form.status,
+        },
+      });
+      qc.invalidateQueries({ queryKey: ["leads"] });
+      onClose();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Erro ao cadastrar");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Novo lead manual</DialogTitle>
+          <DialogDescription>Cadastre um lead manualmente no CRM.</DialogDescription>
+        </DialogHeader>
+        <div className="grid grid-cols-2 gap-3 py-2">
+          <Input className="col-span-2" placeholder="Nome do responsável *" value={form.responsavel_nome} onChange={set("responsavel_nome")} />
+          <Input placeholder="WhatsApp *" value={form.telefone} onChange={set("telefone")} />
+          <Input placeholder="E-mail" type="email" value={form.email} onChange={set("email")} />
+          <Input placeholder="Aniversariante" value={form.crianca_nome} onChange={set("crianca_nome")} />
+          <Input placeholder="Idade" inputMode="numeric" value={form.idade} onChange={set("idade")} />
+          <Input placeholder="Data da festa" value={form.data_festa} onChange={set("data_festa")} />
+          <Input placeholder="Nº convidados" inputMode="numeric" value={form.qtd_pessoas} onChange={set("qtd_pessoas")} />
+          <Input className="col-span-2" placeholder="Pacote" value={form.pacote} onChange={set("pacote")} />
+          <Input className="col-span-2" placeholder="Tema / sonho" value={form.tema} onChange={set("tema")} />
+          <Textarea className="col-span-2" placeholder="Restrições / observações" value={form.restricoes} onChange={set("restricoes")} />
+          <Input placeholder="Valor (R$)" inputMode="decimal" value={form.valor} onChange={set("valor")} />
+          <select
+            className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+            value={form.status}
+            onChange={set("status")}
+          >
+            {LEAD_STATUSES.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex justify-end gap-2 pt-2">
+          <Button variant="outline" onClick={onClose}>Cancelar</Button>
+          <Button onClick={submit} disabled={saving}>
+            {saving ? "Salvando…" : "Cadastrar lead"}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
