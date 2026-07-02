@@ -31,6 +31,7 @@ export type Database = {
           telefone: string
           tema: string | null
           updated_at: string
+          valor: number | null
         }
         Insert: {
           created_at?: string
@@ -48,6 +49,7 @@ export type Database = {
           telefone: string
           tema?: string | null
           updated_at?: string
+          valor?: number | null
         }
         Update: {
           created_at?: string
@@ -65,6 +67,7 @@ export type Database = {
           telefone?: string
           tema?: string | null
           updated_at?: string
+          valor?: number | null
         }
         Relationships: []
       }
