@@ -62,6 +62,7 @@ function ReportsPage() {
     let total = 0;
     let receita = 0;
     let fechadas = 0;
+    let agendadas = 0;
     let ticketSoma = 0;
     let ticketQtd = 0;
     const byPacote: Record<string, { count: number; valor: number }> = {};
@@ -75,6 +76,7 @@ function ReportsPage() {
       if (status === "finalizada" || status === "agendada") {
         receita += v;
         if (status === "finalizada") fechadas += 1;
+        if (status === "agendada") agendadas += 1;
         if (v > 0) { ticketSoma += v; ticketQtd += 1; }
       }
       const pac = l.pacote ?? "Sem pacote";
@@ -83,10 +85,10 @@ function ReportsPage() {
       byPacote[pac].valor += v;
     }
 
-    const conv = total > 0 ? (fechadas / total) * 100 : 0;
+    const conv = total > 0 ? ((fechadas + agendadas) / total) * 100 : 0;
     const ticket = ticketQtd > 0 ? ticketSoma / ticketQtd : 0;
 
-    return { byStatus, byPacote, total, receita, fechadas, conv, ticket };
+    return { byStatus, byPacote, total, receita, fechadas, agendadas, conv, ticket };
   }, [filtered]);
 
   return (
@@ -118,8 +120,9 @@ function ReportsPage() {
 
         {data && (
           <>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-6">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-5 mb-6">
               <Kpi label="Leads no período" value={String(stats.total)} />
+              <Kpi label="Festas agendadas" value={String(stats.agendadas)} />
               <Kpi label="Festas fechadas" value={String(stats.fechadas)} />
               <Kpi label="Receita" value={fmtBRL(stats.receita)} accent />
               <Kpi label="Ticket médio" value={fmtBRL(stats.ticket)} />
