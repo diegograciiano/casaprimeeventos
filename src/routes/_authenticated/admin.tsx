@@ -45,9 +45,17 @@ type Lead = {
   tema: string | null;
   restricoes: string | null;
   session_id: string | null;
+  valor: number | string | null;
   updated_at: string;
   created_at: string;
 };
+
+function formatBRL(v: number | string | null | undefined) {
+  if (v === null || v === undefined || v === "") return "—";
+  const n = typeof v === "number" ? v : Number(v);
+  if (!isFinite(n)) return "—";
+  return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
 
 const COLUMNS: { id: LeadStatus; title: string; accent: string }[] = [
   { id: "novo", title: "Novo contato", accent: "bg-blue-500" },
