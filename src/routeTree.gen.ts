@@ -21,6 +21,7 @@ import { Route as PacotesFestaCompletaRouteImport } from './routes/pacotes.festa
 import { Route as PacotesComBuffetRouteImport } from './routes/pacotes.com-buffet'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
+import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const SobreRoute = SobreRouteImport.update({
@@ -82,6 +83,11 @@ const AuthenticatedRelatoriosRoute = AuthenticatedRelatoriosRouteImport.update({
   path: '/relatorios',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAgendaRoute = AuthenticatedAgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/agenda': typeof AuthenticatedAgendaRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/api/chat': typeof ApiChatRoute
   '/pacotes/com-buffet': typeof PacotesComBuffetRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/agenda': typeof AuthenticatedAgendaRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/api/chat': typeof ApiChatRoute
   '/pacotes/com-buffet': typeof PacotesComBuffetRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/agenda': typeof AuthenticatedAgendaRoute
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/api/chat': typeof ApiChatRoute
   '/pacotes/com-buffet': typeof PacotesComBuffetRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/galeria'
     | '/sobre'
     | '/admin'
+    | '/agenda'
     | '/relatorios'
     | '/api/chat'
     | '/pacotes/com-buffet'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
     | '/galeria'
     | '/sobre'
     | '/admin'
+    | '/agenda'
     | '/relatorios'
     | '/api/chat'
     | '/pacotes/com-buffet'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '/galeria'
     | '/sobre'
     | '/_authenticated/admin'
+    | '/_authenticated/agenda'
     | '/_authenticated/relatorios'
     | '/api/chat'
     | '/pacotes/com-buffet'
@@ -278,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRelatoriosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/agenda': {
+      id: '/_authenticated/agenda'
+      path: '/agenda'
+      fullPath: '/agenda'
+      preLoaderRoute: typeof AuthenticatedAgendaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -290,11 +309,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRoute
   AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAgendaRoute: AuthenticatedAgendaRoute,
   AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
 }
 
