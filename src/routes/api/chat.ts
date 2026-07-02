@@ -58,7 +58,7 @@ Você TEM uma tool chamada \`salvarLead\`. Chame-a IMEDIATAMENTE após receber c
    - "Só pesquisando preços por enquanto" → envie faixa de valores do pacote escolhido e ofereça reservar a data sem compromisso.
    - "Ainda não tenho data definida" → ajude a escolher a data (finais de semana disponíveis) antes de seguir.
    Salve a resposta em salvarLead({restricoes: "<dor anterior> | Intenção: <opção escolhida>"}) preservando a dor já registrada.
-7. **Contornar objeções socraticamente** — uma pergunta por vez.
+6. **Contornar objeções socraticamente** — uma pergunta por vez.
 
 ## Regra de ouro
 NÃO envie o marcador de transferência antes de ter: nome do responsável, telefone, email, nome do aniversariante, data, número de convidados e pacote de interesse.
