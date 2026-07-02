@@ -293,6 +293,16 @@ function guessArticlePtBr(nome: string): "do" | "da" {
 
 function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void }) {
   const open = !!lead;
+  const qc = useQueryClient();
+  const saveValor = useServerFn(updateLeadValor);
+  const [valorInput, setValorInput] = useState<string>("");
+  const [saving, setSaving] = useState(false);
+
+  // reset input when lead changes
+  useMemo(() => {
+    setValorInput(lead?.valor != null && lead.valor !== "" ? String(lead.valor) : "");
+  }, [lead?.id]);
+
   const wa = lead
     ? waLink(
         lead.telefone,
@@ -301,6 +311,22 @@ function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void 
         }. 🎉`,
       )
     : "#";
+
+  const onSaveValor = async () => {
+    if (!lead) return;
+    const raw = valorInput.replace(/\./g, "").replace(",", ".").trim();
+    const v = raw === "" ? null : Number(raw);
+    if (v !== null && (!isFinite(v) || v < 0)) return;
+    setSaving(true);
+    try {
+      await saveValor({ data: { id: lead.id, valor: v } });
+      qc.setQueryData<{ leads: Lead[] }>(["leads"], (old) =>
+        old ? { leads: old.leads.map((l) => (l.id === lead.id ? { ...l, valor: v } : l)) } : old,
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-lg">
