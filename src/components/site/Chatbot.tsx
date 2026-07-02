@@ -87,16 +87,16 @@ export function Chatbot() {
   const { options: lastOptions } = parseOptions(lastAssistantText);
   const lastAssistantId = lastAssistant?.id;
   const fetchSummary = useServerFn(getLeadSummary);
-  const { data: summary } = useQuery({
-    queryKey: ["lead-summary", sessionId],
+  const { data: summary, refetch: refetchSummary } = useQuery({
+    queryKey: ["lead-summary", sessionId, lastAssistantId],
     queryFn: () => fetchSummary({ data: { sessionId } }),
-    enabled: shouldTransfer,
+    enabled: shouldTransfer && !isBusy,
     staleTime: 0,
+    refetchOnMount: "always",
   });
-  const transferUrl = waLink(
-    summary?.message ??
-      "Olá Casa Prime! Vim pelo chat e gostaria de continuar meu atendimento personalizado 🎉",
-  );
+  const fallbackMsg =
+    "Olá Casa Prime! Vim pelo chat e gostaria de continuar meu atendimento personalizado 🎉";
+  const transferUrl = waLink(summary?.message ?? fallbackMsg);
 
   if (!open) return null;
 
@@ -192,6 +192,12 @@ export function Chatbot() {
                 href={transferUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  const { data } = await refetchSummary();
+                  const url = waLink(data?.message ?? fallbackMsg);
+                  window.open(url, "_blank", "noopener,noreferrer");
+                }}
                 className="flex w-full items-center justify-center gap-2 rounded-2xl bg-whatsapp px-4 py-3 font-semibold text-white shadow-lg transition hover:brightness-110"
               >
                 <Send className="h-4 w-4" /> Continuar no WhatsApp
