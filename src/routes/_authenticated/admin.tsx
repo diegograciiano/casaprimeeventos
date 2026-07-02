@@ -202,8 +202,11 @@ function Column({
 }
 
 function waLink(phone: string | null | undefined, text?: string) {
-  const digits = (phone ?? "").replace(/\D/g, "");
-  const base = `https://wa.me/55${digits}`;
+  let digits = (phone ?? "").replace(/\D/g, "");
+  // Normalize BR numbers: strip leading 0, add country code if missing
+  if (digits.startsWith("0")) digits = digits.slice(1);
+  if (!digits.startsWith("55")) digits = `55${digits}`;
+  const base = `https://wa.me/${digits}`;
   return text ? `${base}?text=${encodeURIComponent(text)}` : base;
 }
 
