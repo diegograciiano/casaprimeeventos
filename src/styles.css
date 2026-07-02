@@ -425,13 +425,30 @@
   main {
     text-align: center;
   }
+  main .text-left {
+    text-align: center;
+  }
   main .items-start {
     align-items: center;
   }
   main .justify-start {
     justify-content: center;
   }
+  main .mx-0,
+  main .ml-0,
+  main .mr-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  main .w-fit {
+    margin-left: auto;
+    margin-right: auto;
+  }
   main ul, main ol {
     list-style-position: inside;
+    padding-left: 0;
+  }
+}
+
   }
 }
