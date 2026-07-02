@@ -165,11 +165,11 @@ function Index() {
       <section className="relative overflow-hidden py-24 sm:py-32">
         <div className="absolute inset-0 origin-right -skew-y-3 scale-110 bg-[#faf9fc]" />
         <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
-          <Reveal className="mb-14">
+          <Reveal className="mb-14 text-center">
             <h2 className="font-display text-4xl font-extrabold text-[#8641df] sm:text-5xl">
               Por que escolher a Prime?
             </h2>
-            <div className="mt-4 h-2 w-24 rounded-full bg-[#ffcb03]" />
+            <div className="mx-auto mt-4 h-2 w-24 rounded-full bg-[#ffcb03]" />
           </Reveal>
 
           <Reveal
@@ -179,7 +179,7 @@ function Index() {
             {diferenciais.map((d) => (
               <div
                 key={d.title}
-                className="group rounded-3xl border-b-4 border-transparent bg-white p-8 shadow-xl shadow-purple-900/5 transition-all duration-300 hover:-translate-y-2 hover:border-[#ffcb03]"
+                className="group flex flex-col items-center rounded-3xl border-b-4 border-transparent bg-white p-8 text-center shadow-xl shadow-purple-900/5 transition-all duration-300 hover:-translate-y-2 hover:border-[#ffcb03]"
               >
                 <div className="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-[#8641df]/10 text-[#8641df] transition-colors group-hover:bg-[#8641df] group-hover:text-white">
                   <d.icon className="h-7 w-7" />
@@ -190,6 +190,7 @@ function Index() {
                 <p className="mt-2 text-[#14092e]/70">{d.desc}</p>
               </div>
             ))}
+
           </Reveal>
         </div>
       </section>
