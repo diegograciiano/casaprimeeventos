@@ -120,8 +120,9 @@ function ReportsPage() {
 
         {data && (
           <>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-6">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-5 mb-6">
               <Kpi label="Leads no período" value={String(stats.total)} />
+              <Kpi label="Festas agendadas" value={String(stats.agendadas)} />
               <Kpi label="Festas fechadas" value={String(stats.fechadas)} />
               <Kpi label="Receita" value={fmtBRL(stats.receita)} accent />
               <Kpi label="Ticket médio" value={fmtBRL(stats.ticket)} />
