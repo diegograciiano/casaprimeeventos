@@ -422,33 +422,29 @@
 
 /* Mobile: centralizar todas as informações do site (exceto admin/auth) */
 @media (max-width: 767px) {
-  main {
-    text-align: center;
-  }
-  main .text-left {
-    text-align: center;
+  main,
+  main .text-left,
+  main .text-right {
+    text-align: center !important;
   }
   main .items-start {
-    align-items: center;
+    align-items: center !important;
   }
   main .justify-start {
-    justify-content: center;
+    justify-content: center !important;
   }
+  main .w-fit,
   main .mx-0,
-  main .ml-0,
-  main .mr-auto {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  main .w-fit {
-    margin-left: auto;
-    margin-right: auto;
+  main .ml-0 {
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
   main ul, main ol {
     list-style-position: inside;
     padding-left: 0;
   }
 }
+
 
   }
 }
