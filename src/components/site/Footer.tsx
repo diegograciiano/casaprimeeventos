@@ -17,7 +17,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 export function Footer() {
   return (
     <footer className="mt-16 bg-[#14092e] text-white">
-      <div className="mx-auto grid max-w-6xl gap-8 px-6 py-10 text-center md:grid-cols-3 md:gap-8 md:py-12 md:text-left">
+      <div className="mx-auto grid max-w-6xl gap-8 px-6 py-10 text-center md:grid-cols-2 md:gap-8 md:py-12 md:text-left">
         {/* Marca */}
         <div className="flex flex-col items-center md:items-start">
           <div className="flex items-center gap-3">
