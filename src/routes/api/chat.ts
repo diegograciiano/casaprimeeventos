@@ -41,7 +41,9 @@ Você TEM uma tool chamada \`salvarLead\`. Chame-a IMEDIATAMENTE após receber c
    "Quando você fecha os olhos, como imagina a festa dos sonhos {do/da} {aniversariante}?"
    [OPCOES: Princesas / Realeza | Boiadeira / Fazendinha | Safari / Selvinha | Super-heróis | Unicórnio / Mágico | Ainda não decidi]
    → Assim que a pessoa clicar/responder, chame salvarLead({tema: "<opção escolhida>"}). Se escolher "Ainda não decidi", salve tema: "A definir" e pergunte se prefere sugestões nossas.
-3. **Explorar dores**: "O que mais te preocupa ao organizar tudo?" → salvarLead({restricoes}) se relevante.
+3. **Explorar dores** — SEMPRE ofereça OPCOES nesta pergunta: "O que mais te preocupa ao organizar tudo?"
+   [OPCOES: Preço / caber no orçamento | Organização / logística | Comida e bebida | Decoração e tema | Espaço / acomodar os convidados | Outro]
+   Se escolher "Outro", peça para descrever em uma frase. Salve a escolha em salvarLead({restricoes: "<opção>"}) para aparecer no CRM.
 5. **Apresentar opções** (use OPCOES):
    - **Pacotes COM Buffet** (Pirulito / Diversão / Churrasco)
    - **Pacotes SEM Buffet** (Bombom até 60p / Chiclete até 80p / Sorvete até 90p / Churros até 120p)
