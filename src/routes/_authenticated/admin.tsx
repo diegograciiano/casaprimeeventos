@@ -298,10 +298,9 @@ function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void 
   const [valorInput, setValorInput] = useState<string>("");
   const [saving, setSaving] = useState(false);
 
-  // reset input when lead changes
-  useMemo(() => {
+  useEffect(() => {
     setValorInput(lead?.valor != null && lead.valor !== "" ? String(lead.valor) : "");
-  }, [lead?.id]);
+  }, [lead?.id, lead?.valor]);
 
   const wa = lead
     ? waLink(
