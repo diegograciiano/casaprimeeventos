@@ -82,12 +82,12 @@
 :root {
   --radius: 1rem;
 
-  --background: oklch(0.97 0.02 95);
+  --background: #ffec6f;
   --foreground: oklch(0.18 0.09 295); /* ink #14092e */
 
-  --card: oklch(0.97 0.02 95);
+  --card: #ffec6f;
   --card-foreground: oklch(0.18 0.09 295);
-  --popover: oklch(0.97 0.02 95);
+  --popover: #ffec6f;
   --popover-foreground: oklch(0.18 0.09 295);
 
   /* Roxo como primary (CTA principal) */
