@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { X, Send, PartyPopper } from "lucide-react";
+import { X, Send } from "lucide-react";
+import maiteAvatar from "@/assets/maite-casa-prime.jpg.asset.json";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
@@ -149,12 +150,12 @@ export function ChatbotUI({
       <div className={innerClass}>
         <div className="flex items-center justify-between bg-gradient-to-r from-pink to-aqua-deep px-4 py-3 text-white">
           <div className="flex items-center gap-2">
-            <div className="grid h-10 w-10 place-items-center rounded-full bg-white/20 backdrop-blur">
-              <PartyPopper className="h-5 w-5" />
+            <div className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-white/20 backdrop-blur">
+              <img src={maiteAvatar.url} alt="Maitê - Casa Prime Eventos" className="h-full w-full object-cover" />
             </div>
             <div>
               <div className="font-display text-base font-semibold leading-tight">
-                Sofia · Casa Prime
+                Maitê - Casa Prime Eventos
               </div>
               <div className="text-xs opacity-90">Consultora de festas ✨</div>
             </div>
