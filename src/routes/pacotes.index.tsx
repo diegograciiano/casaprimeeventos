@@ -76,7 +76,7 @@ function PacotesHub() {
           <Link
             key={o.to}
             to={o.to}
-            className="hover-lift group relative flex flex-col overflow-hidden rounded-3xl border border-black/5 bg-white p-8 shadow-xl shadow-purple-900/5 hover:border-[#bfa2ff]/30"
+            className="hover-lift group relative flex flex-col overflow-hidden rounded-3xl border border-black/5 bg-white p-8 shadow-xl shadow-purple-300/5 hover:border-[#bfa2ff]/30"
           >
             <div className="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-[#bfa2ff]/10 text-[#bfa2ff] transition-colors group-hover:bg-[#bfa2ff] group-hover:text-white">
               <o.icon className="h-7 w-7" />

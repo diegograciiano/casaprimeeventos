@@ -179,7 +179,7 @@ function Index() {
             {diferenciais.map((d) => (
               <div
                 key={d.title}
-                className="group flex flex-col items-center rounded-3xl border-b-4 border-transparent bg-background p-8 text-center shadow-xl shadow-purple-900/5 transition-all duration-300 hover:-translate-y-2 hover:border-[#ffcb03]"
+                className="group flex flex-col items-center rounded-3xl border-b-4 border-transparent bg-background p-8 text-center shadow-xl shadow-purple-300/5 transition-all duration-300 hover:-translate-y-2 hover:border-[#ffcb03]"
               >
                 <div className="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-[#bfa2ff]/10 text-[#bfa2ff] transition-colors group-hover:bg-[#bfa2ff] group-hover:text-white">
                   <d.icon className="h-7 w-7" />

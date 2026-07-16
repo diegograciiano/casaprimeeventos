@@ -11,7 +11,7 @@ export function WhatsAppButton() {
         onClick={() => openChat()}
         aria-label="Fazer uma reserva"
         title="Fale conosco agora!"
-        className="rounded-2xl bg-[#bfa2ff] px-6 py-3 text-sm font-bold text-white shadow-lg shadow-purple-900/30 transition-colors hover:bg-[#a67ee5] sm:text-base"
+        className="rounded-2xl bg-[#bfa2ff] px-6 py-3 text-sm font-bold text-white shadow-lg shadow-purple-400/30 transition-colors hover:bg-[#a67ee5] sm:text-base"
       >
         Fazer uma Reserva
       </button>
