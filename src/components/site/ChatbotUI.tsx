@@ -226,7 +226,7 @@ export function ChatbotUI({
     if (!yes) {
       setTimeout(() => {
         pushBot(
-          `Entendi, ${firstName(lead.nome)}! 💛 A Casa Prime é especializada em *festas infantis*, então dessa vez não vamos conseguir te atender — mas agradecemos muito o contato! 🎈`,
+          `Entendi, ${firstName(lead.nome)}! 💛 A Casa Prime é especializada em *festas infantis*, então dessa vez não vamos conseguir te atender, mas agradecemos muito o contato! 🎈`,
         );
         setStep("encerrado");
       }, 300);
