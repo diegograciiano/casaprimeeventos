@@ -133,7 +133,7 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isBareLayout = pathname.startsWith("/admin") || pathname.startsWith("/auth") || pathname.startsWith("/relatorios") || pathname.startsWith("/agenda");
+  const isBareLayout = pathname.startsWith("/admin") || pathname.startsWith("/auth") || pathname.startsWith("/relatorios") || pathname.startsWith("/agenda") || pathname.startsWith("/atendimento");
 
   return (
     <QueryClientProvider client={queryClient}>
