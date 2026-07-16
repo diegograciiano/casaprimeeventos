@@ -150,12 +150,12 @@ export function ChatbotUI({
       <div className={innerClass}>
         <div className="flex items-center justify-between bg-gradient-to-r from-pink to-aqua-deep px-4 py-3 text-white">
           <div className="flex items-center gap-2">
-            <div className="grid h-10 w-10 place-items-center rounded-full bg-white/20 backdrop-blur">
-              <PartyPopper className="h-5 w-5" />
+            <div className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-white/20 backdrop-blur">
+              <img src={maiteAvatar.url} alt="Maitê - Casa Prime Eventos" className="h-full w-full object-cover" />
             </div>
             <div>
               <div className="font-display text-base font-semibold leading-tight">
-                Sofia · Casa Prime
+                Maitê - Casa Prime Eventos
               </div>
               <div className="text-xs opacity-90">Consultora de festas ✨</div>
             </div>
