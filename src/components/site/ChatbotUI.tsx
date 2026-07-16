@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { waLink } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
 import { pacotes, inclusoEmTodos } from "@/data/pacotes";
+import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
 
 export type ChatbotMode = "floating" | "page";
 
@@ -403,14 +405,31 @@ export function ChatbotUI({
         >
           {messages.map((m) => (
             <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-              <div
-                className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-sm shadow-sm ${
+            <div
+                className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
                   m.role === "user"
-                    ? "rounded-br-sm bg-primary text-primary-foreground"
+                    ? "rounded-br-sm bg-primary text-primary-foreground whitespace-pre-wrap"
                     : "rounded-bl-sm bg-white text-foreground"
                 }`}
               >
-                {m.text}
+                {m.role === "user" ? (
+                  m.text
+                ) : (
+                  <ReactMarkdown
+                    remarkPlugins={[remarkBreaks]}
+                    components={{
+                      em: ({ children, ...props }) => <strong {...props}>{children}</strong>,
+                      strong: ({ children, ...props }) => <strong {...props}>{children}</strong>,
+                      p: ({ children, ...props }) => (
+                        <p {...props} className="mb-1 last:mb-0">
+                          {children}
+                        </p>
+                      ),
+                    }}
+                  >
+                    {m.text}
+                  </ReactMarkdown>
+                )}
               </div>
             </div>
           ))}
