@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { waLink } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
 import { pacotes, inclusoEmTodos } from "@/data/pacotes";
+import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
 
 export type ChatbotMode = "floating" | "page";
 
