@@ -113,6 +113,8 @@ export function ChatbotUI({
   const [lead, setLead] = useState<LeadState>(emptyLead);
   const [input, setInput] = useState("");
   const [sessionId] = useState(() => crypto.randomUUID());
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const savedOnce = useRef(false);
