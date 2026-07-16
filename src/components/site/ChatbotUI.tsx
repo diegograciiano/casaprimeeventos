@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Send, ArrowLeft } from "lucide-react";
+import { X, Send, ArrowLeft, CalendarIcon } from "lucide-react";
 import maiteAvatar from "@/assets/maite-casa-prime.jpg.asset.json";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { waLink } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
 import { pacotes, inclusoEmTodos } from "@/data/pacotes";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 export type ChatbotMode = "floating" | "page";
 
@@ -109,6 +113,8 @@ export function ChatbotUI({
   const [lead, setLead] = useState<LeadState>(emptyLead);
   const [input, setInput] = useState("");
   const [sessionId] = useState(() => crypto.randomUUID());
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const savedOnce = useRef(false);
@@ -136,6 +142,15 @@ export function ChatbotUI({
 
   useEffect(() => {
     setTimeout(() => inputRef.current?.focus(), 50);
+  }, [step]);
+
+  useEffect(() => {
+    if (step === "visita_data") {
+      setSelectedDate(undefined);
+      setCalendarOpen(true);
+    } else {
+      setCalendarOpen(false);
+    }
   }, [step]);
 
   // Persist lead to Cloud when we have the minimum required fields
@@ -546,27 +561,59 @@ export function ChatbotUI({
         {/* Composer */}
         {showFreeInput && (
           <div className="border-t bg-white p-3">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                submitText();
-              }}
-              className="flex gap-2"
-            >
-              <Input
-                ref={inputRef}
-                value={input}
-                onChange={(e) =>
-                  setInput(isPhoneStep ? maskPhoneBR(e.target.value) : e.target.value)
-                }
-                inputMode={isPhoneStep ? "tel" : step === "email" ? "email" : "text"}
-                placeholder={placeholder}
-                className="rounded-full"
-              />
-              <Button type="submit" size="icon" className="h-9 w-9 shrink-0 rounded-full" disabled={!input.trim()}>
-                <Send className="h-4 w-4" />
-              </Button>
-            </form>
+            {step === "visita_data" ? (
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start rounded-full border-input bg-background text-left font-normal",
+                      !selectedDate && "text-muted-foreground",
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {selectedDate ? format(selectedDate, "dd/MM/yyyy") : "Escolha a data da festa"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 pointer-events-auto" align="center">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={(date) => {
+                      if (!date) return;
+                      setSelectedDate(date);
+                      setCalendarOpen(false);
+                      const formatted = format(date, "dd/MM/yyyy");
+                      pushUser(formatted);
+                      handleText(formatted);
+                    }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  submitText();
+                }}
+                className="flex gap-2"
+              >
+                <Input
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) =>
+                    setInput(isPhoneStep ? maskPhoneBR(e.target.value) : e.target.value)
+                  }
+                  inputMode={isPhoneStep ? "tel" : step === "email" ? "email" : "text"}
+                  placeholder={placeholder}
+                  className="rounded-full"
+                />
+                <Button type="submit" size="icon" className="h-9 w-9 shrink-0 rounded-full" disabled={!input.trim()}>
+                  <Send className="h-4 w-4" />
+                </Button>
+              </form>
+            )}
           </div>
         )}
       </div>
