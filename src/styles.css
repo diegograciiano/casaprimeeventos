@@ -82,12 +82,12 @@
 :root {
   --radius: 1rem;
 
-  --background: oklch(0.97 0.02 95);
+  --background: #ffec6f;
   --foreground: oklch(0.18 0.09 295); /* ink #14092e */
 
-  --card: oklch(0.97 0.02 95);
+  --card: #ffec6f;
   --card-foreground: oklch(0.18 0.09 295);
-  --popover: oklch(0.97 0.02 95);
+  --popover: #ffec6f;
   --popover-foreground: oklch(0.18 0.09 295);
 
   /* Roxo como primary (CTA principal) */
@@ -98,7 +98,7 @@
   --secondary: oklch(0.87 0.17 92); /* #ffcb03 */
   --secondary-foreground: oklch(0.18 0.09 295);
 
-  --muted: oklch(0.97 0.005 300);
+  --muted: #fff5a3;
   --muted-foreground: oklch(0.45 0.02 295);
 
   --accent: oklch(0.87 0.17 92);
@@ -107,8 +107,8 @@
   --destructive: oklch(0.6 0.24 27);
   --destructive-foreground: oklch(1 0 0);
 
-  --border: oklch(0.9 0.02 95);
-  --input: oklch(0.95 0.02 95);
+  --border: #f5d93a;
+  --input: #fff5a3;
   --ring: oklch(0.53 0.24 295);
 
   /* Cores da marca */
@@ -125,7 +125,7 @@
   --chart-4: oklch(0.65 0.2 320);
   --chart-5: oklch(0.7 0.15 250);
 
-  --sidebar: oklch(0.97 0.02 95);
+  --sidebar: #ffec6f;
   --sidebar-foreground: oklch(0.18 0.09 295);
   --sidebar-primary: oklch(0.53 0.24 295);
   --sidebar-primary-foreground: oklch(1 0 0);
