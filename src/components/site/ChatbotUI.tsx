@@ -121,7 +121,7 @@ export function ChatbotUI({
   // Initial greeting
   useEffect(() => {
     pushBot(
-      "Oiê! 🎈 Eu sou a Maitê, da *Casa Prime Eventos* — a casa de festas infantis de Goiânia. Vou te ajudar rapidinho por aqui! 💛",
+      "Oiê! 🎈 Eu sou a Maitê, da *Casa Prime Eventos*, a casa de festas infantis de Goiânia. Vou te ajudar rapidinho por aqui! 💛",
     );
     setTimeout(() => {
       pushBot("Pra começar, qual é o seu *nome completo*? 😊");
