@@ -263,7 +263,7 @@ export function ChatbotUI({
       .join("\n");
     setTimeout(() => {
       pushBot(
-        `${info.titulo}\n⏱️ *Duração:* ${info.duracao}\n\n${info.descricao}\n\n*✨ Incluso em todos os pacotes:*\n${inclusoEmTodos.map((i) => `• ${i}`).join("\n")}\n\n*🎁 Neste pacote você tem:*\n${incluso}\n\n💰 *Valor:* sob consulta — cada festa é única! Vamos personalizar o orçamento no WhatsApp. 💛`,
+        `${info.titulo}\n⏱️ *Duração:* ${info.duracao}\n\n${info.descricao}\n\n*✨ Incluso em todos os pacotes:*\n${inclusoEmTodos.map((i) => `• ${i}`).join("\n")}\n\n*🎁 Neste pacote você tem:*\n${incluso}\n\n💰 *Valor:* sob consulta, porque cada festa é única! Vamos personalizar o orçamento no WhatsApp. 💛`,
       );
       setStep("orc_detalhe");
     }, 300);
