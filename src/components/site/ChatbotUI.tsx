@@ -39,19 +39,19 @@ const emptyLead: LeadState = { nome: "", email: "", telefone: "", data: "", paco
 
 const PACOTE_INFO: Record<string, { titulo: string; duracao: string; descricao: string }> = {
   "Pacote Pirulito (Sem Buffet)": {
-    titulo: "🍭 Pacote Pirulito — Sem Buffet",
+    titulo: "🍭 Pacote Pirulito, Sem Buffet",
     duracao: "2h de festa",
     descricao:
-      "Ideal para quem quer aproveitar o espaço, os brinquedos e a piscina aquecida com entradas caprichadas e sobremesas — sem prato principal servido.",
+      "Ideal para quem quer aproveitar o espaço, os brinquedos e a piscina aquecida com entradas caprichadas e sobremesas, sem prato principal servido.",
   },
   "Pacote Diversão (Com Buffet)": {
-    titulo: "🎈 Pacote Diversão — Com Buffet",
+    titulo: "🎈 Pacote Diversão, Com Buffet",
     duracao: "2h30 de festa + 30min de buffet",
     descricao:
       "Nosso pacote mais escolhido! Buffet completo com entradas, prato principal, bebidas, sobremesa e todos os brinquedos liberados.",
   },
   "Pacote Churrasco (Festa Completa)": {
-    titulo: "🔥 Pacote Churrasco — Festa Completa",
+    titulo: "🔥 Pacote Churrasco, Festa Completa",
     duracao: "3h de festa + extras",
     descricao:
       "Experiência completa com churrasco premium (picanha, cupim, contra filé), acompanhamentos, bebidas, sobremesas e toda a estrutura Prime.",
