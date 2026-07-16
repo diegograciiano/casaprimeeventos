@@ -13,6 +13,7 @@ import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AtendimentoRouteImport } from './routes/atendimento'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PacotesIndexRouteImport } from './routes/pacotes.index'
@@ -42,6 +43,11 @@ const ContatoRoute = ContatoRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AtendimentoRoute = AtendimentoRouteImport.update({
+  id: '/atendimento',
+  path: '/atendimento',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -96,6 +102,7 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/atendimento': typeof AtendimentoRoute
   '/auth': typeof AuthRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/atendimento': typeof AtendimentoRoute
   '/auth': typeof AuthRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/atendimento': typeof AtendimentoRoute
   '/auth': typeof AuthRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/atendimento'
     | '/auth'
     | '/contato'
     | '/galeria'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/atendimento'
     | '/auth'
     | '/contato'
     | '/galeria'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/atendimento'
     | '/auth'
     | '/contato'
     | '/galeria'
@@ -193,6 +205,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AtendimentoRoute: typeof AtendimentoRoute
   AuthRoute: typeof AuthRoute
   ContatoRoute: typeof ContatoRoute
   GaleriaRoute: typeof GaleriaRoute
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/atendimento': {
+      id: '/atendimento'
+      path: '/atendimento'
+      fullPath: '/atendimento'
+      preLoaderRoute: typeof AtendimentoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -325,6 +345,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AtendimentoRoute: AtendimentoRoute,
   AuthRoute: AuthRoute,
   ContatoRoute: ContatoRoute,
   GaleriaRoute: GaleriaRoute,
@@ -338,13 +359,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
