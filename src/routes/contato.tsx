@@ -66,7 +66,7 @@ function Contato() {
           <div className="mt-3 text-xs text-white/80">Confira fotos e novidades</div>
         </a>
 
-        <div className="hover-lift rounded-3xl bg-white p-6 shadow-md ring-1 ring-white/60 sm:col-span-2">
+        <div className="hover-lift rounded-3xl bg-[#ffec6f] p-6 shadow-md ring-1 ring-[#ffec6f]/60 sm:col-span-2">
           <div className="flex items-start gap-4">
             <div className="grid h-11 w-11 place-items-center rounded-xl bg-gold-soft">
               <MapPin className="h-5 w-5 text-foreground" />

@@ -179,7 +179,7 @@ function FestaCompleta() {
         {pacotes.map((p, idx) => (
           <div
             key={p.id}
-            className={`hover-lift grid gap-6 rounded-3xl bg-white p-4 shadow-xl ring-1 ring-black/5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] md:items-start md:p-8 ${
+            className={`hover-lift grid gap-6 rounded-3xl bg-[#ffec6f] p-4 shadow-xl ring-1 ring-black/5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] md:items-start md:p-8 ${
               idx % 2 === 1 ? "md:[&>div:first-child]:order-2" : ""
             }`}
           >

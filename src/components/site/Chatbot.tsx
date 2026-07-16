@@ -131,7 +131,7 @@ export function Chatbot() {
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
-      <div className="animate-pop-in flex h-[100dvh] w-full max-w-lg flex-col overflow-hidden bg-white shadow-2xl sm:h-[640px] sm:rounded-3xl">
+      <div className="animate-pop-in flex h-[100dvh] w-full max-w-lg flex-col overflow-hidden bg-[#ffec6f] shadow-2xl sm:h-[640px] sm:rounded-3xl">
         <div className="flex items-center justify-between bg-gradient-to-r from-pink to-aqua-deep px-4 py-3 text-white">
           <div className="flex items-center gap-2">
             <div className="grid h-10 w-10 place-items-center rounded-full bg-white/20 backdrop-blur">
@@ -173,7 +173,7 @@ export function Chatbot() {
                   className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-sm shadow-sm ${
                     m.role === "user"
                       ? "rounded-br-sm bg-primary text-primary-foreground"
-                      : "rounded-bl-sm bg-white text-foreground"
+                      : "rounded-bl-sm bg-[#ffec6f] text-foreground"
                   }`}
                 >
                   {clean}
@@ -184,7 +184,7 @@ export function Chatbot() {
 
           {isBusy && (
             <div className="flex justify-start">
-              <div className="rounded-2xl bg-white px-4 py-2 text-sm text-muted-foreground shadow-sm">
+              <div className="rounded-2xl bg-[#ffec6f] px-4 py-2 text-sm text-muted-foreground shadow-sm">
                 <span className="animate-pulse">Sofia está digitando…</span>
               </div>
             </div>
@@ -196,7 +196,7 @@ export function Chatbot() {
                 <button
                   key={opt}
                   onClick={() => send(opt)}
-                  className="rounded-2xl border-2 border-pink/30 bg-white px-4 py-3 text-left text-sm font-semibold text-foreground transition hover:border-pink hover:bg-pink-soft"
+                  className="rounded-2xl border-2 border-pink/30 bg-[#ffec6f] px-4 py-3 text-left text-sm font-semibold text-foreground transition hover:border-pink hover:bg-pink-soft"
                 >
                   {opt}
                 </button>
@@ -225,7 +225,7 @@ export function Chatbot() {
         </div>
 
 
-        <div className="border-t bg-white p-3">
+        <div className="border-t bg-[#ffec6f] p-3">
           <form onSubmit={handleSubmit} className="flex gap-2">
             <Input
               ref={inputRef}
