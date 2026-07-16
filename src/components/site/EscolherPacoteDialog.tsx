@@ -55,14 +55,14 @@ export function EscolherPacoteDialog({ open, onOpenChange }: Props) {
               onClick={() => onOpenChange(false)}
               className="group flex flex-col rounded-2xl border border-black/5 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg"
             >
-              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#8641df]/10 text-[#8641df]">
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#bfa2ff]/10 text-[#bfa2ff]">
                 <Icon className="h-5 w-5" />
               </div>
               <div className="font-display text-lg font-bold text-[#14092e]">
                 {titulo}
               </div>
               <p className="mt-1 flex-1 text-sm text-foreground/70">{descricao}</p>
-              <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#8641df]">
+              <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#bfa2ff]">
                 Ver detalhes <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </div>
             </Link>

@@ -90,7 +90,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "A melhor festa infantil da sua vida acontece aqui. Piscina aquecida, brinquedos, buffet e estrutura premium. Solicite seu orçamento pelo WhatsApp.",
       },
       { name: "author", content: "Casa Prime Eventos" },
-      { name: "theme-color", content: "#8641df" },
+      { name: "theme-color", content: "#bfa2ff" },
       { property: "og:title", content: "Casa Prime Eventos — Espaço de festas infantil em Goiânia" },
       {
         property: "og:description",

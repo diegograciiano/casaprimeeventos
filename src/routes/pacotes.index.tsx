@@ -59,7 +59,7 @@ function PacotesHub() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16">
       <div className="text-center">
-        <div className="text-xs font-semibold uppercase tracking-widest text-[#8641df]">
+        <div className="text-xs font-semibold uppercase tracking-widest text-[#bfa2ff]">
           Pacotes 2026
         </div>
         <h1 className="mt-2 font-display text-4xl font-bold sm:text-5xl">
@@ -76,9 +76,9 @@ function PacotesHub() {
           <Link
             key={o.to}
             to={o.to}
-            className="hover-lift group relative flex flex-col overflow-hidden rounded-3xl border border-black/5 bg-white p-8 shadow-xl shadow-purple-900/5 hover:border-[#8641df]/30"
+            className="hover-lift group relative flex flex-col overflow-hidden rounded-3xl border border-black/5 bg-white p-8 shadow-xl shadow-purple-300/5 hover:border-[#bfa2ff]/30"
           >
-            <div className="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-[#8641df]/10 text-[#8641df] transition-colors group-hover:bg-[#8641df] group-hover:text-white">
+            <div className="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-[#bfa2ff]/10 text-[#bfa2ff] transition-colors group-hover:bg-[#bfa2ff] group-hover:text-white">
               <o.icon className="h-7 w-7" />
             </div>
             <h2 className="font-display text-2xl font-bold text-[#14092e]">
@@ -88,12 +88,12 @@ function PacotesHub() {
             <ul className="mt-5 space-y-2 text-sm text-[#14092e]/80">
               {o.inclui.map((item) => (
                 <li key={item} className="flex items-start gap-2">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#8641df]" />
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#bfa2ff]" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
-            <div className="mt-6 inline-flex items-center gap-1 text-sm font-bold text-[#8641df]">
+            <div className="mt-6 inline-flex items-center gap-1 text-sm font-bold text-[#bfa2ff]">
               Ver detalhes
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </div>
@@ -104,7 +104,7 @@ function PacotesHub() {
       {/* Benefícios */}
       <div className="mt-20">
         <div className="text-center">
-          <div className="text-xs font-semibold uppercase tracking-widest text-[#8641df]">
+          <div className="text-xs font-semibold uppercase tracking-widest text-[#bfa2ff]">
             Por que a Casa Prime
           </div>
           <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">
@@ -114,7 +114,7 @@ function PacotesHub() {
         <div className="mt-8 grid gap-6 sm:grid-cols-3">
           {beneficios.map((b) => (
             <div key={b.titulo} className="rounded-2xl border border-black/5 bg-white p-6 text-center shadow-md">
-              <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-[#8641df]/10 text-[#8641df]">
+              <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-[#bfa2ff]/10 text-[#bfa2ff]">
                 <b.icon className="h-6 w-6" />
               </div>
               <div className="mt-3 font-display text-lg font-bold text-[#14092e]">{b.titulo}</div>
@@ -145,10 +145,10 @@ function PacotesHub() {
       </div>
 
       {/* CTA final */}
-      <div className="mt-16 rounded-3xl bg-gradient-to-br from-[#8641df] to-[#14092e] p-8 text-center text-white shadow-2xl sm:p-12">
+      <div className="mt-16 rounded-3xl bg-gradient-to-br from-[#bfa2ff] to-[#14092e] p-8 text-center text-white shadow-2xl sm:p-12">
         <h2 className="font-display text-2xl font-bold sm:text-3xl">Ainda em dúvida sobre qual pacote escolher?</h2>
         <p className="mx-auto mt-3 max-w-xl text-white/90">Nosso time monta uma proposta sob medida em poucos minutos.</p>
-        <Button asChild size="lg" className="mt-6 rounded-full bg-white font-display text-[#8641df] hover:bg-white/90">
+        <Button asChild size="lg" className="mt-6 rounded-full bg-white font-display text-[#bfa2ff] hover:bg-white/90">
           <a href={waLink("Olá! Quero ajuda para escolher o pacote ideal.")} target="_blank" rel="noopener noreferrer">
             <MessageCircle className="mr-2 h-5 w-5" />
             Falar no WhatsApp

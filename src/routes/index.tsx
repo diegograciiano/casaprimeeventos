@@ -119,7 +119,7 @@ function Index() {
           className="absolute inset-0 h-full w-full object-cover"
         />
         {/* Degradê roxo cobrindo o texto (esquerda) e desaparecendo à direita */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#14092e] via-[#8641df]/85 via-40% to-transparent md:from-[#14092e] md:via-[#8641df]/90 md:via-45% md:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#14092e] via-[#bfa2ff]/85 via-40% to-transparent md:from-[#14092e] md:via-[#bfa2ff]/90 md:via-45% md:to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#14092e]/70 to-transparent md:hidden" />
 
         <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-16 sm:px-6 md:min-h-[640px] md:grid-cols-2 md:gap-12 md:py-24 lg:py-32">
@@ -166,7 +166,7 @@ function Index() {
         <div className="absolute inset-0 origin-right -skew-y-3 scale-110 bg-background" />
         <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal className="mb-14 text-center">
-            <h2 className="font-display text-4xl font-extrabold text-[#8641df] sm:text-5xl">
+            <h2 className="font-display text-4xl font-extrabold text-[#bfa2ff] sm:text-5xl">
               Por que escolher a Prime?
             </h2>
             <div className="mx-auto mt-4 h-2 w-24 rounded-full bg-[#ffcb03]" />
@@ -179,9 +179,9 @@ function Index() {
             {diferenciais.map((d) => (
               <div
                 key={d.title}
-                className="group flex flex-col items-center rounded-3xl border-b-4 border-transparent bg-background p-8 text-center shadow-xl shadow-purple-900/5 transition-all duration-300 hover:-translate-y-2 hover:border-[#ffcb03]"
+                className="group flex flex-col items-center rounded-3xl border-b-4 border-transparent bg-background p-8 text-center shadow-xl shadow-purple-300/5 transition-all duration-300 hover:-translate-y-2 hover:border-[#ffcb03]"
               >
-                <div className="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-[#8641df]/10 text-[#8641df] transition-colors group-hover:bg-[#8641df] group-hover:text-white">
+                <div className="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-[#bfa2ff]/10 text-[#bfa2ff] transition-colors group-hover:bg-[#bfa2ff] group-hover:text-white">
                   <d.icon className="h-7 w-7" />
                 </div>
                 <h3 className="font-display text-2xl font-bold text-[#14092e]">
@@ -233,7 +233,7 @@ function Index() {
             ].map((p) => (
               <div
                 key={p.to}
-                className="card-glow relative flex flex-col items-center rounded-[2.5rem] border border-white/10 bg-[#8641df]/10 p-10"
+                className="card-glow relative flex flex-col items-center rounded-[2.5rem] border border-white/10 bg-[#bfa2ff]/10 p-10"
               >
                 <div className="mb-3 text-center text-xs font-black uppercase tracking-widest text-[#ffcb03]">
                   {p.subtitulo}
@@ -270,7 +270,7 @@ function Index() {
       <Dialog open={!!pacoteAberto} onOpenChange={(o) => !o && setPacoteAberto(null)}>
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
-            <div className="text-xs font-black uppercase tracking-widest text-[#8641df]">
+            <div className="text-xs font-black uppercase tracking-widest text-[#bfa2ff]">
               {pacoteAberto?.subtitulo}
             </div>
             <DialogTitle className="font-display text-3xl font-bold text-[#14092e]">
@@ -284,13 +284,13 @@ function Index() {
           <div className="mt-4 grid gap-6 sm:grid-cols-2">
             {pacoteAberto?.secoes.map((sec) => (
               <div key={sec.titulo}>
-                <div className="mb-2 inline-block rounded-full bg-[#8641df]/10 px-3 py-1 font-display text-xs font-bold uppercase tracking-wider text-[#8641df]">
+                <div className="mb-2 inline-block rounded-full bg-[#bfa2ff]/10 px-3 py-1 font-display text-xs font-bold uppercase tracking-wider text-[#bfa2ff]">
                   {sec.titulo}
                 </div>
                 <ul className="space-y-1.5">
                   {sec.itens.map((i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-[#14092e]/80">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#8641df]" />
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#bfa2ff]" />
                       <span>{i}</span>
                     </li>
                   ))}
@@ -320,11 +320,11 @@ function Index() {
             <h2 className="font-display text-3xl font-extrabold text-[#14092e] sm:text-4xl">
               Momentos que a gente ama
             </h2>
-            <div className="mt-3 h-1.5 w-16 rounded-full bg-[#8641df]" />
+            <div className="mt-3 h-1.5 w-16 rounded-full bg-[#bfa2ff]" />
           </div>
           <Link
             to="/galeria"
-            className="hidden text-sm font-bold text-[#8641df] hover:underline sm:inline-flex"
+            className="hidden text-sm font-bold text-[#bfa2ff] hover:underline sm:inline-flex"
           >
             Ver tudo →
           </Link>
@@ -355,7 +355,7 @@ function Index() {
         <div className="mx-auto max-w-4xl">
           <Reveal className="text-center">
             <div className="relative inline-block">
-              <div className="absolute inset-0 rounded-full bg-[#8641df] opacity-20 blur-2xl" />
+              <div className="absolute inset-0 rounded-full bg-[#bfa2ff] opacity-20 blur-2xl" />
               <a
                 href={waLink("Olá Casa Prime! Quero informações.")}
                 target="_blank"
@@ -373,7 +373,7 @@ function Index() {
                 href="https://instagram.com/casaprimeeventos"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-bold text-[#8641df] underline decoration-[#ffcb03]/60 underline-offset-4"
+                className="font-bold text-[#bfa2ff] underline decoration-[#ffcb03]/60 underline-offset-4"
               >
                 @casaprimeeventos
               </a>
