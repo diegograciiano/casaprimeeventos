@@ -325,7 +325,7 @@ export function ChatbotUI({
 
   // ---------- Layout ----------
   const outerClass = isPage
-    ? "flex h-[100dvh] w-full items-center justify-center bg-purple-100"
+    ? "flex h-[100dvh] w-full items-center justify-center bg-[#C5A5FF]"
     : "fixed inset-0 z-[60] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4";
   const innerClass = isPage
     ? "flex h-full w-full max-w-2xl flex-col overflow-hidden bg-white sm:h-[min(800px,100dvh)] sm:rounded-3xl sm:border sm:border-gray-200 sm:shadow-2xl"
