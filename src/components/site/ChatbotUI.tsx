@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { X, Send, PartyPopper } from "lucide-react";
+import { X, Send } from "lucide-react";
+import maiteAvatar from "@/assets/maite-casa-prime.jpg.asset.json";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
