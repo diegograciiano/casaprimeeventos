@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X, Send, ArrowLeft } from "lucide-react";
 import maiteAvatar from "@/assets/maite-casa-prime.jpg.asset.json";
 import { Button } from "@/components/ui/button";
@@ -566,6 +566,3 @@ function ChoiceButton({ onClick, children }: { onClick: () => void; children: Re
   );
 }
 
-// Fix ref typing since previously used no lint
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _typing = useMemo;
