@@ -144,6 +144,15 @@ export function ChatbotUI({
     setTimeout(() => inputRef.current?.focus(), 50);
   }, [step]);
 
+  useEffect(() => {
+    if (step === "visita_data") {
+      setSelectedDate(undefined);
+      setCalendarOpen(true);
+    } else {
+      setCalendarOpen(false);
+    }
+  }, [step]);
+
   // Persist lead to Cloud when we have the minimum required fields
   const persistLead = async (partial: Partial<LeadState>) => {
     const merged = { ...lead, ...partial };
