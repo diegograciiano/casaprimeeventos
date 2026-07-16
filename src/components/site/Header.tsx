@@ -18,7 +18,7 @@ export function Header() {
   const [pacoteOpen, setPacoteOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#ffec6f]/40 bg-[#ffec6f]/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-white/40 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center" onClick={() => setOpen(false)} aria-label="Casa Prime Eventos — Início">
           <img
@@ -61,7 +61,7 @@ export function Header() {
       </div>
 
       {open && (
-        <div className="border-t border-[#ffec6f]/40 bg-[#ffec6f]/95 md:hidden">
+        <div className="border-t border-white/40 bg-white/95 md:hidden">
           <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
             {nav.map((item) => (
               <Link
