@@ -248,7 +248,7 @@ export function ChatbotUI({
       return;
     }
     setTimeout(() => {
-      pushBot("Que delícia! 🎉 Como posso te ajudar agora?");
+      pushBot("Que maravilha! 🎉 Como posso te ajudar agora?");
       setStep("menu");
     }, 300);
   };
