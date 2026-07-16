@@ -76,7 +76,7 @@ function PacotesHub() {
           <Link
             key={o.to}
             to={o.to}
-            className="hover-lift group relative flex flex-col overflow-hidden rounded-3xl border border-black/5 bg-[#ffec6f] p-8 shadow-xl shadow-purple-900/5 hover:border-[#8641df]/30"
+            className="hover-lift group relative flex flex-col overflow-hidden rounded-3xl border border-black/5 bg-white p-8 shadow-xl shadow-purple-900/5 hover:border-[#8641df]/30"
           >
             <div className="mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-[#8641df]/10 text-[#8641df] transition-colors group-hover:bg-[#8641df] group-hover:text-white">
               <o.icon className="h-7 w-7" />
@@ -113,7 +113,7 @@ function PacotesHub() {
         </div>
         <div className="mt-8 grid gap-6 sm:grid-cols-3">
           {beneficios.map((b) => (
-            <div key={b.titulo} className="rounded-2xl border border-black/5 bg-[#ffec6f] p-6 text-center shadow-md">
+            <div key={b.titulo} className="rounded-2xl border border-black/5 bg-white p-6 text-center shadow-md">
               <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-[#8641df]/10 text-[#8641df]">
                 <b.icon className="h-6 w-6" />
               </div>
@@ -126,19 +126,19 @@ function PacotesHub() {
 
       {/* FAQ rápido */}
       <div className="mt-20 grid gap-6 md:grid-cols-2">
-        <div className="rounded-2xl border border-black/5 bg-[#ffec6f] p-6 shadow-md">
+        <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-md">
           <div className="font-display text-lg font-bold text-[#14092e]">Posso personalizar o pacote?</div>
           <p className="mt-2 text-sm text-[#14092e]/70">Sim! Todos os formatos aceitam ajustes de cardápio, decoração e serviços extras.</p>
         </div>
-        <div className="rounded-2xl border border-black/5 bg-[#ffec6f] p-6 shadow-md">
+        <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-md">
           <div className="font-display text-lg font-bold text-[#14092e]">Qual a duração da festa?</div>
           <p className="mt-2 text-sm text-[#14092e]/70">4 horas de festa, com tempo extra para montagem e desmontagem da equipe.</p>
         </div>
-        <div className="rounded-2xl border border-black/5 bg-[#ffec6f] p-6 shadow-md">
+        <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-md">
           <div className="font-display text-lg font-bold text-[#14092e]">Quantos convidados cabem?</div>
           <p className="mt-2 text-sm text-[#14092e]/70">Nosso espaço acomoda confortavelmente até 120 convidados entre adultos e crianças.</p>
         </div>
-        <div className="rounded-2xl border border-black/5 bg-[#ffec6f] p-6 shadow-md">
+        <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-md">
           <div className="font-display text-lg font-bold text-[#14092e]">Como reservo a data?</div>
           <p className="mt-2 text-sm text-[#14092e]/70">Fale com a gente no WhatsApp — confirmamos disponibilidade e enviamos o contrato na hora.</p>
         </div>
