@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Send, ArrowLeft } from "lucide-react";
+import { X, Send, ArrowLeft, CalendarIcon } from "lucide-react";
 import maiteAvatar from "@/assets/maite-casa-prime.jpg.asset.json";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { waLink } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
 import { pacotes, inclusoEmTodos } from "@/data/pacotes";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 export type ChatbotMode = "floating" | "page";
 
