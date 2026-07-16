@@ -148,7 +148,7 @@ function Pacotes() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
       <div className="text-center">
-        <div className="text-xs font-semibold uppercase tracking-widest text-[#bfa2ff]">
+        <div className="text-xs font-semibold uppercase tracking-widest text-[#8641df]">
           Pacotes 2026
         </div>
         <h1 className="mt-2 font-display text-4xl font-bold sm:text-5xl">
@@ -178,7 +178,7 @@ function Pacotes() {
             </div>
 
             <div>
-              <div className="text-xs font-semibold uppercase tracking-widest text-[#bfa2ff]">
+              <div className="text-xs font-semibold uppercase tracking-widest text-[#8641df]">
                 {p.subtitulo}
               </div>
               <h2 className="mt-1 font-display text-3xl font-bold text-[#14092e]">
@@ -188,13 +188,13 @@ function Pacotes() {
               <div className="mt-6 grid gap-6 sm:grid-cols-2">
                 {p.secoes.map((sec) => (
                   <div key={sec.titulo}>
-                    <div className="mb-2 inline-block rounded-full bg-[#bfa2ff]/10 px-3 py-1 font-display text-xs font-bold uppercase tracking-wider text-[#bfa2ff]">
+                    <div className="mb-2 inline-block rounded-full bg-[#8641df]/10 px-3 py-1 font-display text-xs font-bold uppercase tracking-wider text-[#8641df]">
                       {sec.titulo}
                     </div>
                     <ul className="space-y-1.5">
                       {sec.itens.map((i) => (
                         <li key={i} className="flex items-start gap-2 text-sm text-[#14092e]/80">
-                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#bfa2ff]" />
+                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#8641df]" />
                           <span>{i}</span>
                         </li>
                       ))}
@@ -203,8 +203,8 @@ function Pacotes() {
                 ))}
               </div>
 
-              <div className="mt-6 rounded-xl border border-[#bfa2ff]/20 bg-[#bfa2ff]/5 px-4 py-3 text-center text-sm">
-                <div className="font-display font-semibold text-[#bfa2ff]">
+              <div className="mt-6 rounded-xl border border-[#8641df]/20 bg-[#8641df]/5 px-4 py-3 text-center text-sm">
+                <div className="font-display font-semibold text-[#8641df]">
                   Valores sob consulta
                 </div>
                 <div className="text-xs text-foreground/70">
