@@ -418,9 +418,13 @@ export function ChatbotUI({
                   <ReactMarkdown
                     remarkPlugins={[remarkBreaks]}
                     components={{
-                      em: ({ children }) => <strong>{children}</strong>,
-                      strong: ({ children }) => <strong>{children}</strong>,
-                      p: ({ children }) => <p className="mb-1 last:mb-0">{children}</p>,
+                      em: ({ children, ...props }) => <strong {...props}>{children}</strong>,
+                      strong: ({ children, ...props }) => <strong {...props}>{children}</strong>,
+                      p: ({ children, ...props }) => (
+                        <p {...props} className="mb-1 last:mb-0">
+                          {children}
+                        </p>
+                      ),
                     }}
                   >
                     {m.text}
