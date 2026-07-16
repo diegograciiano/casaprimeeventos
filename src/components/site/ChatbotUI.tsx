@@ -458,7 +458,7 @@ export function ChatbotUI({
                   <div>👤 <b>Nome:</b> {lead.nome}</div>
                   <div>📱 <b>Telefone:</b> {lead.telefone}</div>
                   <div>✉️ <b>E-mail:</b> {lead.email}</div>
-                  <div>📅 <b>Data prevista:</b> {lead.data || "—"}</div>
+                  <div>📅 <b>Data prevista:</b> {lead.data || "a definir"}</div>
                 </div>
               </div>
               <div className="mt-2 flex flex-col gap-2">
