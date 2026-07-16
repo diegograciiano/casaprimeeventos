@@ -39,19 +39,19 @@ const emptyLead: LeadState = { nome: "", email: "", telefone: "", data: "", paco
 
 const PACOTE_INFO: Record<string, { titulo: string; duracao: string; descricao: string }> = {
   "Pacote Pirulito (Sem Buffet)": {
-    titulo: "🍭 Pacote Pirulito — Sem Buffet",
+    titulo: "🍭 Pacote Pirulito, Sem Buffet",
     duracao: "2h de festa",
     descricao:
-      "Ideal para quem quer aproveitar o espaço, os brinquedos e a piscina aquecida com entradas caprichadas e sobremesas — sem prato principal servido.",
+      "Ideal para quem quer aproveitar o espaço, os brinquedos e a piscina aquecida com entradas caprichadas e sobremesas, sem prato principal servido.",
   },
   "Pacote Diversão (Com Buffet)": {
-    titulo: "🎈 Pacote Diversão — Com Buffet",
+    titulo: "🎈 Pacote Diversão, Com Buffet",
     duracao: "2h30 de festa + 30min de buffet",
     descricao:
       "Nosso pacote mais escolhido! Buffet completo com entradas, prato principal, bebidas, sobremesa e todos os brinquedos liberados.",
   },
   "Pacote Churrasco (Festa Completa)": {
-    titulo: "🔥 Pacote Churrasco — Festa Completa",
+    titulo: "🔥 Pacote Churrasco, Festa Completa",
     duracao: "3h de festa + extras",
     descricao:
       "Experiência completa com churrasco premium (picanha, cupim, contra filé), acompanhamentos, bebidas, sobremesas e toda a estrutura Prime.",
@@ -121,7 +121,7 @@ export function ChatbotUI({
   // Initial greeting
   useEffect(() => {
     pushBot(
-      "Oiê! 🎈 Eu sou a Maitê, da *Casa Prime Eventos* — a casa de festas infantis de Goiânia. Vou te ajudar rapidinho por aqui! 💛",
+      "Oiê! 🎈 Eu sou a Maitê, da *Casa Prime Eventos*, a casa de festas infantis de Goiânia. Vou te ajudar rapidinho por aqui! 💛",
     );
     setTimeout(() => {
       pushBot("Pra começar, qual é o seu *nome completo*? 😊");
@@ -226,7 +226,7 @@ export function ChatbotUI({
     if (!yes) {
       setTimeout(() => {
         pushBot(
-          `Entendi, ${firstName(lead.nome)}! 💛 A Casa Prime é especializada em *festas infantis*, então dessa vez não vamos conseguir te atender — mas agradecemos muito o contato! 🎈`,
+          `Entendi, ${firstName(lead.nome)}! 💛 A Casa Prime é especializada em *festas infantis*, então dessa vez não vamos conseguir te atender, mas agradecemos muito o contato! 🎈`,
         );
         setStep("encerrado");
       }, 300);
@@ -263,7 +263,7 @@ export function ChatbotUI({
       .join("\n");
     setTimeout(() => {
       pushBot(
-        `${info.titulo}\n⏱️ *Duração:* ${info.duracao}\n\n${info.descricao}\n\n*✨ Incluso em todos os pacotes:*\n${inclusoEmTodos.map((i) => `• ${i}`).join("\n")}\n\n*🎁 Neste pacote você tem:*\n${incluso}\n\n💰 *Valor:* sob consulta — cada festa é única! Vamos personalizar o orçamento no WhatsApp. 💛`,
+        `${info.titulo}\n⏱️ *Duração:* ${info.duracao}\n\n${info.descricao}\n\n*✨ Incluso em todos os pacotes:*\n${inclusoEmTodos.map((i) => `• ${i}`).join("\n")}\n\n*🎁 Neste pacote você tem:*\n${incluso}\n\n💰 *Valor:* sob consulta, porque cada festa é única! Vamos personalizar o orçamento no WhatsApp. 💛`,
       );
       setStep("orc_detalhe");
     }, 300);
@@ -458,7 +458,7 @@ export function ChatbotUI({
                   <div>👤 <b>Nome:</b> {lead.nome}</div>
                   <div>📱 <b>Telefone:</b> {lead.telefone}</div>
                   <div>✉️ <b>E-mail:</b> {lead.email}</div>
-                  <div>📅 <b>Data prevista:</b> {lead.data || "—"}</div>
+                  <div>📅 <b>Data prevista:</b> {lead.data || "a definir"}</div>
                 </div>
               </div>
               <div className="mt-2 flex flex-col gap-2">
