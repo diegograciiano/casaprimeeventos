@@ -12,7 +12,7 @@
 
 /*
  * Casa Prime Eventos — Design System
- * Paleta: Roxo #8641df, Dourado #ffcb03, Ink #14092e, Branco
+ * Paleta: Roxo #bfa2ff, Dourado #ffcb03, Ink #14092e, Branco
  * Fontes: Syne (display), Plus Jakarta Sans (corpo)
  */
 
@@ -91,7 +91,7 @@
   --popover-foreground: oklch(0.18 0.09 295);
 
   /* Roxo como primary (CTA principal) */
-  --primary: oklch(0.53 0.24 295); /* #8641df */
+  --primary: oklch(0.72 0.15 295); /* #bfa2ff */
   --primary-foreground: oklch(1 0 0);
 
   /* Dourado como secondary */
@@ -109,17 +109,17 @@
 
   --border: oklch(0.92 0 0);
   --input: oklch(0.92 0 0);
-  --ring: oklch(0.53 0.24 295);
+  --ring: oklch(0.72 0.15 295);
 
   /* Cores da marca */
-  --purple: oklch(0.53 0.24 295);      /* #8641df */
-  --purple-soft: oklch(0.93 0.06 295);
+  --purple: oklch(0.72 0.15 295);      /* #bfa2ff */
+  --purple-soft: oklch(0.94 0.04 295);
   --ink: oklch(0.18 0.09 295);         /* #14092e */
   --gold: oklch(0.87 0.17 92);         /* #ffcb03 */
   --gold-soft: oklch(0.95 0.09 92);
   --whatsapp: oklch(0.68 0.17 148);
 
-  --chart-1: oklch(0.53 0.24 295);
+  --chart-1: oklch(0.72 0.15 295);
   --chart-2: oklch(0.87 0.17 92);
   --chart-3: oklch(0.18 0.09 295);
   --chart-4: oklch(0.65 0.2 320);
@@ -127,12 +127,12 @@
 
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.18 0.09 295);
-  --sidebar-primary: oklch(0.53 0.24 295);
+  --sidebar-primary: oklch(0.72 0.15 295);
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.87 0.17 92);
   --sidebar-accent-foreground: oklch(0.18 0.09 295);
   --sidebar-border: oklch(0.92 0.01 295);
-  --sidebar-ring: oklch(0.53 0.24 295);
+  --sidebar-ring: oklch(0.72 0.15 295);
 }
 
 .dark {
@@ -142,7 +142,7 @@
   --card-foreground: oklch(0.98 0.01 295);
   --popover: oklch(0.22 0.08 295);
   --popover-foreground: oklch(0.98 0.01 295);
-  --primary: oklch(0.63 0.24 295);
+  --primary: oklch(0.78 0.12 295);
   --primary-foreground: oklch(0.15 0.05 295);
   --secondary: oklch(0.87 0.17 92);
   --secondary-foreground: oklch(0.15 0.05 295);
@@ -154,7 +154,7 @@
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.63 0.24 295);
+  --ring: oklch(0.78 0.12 295);
 }
 
 @layer base {
