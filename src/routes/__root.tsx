@@ -14,6 +14,7 @@ import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { getOgMeta } from "@/lib/seo";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppButton } from "@/components/site/WhatsAppButton";
@@ -85,27 +86,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Casa Prime Eventos — Espaço de festas infantil em Goiânia" },
-      {
-        name: "description",
-        content:
-          "A melhor festa infantil da sua vida acontece aqui. Piscina aquecida, brinquedos, buffet e estrutura premium. Solicite seu orçamento pelo WhatsApp.",
-      },
       { name: "author", content: "Casa Prime Eventos" },
       { name: "theme-color", content: "#8641df" },
-      { property: "og:title", content: "Casa Prime Eventos — Espaço de festas infantil em Goiânia" },
-      {
-        property: "og:description",
-        content:
-          "Espaço premium para festas infantis: piscina aquecida, brinquedos, buffet, decoração e muito mais.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "Casa Prime Eventos" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Casa Prime Eventos — Espaço de festas infantil em Goiânia" },
-      { name: "description", content: "Onde a magia da infância encontra o requinte e a sofisticação em Goiânia." },
-      { property: "og:description", content: "Onde a magia da infância encontra o requinte e a sofisticação em Goiânia." },
-      { name: "twitter:description", content: "Onde a magia da infância encontra o requinte e a sofisticação em Goiânia." },
+      ...getOgMeta(),
     ],
     links: [
       { rel: "stylesheet", href: appCss },

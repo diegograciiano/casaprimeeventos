@@ -13,22 +13,16 @@ import {
 import { Reveal } from "@/hooks/use-reveal";
 import { Button } from "@/components/ui/button";
 
+import { getOgMeta } from "@/lib/seo";
+
 export const Route = createFileRoute("/galeria")({
   head: () => ({
-    meta: [
-      { title: "Galeria de Fotos Oficiais — Casa Prime Eventos" },
-      {
-        name: "description",
-        content:
-          "Fotos oficiais da Casa Prime Eventos: salão climatizado, decoração infantil, área de piscina, brinquedos e buffet completo.",
-      },
-      { property: "og:title", content: "Galeria de Fotos Oficiais — Casa Prime Eventos" },
-      {
-        property: "og:description",
-        content: "Veja fotos reais e em alta resolução das festas realizadas na Casa Prime.",
-      },
-      { property: "og:image", content: "https://casaprimeeventos.com.br/images/salao-decorado-azul.jpg" },
-    ],
+    meta: getOgMeta({
+      title: "Galeria de Fotos Oficiais — Casa Prime Eventos",
+      description:
+        "Fotos oficiais da Casa Prime Eventos: salão amplo, decorações temáticas, piscina aquecida, brinquedos e buffet infantil completo.",
+      path: "/galeria",
+    }),
   }),
   component: Galeria,
 });

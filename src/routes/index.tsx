@@ -22,34 +22,17 @@ import { waLink } from "@/lib/whatsapp";
 import { TabelaPacotesValores } from "@/components/site/TabelaPacotesValores";
 import { EscolherPacoteDialog } from "@/components/site/EscolherPacoteDialog";
 import { Reveal } from "@/hooks/use-reveal";
-
-const OG_IMAGE_URL = "https://casaprimeeventos.com.br/images/salao-decorado-azul.jpg";
+import { getOgMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
-    meta: [
-      { title: "Casa Prime Eventos — Festas Infantis Inesquecíveis em Goiânia" },
-      {
-        name: "description",
-        content:
-          "O espaço de festas infantis mais acolhedor de Goiânia. 12h de locação, piscina aquecida, buffet completo, brinquedos com monitores e zero estresse para os pais.",
-      },
-      { property: "og:title", content: "Casa Prime Eventos — Festas Infantis Inesquecíveis em Goiânia" },
-      {
-        property: "og:description",
-        content:
-          "Piscina aquecida, brinquedos incríveis, buffet completo e 12h de celebração com exclusividade.",
-      },
-      { property: "og:image", content: OG_IMAGE_URL },
-      { property: "og:image:width", content: "1216" },
-      { property: "og:image:height", content: "640" },
-      { property: "og:url", content: "https://casaprimeeventos.com.br/" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: OG_IMAGE_URL },
-    ],
-    links: [{ rel: "canonical", href: "https://casaprimeeventos.com.br/" }],
+    meta: getOgMeta({
+      title: "Casa Prime Eventos — Festas Infantis em Goiânia",
+      description:
+        "Espaço exclusivo para festas infantis: 12h de festa, piscina aquecida, buffet completo, brinquedos com monitores e algodão doce à vontade! Simule seu orçamento pelo site.",
+      path: "/",
+    }),
   }),
 });
 

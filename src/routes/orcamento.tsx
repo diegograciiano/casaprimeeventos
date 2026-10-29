@@ -1,23 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ChatbotUI } from "@/components/site/ChatbotUI";
 import { Sparkles, ShieldCheck, HeartHandshake, Gift, Clock, Waves } from "lucide-react";
+import { getOgMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/orcamento")({
   component: OrcamentoPage,
   head: () => ({
-    meta: [
-      { title: "Simular Orçamento — Casa Prime Eventos Goiânia" },
-      {
-        name: "description",
-        content:
-          "Simule seu orçamento de festa infantil na Casa Prime em Goiânia com valores transparentes, brinquedos, piscina aquecida e buffet completo.",
-      },
-      { property: "og:title", content: "Simulador de Orçamento de Festa Infantil — Casa Prime" },
-      {
-        property: "og:description",
-        content: "Valores tabelados e simulação interativa direto com a nossa consultoria.",
-      },
-    ],
+    meta: getOgMeta({
+      title: "Simular Orçamento — Casa Prime Eventos Goiânia",
+      description:
+        "Simule seu orçamento de festa infantil na Casa Prime com valores em tempo real: 12h de locação, piscina aquecida, brinquedos e buffet completo!",
+      path: "/orcamento",
+    }),
   }),
 });
 
