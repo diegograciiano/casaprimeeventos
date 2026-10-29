@@ -15,9 +15,6 @@ import { Button } from "@/components/ui/button";
 import { useChatbot } from "@/components/site/ChatbotContext";
 import { Reveal } from "@/hooks/use-reveal";
 
-
-import decoracaoSafari from "@/assets/decoracao-safari.jpg.asset.json";
-
 export const Route = createFileRoute("/sobre")({
   head: () => ({
     meta: [
@@ -83,7 +80,7 @@ function Sobre() {
           </Reveal>
           <Reveal className="hover-lift overflow-hidden rounded-3xl shadow-xl ring-4 ring-purple/10">
             <img
-              src={decoracaoSafari.url}
+              src="/images/decoracao-safari.jpg"
               alt="Decoração safari na Casa Prime"
               loading="lazy"
               className="h-full w-full object-cover"

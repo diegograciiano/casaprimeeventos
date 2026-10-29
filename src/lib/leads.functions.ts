@@ -12,7 +12,7 @@ export type LeadStatus = (typeof LEAD_STATUSES)[number];
 
 export const updateLeadStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { id: string; status: string }) => {
+  .validator((data: { id: string; status: string }) => {
     if (!data?.id || typeof data.id !== "string") throw new Error("Invalid id");
     if (!LEAD_STATUSES.includes(data.status as LeadStatus)) throw new Error("Invalid status");
     return { id: data.id, status: data.status as LeadStatus };
@@ -37,7 +37,7 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
 
 export const updateLeadValor = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { id: string; valor: number | null }) => {
+  .validator((data: { id: string; valor: number | null }) => {
     if (!data?.id || typeof data.id !== "string") throw new Error("Invalid id");
     const v = data.valor;
     if (v !== null && (typeof v !== "number" || !isFinite(v) || v < 0)) throw new Error("Invalid valor");
@@ -67,7 +67,7 @@ async function requireAdmin(userId: string) {
 
 export const deleteLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { id: string }) => {
+  .validator((data: { id: string }) => {
     if (!data?.id || typeof data.id !== "string") throw new Error("Invalid id");
     return { id: data.id };
   })
@@ -80,7 +80,7 @@ export const deleteLead = createServerFn({ method: "POST" })
 
 export const createLeadManual = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: {
+  .validator((data: {
     responsavel_nome: string;
     telefone: string;
     email?: string | null;
@@ -144,8 +144,57 @@ export const listLeads = createServerFn({ method: "GET" })
     return { leads: data ?? [] };
   });
 
+export const syncProgressiveLeadPublic = createServerFn({ method: "POST" })
+  .validator((data: {
+    sessionId: string;
+    responsavel_nome: string;
+    telefone: string;
+    email?: string | null;
+    crianca_nome?: string | null;
+    idade?: number | null;
+    data_festa?: string | null;
+    qtd_pessoas?: number | null;
+    pacote?: string | null;
+    tema?: string | null;
+    valor?: number | null;
+    restricoes?: string | null;
+  }) => {
+    if (!data?.sessionId || typeof data.sessionId !== "string") throw new Error("Invalid session");
+    if (!data?.responsavel_nome || !data?.telefone) throw new Error("Nome e telefone obrigatórios");
+    return data;
+  })
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const payload = {
+      session_id: data.sessionId,
+      responsavel_nome: data.responsavel_nome.trim(),
+      telefone: data.telefone.trim(),
+      email: data.email?.trim() || null,
+      crianca_nome: data.crianca_nome || null,
+      idade: data.idade || null,
+      data_festa: data.data_festa || null,
+      qtd_pessoas: data.qtd_pessoas || null,
+      pacote: data.pacote || null,
+      tema: data.tema || null,
+      valor: data.valor || null,
+      status: "novo",
+      restricoes: data.restricoes || "Lead em qualificação pelo Chatbot",
+      updated_at: new Date().toISOString(),
+    };
+    const { data: row, error } = await supabaseAdmin
+      .from("leads_festas")
+      .upsert(payload, { onConflict: "session_id" })
+      .select("id")
+      .maybeSingle();
+    if (error) {
+      console.error("[syncProgressiveLeadPublic] Error:", error);
+      throw new Error(error.message);
+    }
+    return { ok: true, id: row?.id };
+  });
+
 export const getLeadSummary = createServerFn({ method: "POST" })
-  .inputValidator((data: { sessionId: string }) => {
+  .validator((data: { sessionId: string }) => {
     if (!data?.sessionId || typeof data.sessionId !== "string" || data.sessionId.length < 8) {
       throw new Error("Invalid sessionId");
     }

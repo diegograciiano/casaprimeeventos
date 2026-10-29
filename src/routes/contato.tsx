@@ -29,15 +29,15 @@ function Contato() {
   const { openChat } = useChatbot();
   return (
     <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6 md:py-16">
-      <Reveal className="text-center">
-        <div className="text-xs font-semibold uppercase tracking-widest text-pink">
+      <Reveal className="text-left">
+        <div className="text-xs font-bold uppercase tracking-wider text-[#8641df]">
           Contato
         </div>
-        <h1 className="mt-2 font-display text-4xl font-bold sm:text-5xl">
+        <h1 className="mt-2 font-display text-3xl sm:text-5xl font-bold text-[#14092e] leading-tight">
           Vamos conversar?
         </h1>
-        <p className="mx-auto mt-3 max-w-xl text-foreground/70">
-          Escolha o canal que preferir. Respondemos rápido!
+        <p className="mt-3 max-w-xl text-base text-foreground/75 leading-relaxed">
+          Escolha o canal que preferir. Respondemos rápido para tirar todas as dúvidas da sua família!
         </p>
       </Reveal>
 

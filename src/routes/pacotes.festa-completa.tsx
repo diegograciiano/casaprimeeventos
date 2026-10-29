@@ -3,10 +3,6 @@ import { Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useChatbot } from "@/components/site/ChatbotContext";
 
-import salaoAzul from "@/assets/salao-azul.jpg.asset.json";
-import salaoRosa from "@/assets/salao-rosa.jpg.asset.json";
-import algodaoDoce from "@/assets/algodao-doce.jpg.asset.json";
-
 export const Route = createFileRoute("/pacotes/festa-completa")({
   head: () => ({
     meta: [
@@ -75,7 +71,7 @@ const pacotes: Pacote[] = [
     id: "Festa Completa Pirulito",
     nome: "Pirulito",
     subtitulo: "Festa completa",
-    img: algodaoDoce.url,
+    img: "/images/algodao-doce-pipoca.jpg",
     secoes: [
       { titulo: "Decoração", itens: decoracao },
       { titulo: "Entradas", itens: entradasClassicas },
@@ -98,7 +94,7 @@ const pacotes: Pacote[] = [
     id: "Festa Completa Chiclete",
     nome: "Chiclete",
     subtitulo: "Festa completa",
-    img: salaoAzul.url,
+    img: "/images/salao-decorado-azul.jpg",
     destaque: true,
     secoes: [
       { titulo: "Decoração", itens: decoracao },
@@ -122,7 +118,7 @@ const pacotes: Pacote[] = [
     id: "Festa Completa Alegria",
     nome: "Alegria",
     subtitulo: "Festa completa com churrasco",
-    img: salaoRosa.url,
+    img: "/images/salao-decorado-rosa.jpg",
     secoes: [
       { titulo: "Decoração", itens: decoracao },
       {

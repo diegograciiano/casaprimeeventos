@@ -58,16 +58,16 @@ const beneficios = [
 function PacotesHub() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16">
-      <div className="text-center">
-        <div className="text-xs font-semibold uppercase tracking-widest text-[#8641df]">
+      <div className="text-left max-w-3xl">
+        <div className="text-xs font-bold uppercase tracking-wider text-[#8641df]">
           Pacotes 2026
         </div>
-        <h1 className="mt-2 font-display text-4xl font-bold sm:text-5xl">
+        <h1 className="mt-2 font-display text-3xl sm:text-5xl font-bold text-[#14092e] leading-tight">
           Escolha o formato da sua festa
         </h1>
-        <p className="mx-auto mt-3 max-w-2xl text-foreground/70">
+        <p className="mt-3 max-w-2xl text-base text-foreground/75 leading-relaxed">
           Três formatos pensados para celebrar do seu jeito. Clique em um deles
-          para ver todos os detalhes.
+          para ver todos os detalhes e valores.
         </p>
       </div>
 

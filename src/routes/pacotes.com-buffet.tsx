@@ -1,200 +1,116 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Check, ArrowRight } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Check, ArrowRight, MessageCircle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useChatbot } from "@/components/site/ChatbotContext";
-
-import salaoAzul from "@/assets/salao-azul.jpg.asset.json";
-import salaoRosa from "@/assets/salao-rosa.jpg.asset.json";
-import algodaoDoce from "@/assets/algodao-doce.jpg.asset.json";
+import { pacotes, FAIXAS_PESSOAS, inclusoEmTodos } from "@/data/pacotes";
+import { useState } from "react";
+import { TabelaPacotesValores } from "@/components/site/TabelaPacotesValores";
 
 export const Route = createFileRoute("/pacotes/com-buffet")({
   head: () => ({
     meta: [
-      { title: "Pacotes de Festa — Casa Prime Eventos" },
+      { title: "Pacotes com Buffet & Valores — Casa Prime Eventos" },
       {
         name: "description",
         content:
-          "Cardápio detalhado dos pacotes Pirulito, Diversão e Churrasco da Casa Prime Eventos. Solicite valores pelo WhatsApp.",
+          "Cardápios e valores oficiais dos pacotes Pirulito, Diversão e Churrasco da Casa Prime Eventos em Goiânia. 12h de festa, buffet e brinquedos.",
       },
-      { property: "og:title", content: "Pacotes de Festa — Casa Prime Eventos" },
+      { property: "og:title", content: "Pacotes de Festa com Buffet — Casa Prime Eventos" },
       {
         property: "og:description",
-        content: "Cardápio completo de cada pacote, do buffet aos brinquedos.",
+        content: "Cardápio completo de cada pacote, do buffet aos brinquedos com valores de referência.",
       },
     ],
   }),
-  component: Pacotes,
+  component: PacotesComBuffet,
 });
 
-type Secao = { titulo: string; itens: string[] };
-type Pacote = {
-  id: string;
-  nome: string;
-  subtitulo: string;
-  img: string;
-  destaque?: boolean;
-  secoes: Secao[];
-};
-
-const bebidas = ["Coca-Cola", "Coca-Cola Zero", "Guaraná Antarctica", "Água sem gás", "Suco La Fruit de uva", "Suco La Fruit de caju"];
-const sobremesa = ["Sorvete Ninho com morango", "Sorvete Ferrero Rocher", "Barraquinha de algodão doce e pipoca"];
-const brinquedos = ["Futebol de sabão", "Pula-pula", "Castelinho com escorrega na piscina", "Brinquedoteca", "Mini Circuito"];
-
-const pacotes: Pacote[] = [
-  {
-    id: "Pacote Pirulito (Sem Buffet)",
-    nome: "Pirulito",
-    subtitulo: "Entradas + Prato principal",
-    img: algodaoDoce.url,
-    secoes: [
-      {
-        titulo: "Entradas",
-        itens: [
-          "Mussarela em cubos",
-          "Presunto em cubos",
-          "Azeitona sem caroço",
-          "Tomate cereja",
-          "Salame italiano",
-          "Provolone fatiado",
-          "Patê de frango",
-          "Torradas",
-          "Batata frita",
-        ],
-      },
-      {
-        titulo: "Prato principal",
-        itens: [
-          "Arroz branco",
-          "Maminha ao molho limão",
-          "Frango ao molho 4 queijos",
-          "Batata palha",
-          "Salada tropical (molho de mostarda e mel)",
-        ],
-      },
-      { titulo: "Bebidas", itens: bebidas },
-      { titulo: "Sobremesa", itens: sobremesa },
-      { titulo: "Brinquedos", itens: brinquedos },
-    ],
-  },
-  {
-    id: "Pacote Diversão (Com Buffet)",
-    nome: "Diversão",
-    subtitulo: "Buffet completo",
-    img: salaoAzul.url,
-    destaque: true,
-    secoes: [
-      {
-        titulo: "Entradas",
-        itens: [
-          "Mussarela em cubos",
-          "Presunto em cubos",
-          "Azeitona sem caroço",
-          "Tomate cereja",
-          "Salame italiano",
-          "Provolone fatiado",
-          "Patê de frango",
-          "Torradas",
-          "Batata frita",
-        ],
-      },
-      {
-        titulo: "Prato principal",
-        itens: [
-          "Arroz branco",
-          "Lagarto ao molho madeira",
-          "Frango à parmegiana",
-          "Batata sauté",
-          "Salada tropical (molho de mostarda e mel)",
-        ],
-      },
-      { titulo: "Bebidas", itens: bebidas },
-      { titulo: "Sobremesa", itens: sobremesa },
-      { titulo: "Brinquedos", itens: brinquedos },
-    ],
-  },
-  {
-    id: "Pacote Churrasco (Festa Completa)",
-    nome: "Churrasco",
-    subtitulo: "Festa completa com churrasco",
-    img: salaoRosa.url,
-    secoes: [
-      {
-        titulo: "Entradas",
-        itens: [
-          "Patê de frango com torradas",
-          "Batata frita",
-          "Torresmo",
-          "Mandioca",
-          "Abacaxi com raspinha de limão",
-        ],
-      },
-      {
-        titulo: "Prato principal",
-        itens: ["Arroz branco", "Feijão tropeiro", "Vinagrete", "Mandioca cozida"],
-      },
-      {
-        titulo: "Carne e acompanhamentos",
-        itens: ["Picanha", "Cupim Grill", "Contra filé", "Linguiça toscana", "Tulipa de frango", "Pão de alho"],
-      },
-      { titulo: "Bebidas", itens: bebidas },
-      { titulo: "Sobremesa", itens: sobremesa },
-      { titulo: "Brinquedos", itens: brinquedos },
-    ],
-  },
-];
-
-function Pacotes() {
+function PacotesComBuffet() {
   const { openChat } = useChatbot();
+  const [pessoas, setPessoas] = useState<number>(70);
+
   return (
     <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
-      <div className="text-center">
-        <div className="text-xs font-semibold uppercase tracking-widest text-[#8641df]">
-          Pacotes 2026
-        </div>
-        <h1 className="mt-2 font-display text-4xl font-bold sm:text-5xl">
-          Cardápio completo dos pacotes
+      {/* Top Header */}
+      <div className="text-left max-w-4xl">
+        <span className="rounded-full bg-purple-100 px-4 py-1 text-xs font-bold uppercase tracking-wider text-purple-700">
+          Tabela Oficial 2026
+        </span>
+        <h1 className="mt-3.5 font-display text-3xl sm:text-5xl font-bold text-[#14092e] leading-tight">
+          Cardápio completo &amp; valores dos pacotes
         </h1>
-        <p className="mx-auto mt-3 max-w-2xl text-foreground/70">
-          Todos os pacotes incluem 12h de locação, piscina aquecida, brinquedos por 4h,
-          barraquinha de algodão doce e pipoca (4h) e equipe Prime.
+        <p className="mt-3.5 text-base sm:text-lg text-gray-600 leading-relaxed">
+          Todos os nossos pacotes incluem <strong>12 horas de locação</strong> do espaço exclusivo, <strong>piscina aquecida</strong>, <strong>brinquedos com monitores</strong>, <strong>barraquinha de algodão doce e pipoca ilimitados</strong> e equipe Prime completa.
         </p>
+
+        <div className="mt-7 flex flex-col sm:flex-row justify-start gap-3.5">
+          <Link
+            to="/orcamento"
+            className="w-full sm:w-auto text-center rounded-2xl bg-[#ffcb03] px-7 py-3.5 font-display text-base font-bold text-[#14092e] shadow-md hover:bg-[#ebd200] transition-all"
+          >
+            <Sparkles className="mr-2 inline-block h-4 w-4" />
+            Simular Orçamento no Chatbot
+          </Link>
+          <a
+            href="#lista-pacotes"
+            className="w-full sm:w-auto text-center rounded-2xl border border-gray-200 bg-white px-7 py-3.5 text-base font-bold text-gray-700 hover:bg-gray-50"
+          >
+            Ver Cardápio Detalhado ↓
+          </a>
+        </div>
       </div>
 
-      <div className="mt-12 space-y-16">
+      {/* Simulador sutil de convidados e valores */}
+      <div className="mt-12">
+        <TabelaPacotesValores />
+      </div>
+
+      {/* Lista detalhada dos pacotes */}
+      <div id="lista-pacotes" className="mt-20 space-y-16">
+        <div className="text-left">
+          <h2 className="font-display text-2xl sm:text-4xl font-bold text-[#14092e] leading-tight">
+            O que está incluso em cada opção:
+          </h2>
+          <div className="mt-2.5 h-1.5 w-16 rounded-full bg-[#8641df]" />
+        </div>
+
         {pacotes.map((p, idx) => (
           <div
             key={p.id}
-            className={`hover-lift grid gap-6 rounded-3xl bg-white p-4 shadow-xl ring-1 ring-black/5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] md:items-start md:p-8 ${
+            className={`hover-lift grid gap-8 rounded-3xl bg-white p-6 shadow-xl ring-1 ring-black/5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] md:items-start md:p-10 ${
               idx % 2 === 1 ? "md:[&>div:first-child]:order-2" : ""
             }`}
           >
-            <div className="relative overflow-hidden rounded-2xl">
+            <div className="relative overflow-hidden rounded-3xl">
               <img
                 src={p.img}
                 alt={`Pacote ${p.nome}`}
                 loading="lazy"
                 className="aspect-[4/3] h-full w-full object-cover"
               />
+              <div className="absolute top-4 left-4 rounded-full bg-[#14092e]/80 px-4 py-1.5 text-xs font-bold uppercase text-[#ffcb03] backdrop-blur-sm">
+                {p.tag}
+              </div>
             </div>
 
             <div>
-              <div className="text-xs font-semibold uppercase tracking-widest text-[#8641df]">
+              <div className="text-xs font-bold uppercase tracking-wider text-[#8641df]">
                 {p.subtitulo}
               </div>
-              <h2 className="mt-1 font-display text-3xl font-bold text-[#14092e]">
-                Pacote {p.nome}
+              <h2 className="mt-1 font-display text-2xl sm:text-3xl font-bold text-[#14092e] leading-snug">
+                {p.nome}
               </h2>
 
               <div className="mt-6 grid gap-6 sm:grid-cols-2">
                 {p.secoes.map((sec) => (
-                  <div key={sec.titulo}>
-                    <div className="mb-2 inline-block rounded-full bg-[#8641df]/10 px-3 py-1 font-display text-xs font-bold uppercase tracking-wider text-[#8641df]">
+                  <div key={sec.titulo} className="rounded-2xl bg-purple-50/50 p-4">
+                    <div className="mb-2 font-display text-xs font-bold uppercase tracking-wider text-[#8641df]">
                       {sec.titulo}
                     </div>
                     <ul className="space-y-1.5">
                       {sec.itens.map((i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-[#14092e]/80">
-                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#8641df]" />
+                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700 leading-normal">
+                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
                           <span>{i}</span>
                         </li>
                       ))}
@@ -203,22 +119,41 @@ function Pacotes() {
                 ))}
               </div>
 
-              <div className="mt-6 rounded-xl border border-[#8641df]/20 bg-[#8641df]/5 px-4 py-3 text-center text-sm">
-                <div className="font-display font-semibold text-[#8641df]">
-                  Valores sob consulta
+              {/* Tabela de valores resumida */}
+              <div className="mt-6 rounded-2xl border border-purple-200 bg-purple-50/70 p-4">
+                <div className="text-xs font-bold uppercase tracking-wider text-purple-900 mb-2">
+                  Valores tabelados para este pacote:
                 </div>
-                <div className="text-xs text-foreground/70">
-                  Solicite seu orçamento personalizado pelo WhatsApp
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {p.valores.map((v) => (
+                    <div key={v.pessoas} className="rounded-xl bg-white p-2 text-center shadow-xs">
+                      <div className="text-[11px] text-gray-500">{v.pessoas} pessoas</div>
+                      <div className="font-display text-xs font-bold text-purple-900">{v.valorFormatado}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <Button
-                onClick={() => openChat(p.id)}
-                size="lg"
-                className="btn-shine mt-6 rounded-full font-display"
-              >
-                Fazer Reserva <ArrowRight className="h-4 w-4" />
-              </Button>
+              <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                <Button
+                  onClick={() => openChat(p.id)}
+                  size="lg"
+                  className="rounded-2xl bg-[#ffcb03] font-display font-black text-[#14092e] shadow-md hover:bg-[#ebd200]"
+                >
+                  <MessageCircle className="mr-1.5 h-4 w-4" />
+                  Simular este pacote no Chatbot
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="rounded-2xl"
+                >
+                  <Link to="/orcamento">
+                    Ir para o Simulador Completo
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         ))}

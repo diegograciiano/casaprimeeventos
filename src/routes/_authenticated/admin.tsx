@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { CrmNav } from "@/components/admin/CrmNav";
 import {
   Dialog,
   DialogContent,
@@ -83,9 +84,28 @@ function AdminPage() {
   const qc = useQueryClient();
   const fetchLeads = useServerFn(listLeads);
   const updateStatus = useServerFn(updateLeadStatus);
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ["leads"],
-    queryFn: () => fetchLeads(),
+    queryFn: async () => {
+      // 1. Tenta buscar direto pelo cliente Supabase com a sessão do usuário
+      const { data: directLeads, error: directErr } = await supabase
+        .from("leads_festas")
+        .select("*")
+        .order("updated_at", { ascending: false })
+        .limit(500);
+
+      if (!directErr && directLeads) {
+        return { leads: directLeads as Lead[] };
+      }
+
+      // 2. Se falhar, tenta via server function de fallback
+      try {
+        return await fetchLeads();
+      } catch (err) {
+        if (directErr) throw directErr;
+        throw err;
+      }
+    },
     refetchInterval: 15000,
   });
 
@@ -128,7 +148,13 @@ function AdminPage() {
       old ? { leads: old.leads.map((l) => (l.id === leadId ? { ...l, status: newStatus } : l)) } : old,
     );
     try {
-      await updateStatus({ data: { id: leadId, status: newStatus } });
+      const { error: updErr } = await supabase
+        .from("leads_festas")
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq("id", leadId);
+      if (updErr) {
+        await updateStatus({ data: { id: leadId, status: newStatus } });
+      }
     } catch {
       refetch();
     }
@@ -136,29 +162,13 @@ function AdminPage() {
 
   return (
     <div className="min-h-screen bg-muted/20 p-4 sm:p-6">
-      <div className="mx-auto max-w-[1600px]">
-        <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <Link to="/" className="text-sm text-muted-foreground hover:underline">
-              ← site
-            </Link>
-            <h1 className="font-display text-2xl sm:text-3xl font-bold">CRM · Casa Prime Eventos</h1>
-            <p className="text-sm text-muted-foreground">
-              Arraste os cards entre as colunas. {leads.length} lead(s).
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={() => setNewOpen(true)}>+ Novo lead</Button>
-            <Button variant="outline" asChild>
-              <Link to="/agenda">Agenda</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link to="/relatorios">Relatórios</Link>
-            </Button>
-            <Button variant="outline" onClick={() => refetch()}>Atualizar</Button>
-            <Button variant="ghost" onClick={signOut}>Sair</Button>
-          </div>
-        </header>
+      <div className="mx-auto max-w-[1600px] w-full">
+        <CrmNav
+          totalLeads={leads.length}
+          onNewLead={() => setNewOpen(true)}
+          onRefresh={() => refetch()}
+          isRefreshing={isFetching}
+        />
 
         {isLoading && <p className="text-muted-foreground">Carregando…</p>}
         {error && (
@@ -233,8 +243,8 @@ function waLink(phone: string | null | undefined, text?: string) {
   // Normalize BR numbers: strip leading 0, add country code if missing
   if (digits.startsWith("0")) digits = digits.slice(1);
   if (!digits.startsWith("55")) digits = `55${digits}`;
-  const base = `https://wa.me/${digits}`;
-  return text ? `${base}?text=${encodeURIComponent(text)}` : base;
+  const base = `https://api.whatsapp.com/send/?phone=${digits}`;
+  return text ? `${base}&text=${encodeURIComponent(text)}` : base;
 }
 
 function LeadCard({
@@ -331,7 +341,10 @@ function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void 
     if (!lead) return;
     if (!confirm(`Excluir o lead de ${lead.responsavel_nome}? Esta ação não pode ser desfeita.`)) return;
     try {
-      await removeLead({ data: { id: lead.id } });
+      const { error: delErr } = await supabase.from("leads_festas").delete().eq("id", lead.id);
+      if (delErr) {
+        await removeLead({ data: { id: lead.id } });
+      }
       qc.setQueryData<{ leads: Lead[] }>(["leads"], (old) =>
         old ? { leads: old.leads.filter((l) => l.id !== lead.id) } : old,
       );
@@ -348,7 +361,13 @@ function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void 
     if (v !== null && (!isFinite(v) || v < 0)) return;
     setSaving(true);
     try {
-      await saveValor({ data: { id: lead.id, valor: v } });
+      const { error: valErr } = await supabase
+        .from("leads_festas")
+        .update({ valor: v, updated_at: new Date().toISOString() })
+        .eq("id", lead.id);
+      if (valErr) {
+        await saveValor({ data: { id: lead.id, valor: v } });
+      }
       qc.setQueryData<{ leads: Lead[] }>(["leads"], (old) =>
         old ? { leads: old.leads.map((l) => (l.id === lead.id ? { ...l, valor: v } : l)) } : old,
       );
@@ -383,7 +402,19 @@ function LeadDialog({ lead, onClose }: { lead: Lead | null; onClose: () => void 
                   </a>
                 }
               />
-              <Field label="E-mail" value={lead.email} />
+              <Field
+                label="E-mail"
+                value={
+                  lead.email ? (
+                    <a
+                      href={`mailto:${lead.email}`}
+                      className="text-primary hover:underline break-all"
+                    >
+                      {lead.email}
+                    </a>
+                  ) : null
+                }
+              />
               <Field label="Aniversariante" value={lead.crianca_nome} />
               <Field label="Idade" value={lead.idade} />
               <Field label="Data da festa" value={lead.data_festa} />

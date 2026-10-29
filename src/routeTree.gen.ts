@@ -9,40 +9,30 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SobreRouteImport } from './routes/sobre'
-import { Route as GaleriaRouteImport } from './routes/galeria'
-import { Route as ContatoRouteImport } from './routes/contato'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AtendimentoRouteImport } from './routes/atendimento'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PacotesIndexRouteImport } from './routes/pacotes.index'
-import { Route as PacotesSemBuffetRouteImport } from './routes/pacotes.sem-buffet'
-import { Route as PacotesFestaCompletaRouteImport } from './routes/pacotes.festa-completa'
-import { Route as PacotesComBuffetRouteImport } from './routes/pacotes.com-buffet'
-import { Route as ApiChatRouteImport } from './routes/api/chat'
-import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
-import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AtendimentoRouteImport } from './routes/atendimento'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as GaleriaRouteImport } from './routes/galeria'
+import { Route as OrcamentoRouteImport } from './routes/orcamento'
+import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
+import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as PacotesIndexRouteImport } from './routes/pacotes.index'
+import { Route as PacotesComBuffetRouteImport } from './routes/pacotes.com-buffet'
+import { Route as PacotesFestaCompletaRouteImport } from './routes/pacotes.festa-completa'
+import { Route as PacotesSemBuffetRouteImport } from './routes/pacotes.sem-buffet'
 
-const SobreRoute = SobreRouteImport.update({
-  id: '/sobre',
-  path: '/sobre',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GaleriaRoute = GaleriaRouteImport.update({
-  id: '/galeria',
-  path: '/galeria',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContatoRoute = ContatoRouteImport.update({
-  id: '/contato',
-  path: '/contato',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AtendimentoRoute = AtendimentoRouteImport.update({
@@ -50,43 +40,34 @@ const AtendimentoRoute = AtendimentoRouteImport.update({
   path: '/atendimento',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PacotesIndexRoute = PacotesIndexRouteImport.update({
-  id: '/pacotes/',
-  path: '/pacotes/',
+const GaleriaRoute = GaleriaRouteImport.update({
+  id: '/galeria',
+  path: '/galeria',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PacotesSemBuffetRoute = PacotesSemBuffetRouteImport.update({
-  id: '/pacotes/sem-buffet',
-  path: '/pacotes/sem-buffet',
+const OrcamentoRoute = OrcamentoRouteImport.update({
+  id: '/orcamento',
+  path: '/orcamento',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PacotesFestaCompletaRoute = PacotesFestaCompletaRouteImport.update({
-  id: '/pacotes/festa-completa',
-  path: '/pacotes/festa-completa',
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PacotesComBuffetRoute = PacotesComBuffetRouteImport.update({
-  id: '/pacotes/com-buffet',
-  path: '/pacotes/com-buffet',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiChatRoute = ApiChatRouteImport.update({
-  id: '/api/chat',
-  path: '/api/chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedRelatoriosRoute = AuthenticatedRelatoriosRouteImport.update({
-  id: '/relatorios',
-  path: '/relatorios',
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAgendaRoute = AuthenticatedAgendaRouteImport.update({
@@ -94,10 +75,35 @@ const AuthenticatedAgendaRoute = AuthenticatedAgendaRouteImport.update({
   path: '/agenda',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const AuthenticatedRelatoriosRoute = AuthenticatedRelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PacotesIndexRoute = PacotesIndexRouteImport.update({
+  id: '/pacotes/',
+  path: '/pacotes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PacotesComBuffetRoute = PacotesComBuffetRouteImport.update({
+  id: '/pacotes/com-buffet',
+  path: '/pacotes/com-buffet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PacotesFestaCompletaRoute = PacotesFestaCompletaRouteImport.update({
+  id: '/pacotes/festa-completa',
+  path: '/pacotes/festa-completa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PacotesSemBuffetRoute = PacotesSemBuffetRouteImport.update({
+  id: '/pacotes/sem-buffet',
+  path: '/pacotes/sem-buffet',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
+  '/orcamento': typeof OrcamentoRoute
   '/sobre': typeof SobreRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/agenda': typeof AuthenticatedAgendaRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
+  '/orcamento': typeof OrcamentoRoute
   '/sobre': typeof SobreRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/agenda': typeof AuthenticatedAgendaRoute
@@ -140,6 +148,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contato': typeof ContatoRoute
   '/galeria': typeof GaleriaRoute
+  '/orcamento': typeof OrcamentoRoute
   '/sobre': typeof SobreRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/agenda': typeof AuthenticatedAgendaRoute
@@ -158,6 +167,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contato'
     | '/galeria'
+    | '/orcamento'
     | '/sobre'
     | '/admin'
     | '/agenda'
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contato'
     | '/galeria'
+    | '/orcamento'
     | '/sobre'
     | '/admin'
     | '/agenda'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contato'
     | '/galeria'
+    | '/orcamento'
     | '/sobre'
     | '/_authenticated/admin'
     | '/_authenticated/agenda'
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContatoRoute: typeof ContatoRoute
   GaleriaRoute: typeof GaleriaRoute
+  OrcamentoRoute: typeof OrcamentoRoute
   SobreRoute: typeof SobreRoute
   ApiChatRoute: typeof ApiChatRoute
   PacotesComBuffetRoute: typeof PacotesComBuffetRoute
@@ -219,39 +232,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sobre': {
-      id: '/sobre'
-      path: '/sobre'
-      fullPath: '/sobre'
-      preLoaderRoute: typeof SobreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/galeria': {
-      id: '/galeria'
-      path: '/galeria'
-      fullPath: '/galeria'
-      preLoaderRoute: typeof GaleriaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contato': {
-      id: '/contato'
-      path: '/contato'
-      fullPath: '/contato'
-      preLoaderRoute: typeof ContatoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/atendimento': {
-      id: '/atendimento'
-      path: '/atendimento'
-      fullPath: '/atendimento'
-      preLoaderRoute: typeof AtendimentoRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -261,53 +246,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/atendimento': {
+      id: '/atendimento'
+      path: '/atendimento'
+      fullPath: '/atendimento'
+      preLoaderRoute: typeof AtendimentoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pacotes/': {
-      id: '/pacotes/'
-      path: '/pacotes'
-      fullPath: '/pacotes/'
-      preLoaderRoute: typeof PacotesIndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pacotes/sem-buffet': {
-      id: '/pacotes/sem-buffet'
-      path: '/pacotes/sem-buffet'
-      fullPath: '/pacotes/sem-buffet'
-      preLoaderRoute: typeof PacotesSemBuffetRouteImport
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pacotes/festa-completa': {
-      id: '/pacotes/festa-completa'
-      path: '/pacotes/festa-completa'
-      fullPath: '/pacotes/festa-completa'
-      preLoaderRoute: typeof PacotesFestaCompletaRouteImport
+    '/galeria': {
+      id: '/galeria'
+      path: '/galeria'
+      fullPath: '/galeria'
+      preLoaderRoute: typeof GaleriaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pacotes/com-buffet': {
-      id: '/pacotes/com-buffet'
-      path: '/pacotes/com-buffet'
-      fullPath: '/pacotes/com-buffet'
-      preLoaderRoute: typeof PacotesComBuffetRouteImport
+    '/orcamento': {
+      id: '/orcamento'
+      path: '/orcamento'
+      fullPath: '/orcamento'
+      preLoaderRoute: typeof OrcamentoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/chat': {
-      id: '/api/chat'
-      path: '/api/chat'
-      fullPath: '/api/chat'
-      preLoaderRoute: typeof ApiChatRouteImport
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/relatorios': {
-      id: '/_authenticated/relatorios'
-      path: '/relatorios'
-      fullPath: '/relatorios'
-      preLoaderRoute: typeof AuthenticatedRelatoriosRouteImport
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/agenda': {
@@ -317,12 +302,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgendaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/admin': {
-      id: '/_authenticated/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+    '/_authenticated/relatorios': {
+      id: '/_authenticated/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof AuthenticatedRelatoriosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pacotes/': {
+      id: '/pacotes/'
+      path: '/pacotes'
+      fullPath: '/pacotes/'
+      preLoaderRoute: typeof PacotesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pacotes/com-buffet': {
+      id: '/pacotes/com-buffet'
+      path: '/pacotes/com-buffet'
+      fullPath: '/pacotes/com-buffet'
+      preLoaderRoute: typeof PacotesComBuffetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pacotes/festa-completa': {
+      id: '/pacotes/festa-completa'
+      path: '/pacotes/festa-completa'
+      fullPath: '/pacotes/festa-completa'
+      preLoaderRoute: typeof PacotesFestaCompletaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pacotes/sem-buffet': {
+      id: '/pacotes/sem-buffet'
+      path: '/pacotes/sem-buffet'
+      fullPath: '/pacotes/sem-buffet'
+      preLoaderRoute: typeof PacotesSemBuffetRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -349,6 +369,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContatoRoute: ContatoRoute,
   GaleriaRoute: GaleriaRoute,
+  OrcamentoRoute: OrcamentoRoute,
   SobreRoute: SobreRoute,
   ApiChatRoute: ApiChatRoute,
   PacotesComBuffetRoute: PacotesComBuffetRoute,

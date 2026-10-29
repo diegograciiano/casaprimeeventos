@@ -1,13 +1,25 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Send, ArrowLeft, CalendarIcon } from "lucide-react";
-import maiteAvatar from "@/assets/maite-casa-prime.jpg.asset.json";
+import { useServerFn } from "@tanstack/react-start";
+import {
+  X,
+  Send,
+  CalendarIcon,
+  CheckCircle2,
+  Sparkles,
+  MessageCircle,
+  ShieldCheck,
+  RefreshCw,
+  Mail,
+  ArrowRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { waLink } from "@/lib/whatsapp";
+import { WHATSAPP_NUMBER, waLink } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
-import { pacotes, inclusoEmTodos } from "@/data/pacotes";
+import { syncProgressiveLeadPublic } from "@/lib/leads.functions";
+import { pacotes, FAIXAS_PESSOAS, getValorPacote, type Pacote } from "@/data/pacotes";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import { format } from "date-fns";
@@ -15,56 +27,92 @@ import { cn } from "@/lib/utils";
 
 export type ChatbotMode = "floating" | "page";
 
-type Msg = { id: string; role: "bot" | "user"; text: string };
+type Msg = {
+  id: string;
+  role: "bot" | "user";
+  text: string;
+};
 
 type Step =
   | "nome"
-  | "email"
   | "telefone"
-  | "qualificacao"
-  | "encerrado"
-  | "menu"
-  | "visita_data"
-  | "visita_resumo"
-  | "visita_enviado"
-  | "orc_pacote"
-  | "orc_detalhe"
-  | "atendente";
+  | "email"
+  | "aniversariante_tipo"
+  | "idade"
+  | "data_festa"
+  | "qtd_pessoas"
+  | "pacote"
+  | "tema"
+  | "resumo";
 
 type LeadState = {
   nome: string;
-  email: string;
   telefone: string;
+  email?: string;
+  criancaNome: string;
+  idade?: number;
   data: string;
-  pacote: string;
+  qtdPessoas: number;
+  pacoteId: string;
+  pacoteNome: string;
+  valorCalculado: number;
+  valorFormatado: string;
+  tema: string;
 };
 
-const emptyLead: LeadState = { nome: "", email: "", telefone: "", data: "", pacote: "" };
-
-const PACOTE_INFO: Record<string, { titulo: string; duracao: string; descricao: string }> = {
-  "Pacote Pirulito (Sem Buffet)": {
-    titulo: "🍭 Pacote Pirulito, Sem Buffet",
-    duracao: "2h de festa",
-    descricao:
-      "Ideal para quem quer aproveitar o espaço, os brinquedos e a piscina aquecida com entradas caprichadas e sobremesas, sem prato principal servido.",
-  },
-  "Pacote Diversão (Com Buffet)": {
-    titulo: "🎈 Pacote Diversão, Com Buffet",
-    duracao: "2h30 de festa + 30min de buffet",
-    descricao:
-      "Nosso pacote mais escolhido! Buffet completo com entradas, prato principal, bebidas, sobremesa e todos os brinquedos liberados.",
-  },
-  "Pacote Churrasco (Festa Completa)": {
-    titulo: "🔥 Pacote Churrasco, Festa Completa",
-    duracao: "3h de festa + extras",
-    descricao:
-      "Experiência completa com churrasco premium (picanha, cupim, contra filé), acompanhamentos, bebidas, sobremesas e toda a estrutura Prime.",
-  },
+const emptyLead: LeadState = {
+  nome: "",
+  telefone: "",
+  criancaNome: "",
+  data: "",
+  qtdPessoas: 70,
+  pacoteId: "",
+  pacoteNome: "",
+  valorCalculado: 0,
+  valorFormatado: "",
+  tema: "",
 };
 
-function isEmail(v: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
-}
+const OPCOES_PARENTESCO = [
+  "👦 Meu filho",
+  "👧 Minha filha",
+  "👶 Gêmeos / 2 filhos",
+  "🎉 Outro aniversariante",
+];
+
+const OPCOES_IDADES = [
+  { label: "1 aninho 🎈", valor: 1 },
+  { label: "2 anos", valor: 2 },
+  { label: "3 anos", valor: 3 },
+  { label: "4 anos", valor: 4 },
+  { label: "5 anos ⭐", valor: 5 },
+  { label: "6 anos", valor: 6 },
+  { label: "7 anos", valor: 7 },
+  { label: "8 a 10 anos", valor: 8 },
+  { label: "11+ anos", valor: 11 },
+];
+
+const OPCOES_DATAS = [
+  "Próximos 30 dias",
+  "Daqui a 2 a 3 meses",
+  "Novembro 2026",
+  "Dezembro 2026",
+  "Início de 2027",
+  "Segundo Semestre 2027",
+  "Ainda sem data definida",
+];
+
+const OPCOES_TEMAS = [
+  "🦁 Safari / Selvinha",
+  "👑 Princesas / Realeza",
+  "🦸 Super-Heróis",
+  "🚜 Fazendinha",
+  "🦄 Unicórnio / Mágico",
+  "🎪 Circo / Parque",
+  "🎈 Balões Coloridos",
+  "✨ A definir / Surpresa",
+];
+
 function maskPhoneBR(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 11);
   if (d.length <= 2) return d.length ? `(${d}` : "";
@@ -72,68 +120,141 @@ function maskPhoneBR(v: string) {
   if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
+
 function isPhone(v: string) {
   return v.replace(/\D/g, "").length >= 10;
 }
+
 function firstName(v: string) {
   return v.trim().split(/\s+/)[0] ?? "";
 }
 
-function buildWhatsMessage(lead: LeadState, tipo: "visita" | "orcamento" | "personalizado" | "atendente") {
-  const linhas: string[] = [];
-  if (tipo === "visita") {
-    linhas.push("Olá, Casa Prime! 👋 Gostaria de agendar uma visita ao espaço. 🎉");
-  } else if (tipo === "orcamento") {
-    linhas.push("Olá, Casa Prime! 👋 Gostaria de fechar um orçamento. 💛");
-  } else if (tipo === "personalizado") {
-    linhas.push("Olá, Casa Prime! 👋 Gostaria de um orçamento personalizado. ✨");
-  } else {
-    linhas.push("Olá, Casa Prime! 👋 Vim pelo chat do site e gostaria de falar com um atendente. 💛");
+function buildWhatsAppBudgetMsg(lead: LeadState): string {
+  const lines: string[] = [
+    "🎉 *NOVO PEDIDO DE ORÇAMENTO — CASA PRIME EVENTOS* 🎉",
+    "",
+    "Olá, Casa Prime! 👋 Simulei o orçamento pelo site e gostaria de verificar a disponibilidade e conversar sobre a festa:",
+    "",
+    `👤 *Responsável:* ${lead.nome}`,
+    `📱 *WhatsApp:* ${lead.telefone}`,
+  ];
+
+  if (lead.email) {
+    lines.push(`✉️ *E-mail:* ${lead.email}`);
   }
-  linhas.push("", "*Meus dados:*");
-  if (lead.nome) linhas.push(`👤 *Nome:* ${lead.nome}`);
-  if (lead.telefone) linhas.push(`📱 *Telefone:* ${lead.telefone}`);
-  if (lead.email) linhas.push(`✉️ *E-mail:* ${lead.email}`);
-  if (lead.data) linhas.push(`📅 *Data prevista:* ${lead.data}`);
-  if (lead.pacote) linhas.push(`🎁 *Pacote de interesse:* ${lead.pacote}`);
-  linhas.push("", "Obrigado(a)! 🎈");
-  return linhas.join("\n");
+
+  if (lead.criancaNome) {
+    const idadeStr = lead.idade ? ` (${lead.idade} anos)` : "";
+    lines.push(`🎂 *Aniversariante:* ${lead.criancaNome}${idadeStr}`);
+  }
+
+  if (lead.data) {
+    lines.push(`📅 *Data pretendida:* ${lead.data}`);
+  }
+
+  if (lead.qtdPessoas) {
+    lines.push(`👥 *Nº de convidados:* ${lead.qtdPessoas} pessoas`);
+  }
+
+  if (lead.pacoteNome) {
+    lines.push(`🎁 *Pacote escolhido:* ${lead.pacoteNome}`);
+  }
+
+  if (lead.valorFormatado) {
+    lines.push(`💰 *Valor de referência tabelado:* ${lead.valorFormatado}`);
+  }
+
+  if (lead.tema) {
+    lines.push(`🎨 *Tema pretendido:* ${lead.tema}`);
+  }
+
+  lines.push(
+    "",
+    "✨ *O que está incluso:*",
+    "• 12h de espaço exclusivo",
+    "• Piscina aquecida para crianças e adultos",
+    "• Brinquedos modernos com monitores",
+    "• Barraquinha de algodão doce e pipoca ilimitados",
+    "• Buffet completo, bebidas e sobremesas",
+    "• Equipe Prime a postos",
+    "",
+    "Podemos agendar uma visita e conferir a data na agenda? Obrigado(a)! 🎈",
+  );
+
+  return lines.join("\n");
 }
 
 export function ChatbotUI({
   mode,
   onClose,
+  initialPacoteId,
 }: {
   mode: ChatbotMode;
   onClose?: () => void;
+  initialPacoteId?: string;
 }) {
   const isPage = mode === "page";
   const [messages, setMessages] = useState<Msg[]>([]);
   const [step, setStep] = useState<Step>("nome");
-  const [lead, setLead] = useState<LeadState>(emptyLead);
+  const [lead, setLead] = useState<LeadState>(() => {
+    if (initialPacoteId) {
+      const pac = pacotes.find((p) => p.id === initialPacoteId);
+      if (pac) {
+        const val = pac.valores.find((v) => v.pessoas === 70);
+        return {
+          ...emptyLead,
+          pacoteId: pac.id,
+          pacoteNome: pac.nome,
+          valorCalculado: val?.valor ?? 0,
+          valorFormatado: val?.valorFormatado ?? pac.aPartirDe,
+        };
+      }
+    }
+    return emptyLead;
+  });
+
+  const syncLeadServer = useServerFn(syncProgressiveLeadPublic);
+  const leadDbIdRef = useRef<string | null>(null);
   const [input, setInput] = useState("");
-  const [sessionId] = useState(() => crypto.randomUUID());
+  const [sessionId, setSessionId] = useState(() => crypto.randomUUID());
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [salvandoCrm, setSalvandoCrm] = useState(false);
+  const [crmSalvo, setCrmSalvo] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const savedOnce = useRef(false);
+  const hasGreetedRef = useRef(false);
+  const isSubmittingRef = useRef(false);
+  const timeoutIdsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const safeTimeout = (fn: () => void, ms: number) => {
+    const id = setTimeout(fn, ms);
+    timeoutIdsRef.current.push(id);
+    return id;
+  };
 
   const pushBot = (text: string) =>
     setMessages((m) => [...m, { id: crypto.randomUUID(), role: "bot", text }]);
   const pushUser = (text: string) =>
     setMessages((m) => [...m, { id: crypto.randomUUID(), role: "user", text }]);
 
-  // Initial greeting
+  // Initial greeting (com trava estrita contra duplicações)
   useEffect(() => {
+    if (hasGreetedRef.current) return;
+    hasGreetedRef.current = true;
+
     pushBot(
-      "Oiê! 🎈 Eu sou a Maitê, da *Casa Prime Eventos*, a casa de festas infantis de Goiânia. Vou te ajudar rapidinho por aqui! 💛",
+      "Olá, papai ou mamãe! 🎈 Que alegria ter você aqui na **Casa Prime Eventos**!\n\nEu sou a **Sofia**, consultora do espaço. Vou te ajudar a simular o orçamento ideal da sua festa com opções rápidas em poucos cliques! 💛",
     );
-    setTimeout(() => {
-      pushBot("Pra começar, qual é o seu *nome completo*? 😊");
-      setTimeout(() => inputRef.current?.focus(), 100);
+    safeTimeout(() => {
+      pushBot("Pra gente começar: qual é o seu **nome completo**? 😊");
+      safeTimeout(() => inputRef.current?.focus(), 150);
     }, 400);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    return () => {
+      timeoutIdsRef.current.forEach(clearTimeout);
+      timeoutIdsRef.current = [];
+    };
   }, []);
 
   useEffect(() => {
@@ -141,290 +262,418 @@ export function ChatbotUI({
   }, [messages, step]);
 
   useEffect(() => {
-    setTimeout(() => inputRef.current?.focus(), 50);
+    safeTimeout(() => inputRef.current?.focus(), 50);
   }, [step]);
 
-  useEffect(() => {
-    if (step === "visita_data") {
-      setSelectedDate(undefined);
-      setCalendarOpen(true);
-    } else {
-      setCalendarOpen(false);
-    }
-  }, [step]);
+  // Persist to Supabase leads_festas CRM progressivamente a cada resposta
+  const salvarNoCRM = async (dados: LeadState) => {
+    if (!dados.nome || !dados.telefone) return;
+    setSalvandoCrm(true);
 
-  // Persist lead to Cloud when we have the minimum required fields
-  const persistLead = async (partial: Partial<LeadState>) => {
-    const merged = { ...lead, ...partial };
-    if (!merged.nome || !merged.telefone) return;
+    const serverPayload = {
+      sessionId,
+      responsavel_nome: dados.nome.trim(),
+      telefone: dados.telefone.trim(),
+      email: dados.email?.trim() || null,
+      crianca_nome: dados.criancaNome || null,
+      idade: dados.idade || null,
+      data_festa: dados.data || null,
+      qtd_pessoas: dados.qtdPessoas || null,
+      pacote: dados.pacoteNome || dados.pacoteId || null,
+      tema: dados.tema || null,
+      valor: dados.valorCalculado || null,
+      restricoes: dados.valorFormatado
+        ? `Simulação pelo Chatbot. Valor: ${dados.valorFormatado}`
+        : "Lead em qualificação pelo Chatbot",
+    };
+
+    const clientPayload = {
+      session_id: sessionId,
+      responsavel_nome: dados.nome.trim(),
+      telefone: dados.telefone.trim(),
+      email: dados.email?.trim() || null,
+      crianca_nome: dados.criancaNome || null,
+      idade: dados.idade || null,
+      data_festa: dados.data || null,
+      qtd_pessoas: dados.qtdPessoas || null,
+      pacote: dados.pacoteNome || dados.pacoteId || null,
+      tema: dados.tema || null,
+      valor: dados.valorCalculado || null,
+      restricoes: dados.valorFormatado
+        ? `Simulação pelo Chatbot. Valor: ${dados.valorFormatado}`
+        : "Lead em qualificação pelo Chatbot",
+      status: "novo",
+      updated_at: new Date().toISOString(),
+    };
+
     try {
-      if (!savedOnce.current) {
-        await supabase.from("leads_festas").insert({
-          session_id: sessionId,
-          responsavel_nome: merged.nome,
-          telefone: merged.telefone,
-          email: merged.email || null,
-          data_festa: merged.data || null,
-          pacote: merged.pacote || null,
-          status: "novo",
-        });
-        savedOnce.current = true;
+      if (leadDbIdRef.current) {
+        await supabase
+          .from("leads_festas")
+          .update(clientPayload)
+          .eq("id", leadDbIdRef.current);
+      } else {
+        const { data, error } = await supabase
+          .from("leads_festas")
+          .upsert(clientPayload, { onConflict: "session_id" })
+          .select("id")
+          .maybeSingle();
+
+        if (data?.id) {
+          leadDbIdRef.current = data.id;
+        } else if (error) {
+          // Fallback para TanStack Start server function (ignora RLS se service_role estiver configurado)
+          const res = await syncLeadServer({ data: serverPayload });
+          if (res?.id) leadDbIdRef.current = res.id;
+        }
       }
-    } catch {
-      // silent — chat still works even if save fails
+      setCrmSalvo(true);
+    } catch (e) {
+      console.warn("Client sync failed, running server fallback:", e);
+      try {
+        const res = await syncLeadServer({ data: serverPayload });
+        if (res?.id) leadDbIdRef.current = res.id;
+        setCrmSalvo(true);
+      } catch (errServer) {
+        console.error("CRM server fallback error:", errServer);
+      }
+    } finally {
+      setSalvandoCrm(false);
     }
   };
 
-  // ---------- User input handlers ----------
   const submitText = () => {
     const raw = input.trim();
-    if (!raw) return;
+    if (!raw || isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
     pushUser(raw);
     setInput("");
     handleText(raw);
+    safeTimeout(() => {
+      isSubmittingRef.current = false;
+    }, 350);
   };
 
   const handleText = (text: string) => {
     if (step === "nome") {
       if (text.length < 2) {
-        pushBot("Hmm, pode me contar seu nome completinho? 🙈");
+        pushBot("Poderia me dizer seu nome completinho? Assim já deixo seu atendimento salvo com carinho. 😊");
+        isSubmittingRef.current = false;
         return;
       }
       const nome = text;
       setLead((l) => ({ ...l, nome }));
-      setTimeout(() => {
-        pushBot(`Prazer, ${firstName(nome)}! 💛 Agora me passa seu *e-mail*, por favor.`);
-        setStep("email");
-      }, 300);
-      return;
-    }
-    if (step === "email") {
-      if (!isEmail(text)) {
-        pushBot("Esse e-mail parece incompleto. Pode conferir? ✉️");
-        return;
-      }
-      setLead((l) => ({ ...l, email: text }));
-      setTimeout(() => {
-        pushBot("Perfeito! E qual é o seu *WhatsApp com DDD*? 📱");
+      safeTimeout(() => {
+        pushBot(
+          `Prazer em te conhecer, ${firstName(nome)}! 💛\n\nAgora informe o seu **WhatsApp com DDD** para receber o orçamento e a confirmação de data:`,
+        );
         setStep("telefone");
-      }, 300);
+        isSubmittingRef.current = false;
+      }, 350);
       return;
     }
+
     if (step === "telefone") {
       if (!isPhone(text)) {
-        pushBot("O telefone precisa ter DDD + número. Exemplo: (62) 99999-9999 📱");
+        pushBot("Por favor, digite com DDD e número (ex: 62 99999-9999) para garantirmos o envio certinho! 📱");
+        isSubmittingRef.current = false;
         return;
       }
       const telefone = text;
-      setLead((l) => ({ ...l, telefone }));
-      void persistLead({ telefone });
-      setTimeout(() => {
-        pushBot("Anotado! ✨ Uma pergunta rápida: *seu evento é um aniversário infantil?* 🎂");
-        setStep("qualificacao");
-      }, 300);
-      return;
-    }
-    if (step === "visita_data") {
-      setLead((l) => ({ ...l, data: text }));
-      void persistLead({ data: text });
-      setTimeout(() => {
-        pushBot("Perfeito! Deixa eu conferir seus dados: 👇");
-        setStep("visita_resumo");
-      }, 300);
-      return;
-    }
-  };
+      const updated = { ...lead, telefone };
+      setLead(updated);
+      void salvarNoCRM(updated); // Salva no CRM imediatamente ao informar o telefone!
 
-  // ---------- Button handlers ----------
-  const chooseQualificacao = (yes: boolean) => {
-    pushUser(yes ? "Sim" : "Não");
-    if (!yes) {
-      setTimeout(() => {
+      safeTimeout(() => {
         pushBot(
-          `Entendi, ${firstName(lead.nome)}! 💛 A Casa Prime é especializada em *festas infantis*, então dessa vez não vamos conseguir te atender, mas agradecemos muito o contato! 🎈`,
+          `Perfeito, ${firstName(lead.nome)}! 📱\n\nAgora, qual é o seu melhor **e-mail**? Assim podemos te enviar a proposta detalhada com fotos! ✉️\n\n*(Ou toque no botão abaixo para pular)*`,
         );
-        setStep("encerrado");
-      }, 300);
+        setStep("email");
+        isSubmittingRef.current = false;
+      }, 350);
       return;
     }
-    setTimeout(() => {
-      pushBot("Que maravilha! 🎉 Como posso te ajudar agora?");
-      setStep("menu");
-    }, 300);
-  };
 
-  const chooseMenu = (opt: "visita" | "orcamento") => {
-    pushUser(opt === "visita" ? "🔎 Solicitar uma visita" : "💰 Fazer um orçamento");
-    setTimeout(() => {
-      if (opt === "visita") {
-        pushBot("Ótimo! 🗓️ Você já tem uma *data prevista* para a festa? (pode ser aproximada, ex: 15/03/2026 ou 'ainda não sei')");
-        setStep("visita_data");
-      } else {
-        pushBot("Show! 🎁 Temos 3 pacotes principais. Qual você quer conhecer primeiro?");
-        setStep("orc_pacote");
+    if (step === "email") {
+      const emailTrimmed = text.trim().toLowerCase();
+      if (!emailTrimmed.includes("@") || !emailTrimmed.includes(".")) {
+        pushBot("Por favor, digite um e-mail válido (ex: seuemail@gmail.com) ou toque no botão de pular logo abaixo! 😊");
+        isSubmittingRef.current = false;
+        return;
       }
-    }, 300);
+      const updated = { ...lead, email: emailTrimmed };
+      setLead(updated);
+      void salvarNoCRM(updated);
+
+      safeTimeout(() => {
+        pushBot(
+          `E-mail salvo com sucesso! ✉️\n\nQuem é a estrela dessa celebração mágica? Selecione uma das opções abaixo: 👇`,
+        );
+        setStep("aniversariante_tipo");
+        isSubmittingRef.current = false;
+      }, 350);
+      return;
+    }
+
+    if (step === "data_festa") {
+      handleEscolhaData(text);
+      return;
+    }
+
+    if (step === "tema") {
+      handleEscolhaTema(text);
+      return;
+    }
   };
 
-  const escolherPacote = (pacoteId: string) => {
-    pushUser(pacoteId);
-    setLead((l) => ({ ...l, pacote: pacoteId }));
-    void persistLead({ pacote: pacoteId });
-    const info = PACOTE_INFO[pacoteId];
-    const pac = pacotes.find((p) => p.id === pacoteId);
-    if (!info || !pac) return;
-    const incluso = pac.secoes
-      .map((s) => `• *${s.titulo}:* ${s.itens.slice(0, 4).join(", ")}${s.itens.length > 4 ? "…" : ""}`)
-      .join("\n");
-    setTimeout(() => {
+  // Handlers baseados em botões (SEM PRECISAR ESCREVER)
+  const handlePularEmail = () => {
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    pushUser("Prefiro não informar e-mail");
+    safeTimeout(() => {
       pushBot(
-        `${info.titulo}\n⏱️ *Duração:* ${info.duracao}\n\n${info.descricao}\n\n*✨ Incluso em todos os pacotes:*\n${inclusoEmTodos.map((i) => `• ${i}`).join("\n")}\n\n*🎁 Neste pacote você tem:*\n${incluso}\n\n💰 *Valor:* sob consulta, porque cada festa é única! Vamos personalizar o orçamento no WhatsApp. 💛`,
+        `Sem problemas, podemos continuar por aqui! ✨\n\nQuem é a estrela dessa celebração mágica? Selecione uma das opções abaixo: 👇`,
       );
-      setStep("orc_detalhe");
-    }, 300);
+      setStep("aniversariante_tipo");
+      isSubmittingRef.current = false;
+    }, 350);
   };
 
-  const acaoDetalhe = (
-    acao: "outro" | "personalizado" | "atendente" | "menu",
-  ) => {
-    const labels: Record<typeof acao, string> = {
-      outro: "Ver outro pacote",
-      personalizado: "Pedir orçamento personalizado",
-      atendente: "Falar com atendente",
-      menu: "Voltar ao menu",
-    };
-    pushUser(labels[acao]);
-    setTimeout(() => {
-      if (acao === "outro") {
-        pushBot("Claro! Qual você quer ver agora? 🎁");
-        setStep("orc_pacote");
-      } else if (acao === "menu") {
-        pushBot("Voltamos! Como posso te ajudar? 💛");
-        setStep("menu");
-      } else if (acao === "personalizado") {
-        pushBot("Perfeito! Vou te encaminhar pro nosso time no WhatsApp com todos os seus dados. 💛");
-        setStep("atendente");
-      } else {
-        pushBot("Combinado! Te levo pro WhatsApp agora mesmo. 💛");
-        setStep("atendente");
+  const handleEscolhaParentesco = (tipo: string) => {
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    pushUser(tipo);
+    const updated = { ...lead, criancaNome: tipo };
+    setLead(updated);
+    void salvarNoCRM(updated); // Atualiza progressivamente no Supabase
+
+    safeTimeout(() => {
+      pushBot(
+        "Que alegria comemorar esse aniversário! 🎂\n\n**Quantos aninhos** ele(a) vai completar? Selecione abaixo: 👇",
+      );
+      setStep("idade");
+      isSubmittingRef.current = false;
+    }, 350);
+  };
+
+  const handleEscolhaIdade = (idadeItem: { label: string; valor: number }) => {
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    pushUser(idadeItem.label);
+    const updated = { ...lead, idade: idadeItem.valor };
+    setLead(updated);
+    void salvarNoCRM(updated); // Atualiza progressivamente no Supabase
+
+    safeTimeout(() => {
+      pushBot(
+        `Uma idade linda demais! Toda criança ama nossa piscina aquecida e os brinquedos! 🎉\n\n**Qual a época ou data pretendida** para a festa? Escolha uma opção: 👇`,
+      );
+      setStep("data_festa");
+      isSubmittingRef.current = false;
+    }, 350);
+  };
+
+  const handleEscolhaData = (dataTexto: string) => {
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    pushUser(dataTexto);
+    const updated = { ...lead, data: dataTexto };
+    setLead(updated);
+    void salvarNoCRM(updated); // Atualiza progressivamente no Supabase
+
+    safeTimeout(() => {
+      pushBot(
+        `Anotado! 🗓️\n\nAgora selecione o **número de convidados** (adultos + crianças) para o seu evento: 👇`,
+      );
+      setStep("qtd_pessoas");
+      isSubmittingRef.current = false;
+    }, 350);
+  };
+
+  const handleEscolhaPessoas = (qtd: number) => {
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    pushUser(`${qtd} convidados`);
+    let updatedValor = 0;
+    let updatedFormatado = "";
+
+    if (lead.pacoteId) {
+      const v = getValorPacote(lead.pacoteId, qtd);
+      if (v) {
+        updatedValor = v.valor;
+        updatedFormatado = v.valorFormatado;
       }
-    }, 300);
+    }
+
+    const updated = {
+      ...lead,
+      qtdPessoas: qtd,
+      valorCalculado: updatedValor,
+      valorFormatado: updatedFormatado,
+    };
+    setLead(updated);
+    void salvarNoCRM(updated); // Atualiza progressivamente no Supabase
+
+    safeTimeout(() => {
+      pushBot(
+        `Ótimo tamanho de festa! ${qtd} pessoas aproveitam muito o nosso salão amplo e as piscinas.\n\nEscolha o **pacote com buffet** que mais combina com o estilo da sua família: 🎁`,
+      );
+      setStep("pacote");
+      isSubmittingRef.current = false;
+    }, 350);
   };
 
-  const confirmarVisita = () => {
-    pushUser("✅ Confirmar e enviar para WhatsApp");
-    setTimeout(() => {
-      pushBot("Perfeitoo! 🎉 Te levo pro WhatsApp com tudo já preenchido.");
-      setStep("visita_enviado");
-    }, 300);
+  const handleEscolhaPacote = (pacote: Pacote) => {
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    pushUser(pacote.tag);
+    const valorObj = pacote.valores.find((v) => v.pessoas === lead.qtdPessoas);
+    const valorCalculado = valorObj?.valor ?? 0;
+    const valorFormatado = valorObj?.valorFormatado ?? pacote.aPartirDe;
+
+    const updated = {
+      ...lead,
+      pacoteId: pacote.id,
+      pacoteNome: pacote.nome,
+      valorCalculado,
+      valorFormatado,
+    };
+    setLead(updated);
+    void salvarNoCRM(updated); // Atualiza progressivamente no Supabase
+
+    const destaques = pacote.secoes
+      .slice(0, 3)
+      .map((s) => `• **${s.titulo}:** ${s.itens.slice(0, 3).join(", ")}`)
+      .join("\n");
+
+    safeTimeout(() => {
+      pushBot(
+        `✨ Escolha fantástica, ${firstName(lead.nome)}!\n\nNo **${pacote.nome}** para **${lead.qtdPessoas} pessoas**, o valor oficial é **${valorFormatado}**.\n\n**O que está incluso:**\n${destaques}\n• **Brinquedos:** Futebol de sabão, pula-pula, castelinho na piscina e brinquedoteca\n• **Espaço:** 12 horas livres + piscina aquecida + barraquinha de algodão doce e pipoca ilimitados!\n\nQual **tema de decoração** você imagina para o grande dia? Toque em uma das opções abaixo: 🎨`,
+      );
+      setStep("tema");
+      isSubmittingRef.current = false;
+    }, 400);
   };
 
-  const corrigirVisita = () => {
-    pushUser("✏️ Corrigir informações");
-    setLead((l) => ({ ...l, data: "" }));
-    setTimeout(() => {
-      pushBot("Sem problema! Vamos começar de novo pelo seu nome. 😊");
-      setStep("nome");
-    }, 300);
+  const handleEscolhaTema = (temaEscolhido: string) => {
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    pushUser(temaEscolhido);
+    const updatedLead = { ...lead, tema: temaEscolhido };
+    setLead(updatedLead);
+    void salvarNoCRM(updatedLead); // Atualiza progressivamente no Supabase
+    concluirOrcamento(updatedLead);
   };
 
-  const voltarInicio = () => {
+  const concluirOrcamento = (dadosFinais: LeadState) => {
+    void salvarNoCRM(dadosFinais);
+    safeTimeout(() => {
+      pushBot(
+        `🎉 **Tudo pronto, ${firstName(dadosFinais.nome)}!**\n\nSeu orçamento foi montado e **já foi registrado no nosso CRM interno**. 📋\n\nToque no botão verde abaixo para enviar todos os dados diretamente para o **WhatsApp do proprietário da Casa Prime** e confirmar a disponibilidade da data com prioridade! 👇`,
+      );
+      setStep("resumo");
+      isSubmittingRef.current = false;
+    }, 450);
+  };
+
+  const reiniciar = () => {
+    timeoutIdsRef.current.forEach(clearTimeout);
+    timeoutIdsRef.current = [];
+    isSubmittingRef.current = false;
     setMessages([]);
     setLead(emptyLead);
-    savedOnce.current = false;
+    setCrmSalvo(false);
+    setSessionId(crypto.randomUUID());
     setStep("nome");
-    setTimeout(() => {
-      pushBot("Vamos recomeçar! 🎈 Qual é o seu *nome completo*?");
+    safeTimeout(() => {
+      pushBot("Vamos começar um novo orçamento! 🎈 Qual é o seu **nome completo**?");
     }, 200);
   };
 
-  // ---------- Layout ----------
   const outerClass = isPage
-    ? "flex h-[100dvh] w-full items-center justify-center bg-[#C5A5FF]"
-    : "fixed inset-0 z-[60] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4";
-  const innerClass = isPage
-    ? "flex h-full w-full max-w-2xl flex-col overflow-hidden bg-white sm:h-[min(800px,100dvh)] sm:rounded-3xl sm:border sm:border-gray-200 sm:shadow-2xl"
-    : "animate-pop-in flex h-[100dvh] w-full max-w-lg flex-col overflow-hidden bg-white shadow-2xl sm:h-[640px] sm:rounded-3xl";
+    ? "flex min-h-[90vh] w-full items-center justify-center py-6 px-3 sm:px-6"
+    : "fixed inset-0 z-[60] flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4 backdrop-blur-sm";
 
+  const innerClass = isPage
+    ? "flex h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-purple-200 bg-white shadow-2xl"
+    : "animate-pop-in flex h-[100dvh] w-full max-w-lg flex-col overflow-hidden bg-white shadow-2xl sm:h-[680px] sm:rounded-3xl border border-purple-100";
+
+  // Mostrar caixa de texto apenas nos passos onde digitação é estritamente necessária ou opcional
   const showFreeInput =
-    step === "nome" || step === "email" || step === "telefone" || step === "visita_data";
-  const isPhoneStep = step === "telefone";
+    step === "nome" ||
+    step === "telefone" ||
+    step === "email" ||
+    step === "data_festa" ||
+    step === "tema";
+
   const placeholder =
     step === "nome"
-      ? "Seu nome completo"
-      : step === "email"
-        ? "seu@email.com"
-        : step === "telefone"
-          ? "(62) 99999-9999"
-          : step === "visita_data"
-            ? "Ex: 15/03/2026"
-            : "";
-
-  const canGoBack = step !== "nome" && step !== "encerrado" && step !== "visita_enviado";
-
-  const goBackOne = () => {
-    // Simple back: return to menu
-    if (step === "visita_data" || step === "visita_resumo" || step === "orc_pacote") {
-      setStep("menu");
-      pushBot("Voltamos ao menu. Como posso te ajudar? 💛");
-    } else if (step === "orc_detalhe") {
-      setStep("orc_pacote");
-    } else if (step === "atendente") {
-      setStep("menu");
-      pushBot("Voltamos ao menu. Como posso te ajudar? 💛");
-    }
-  };
+      ? "Seu nome completo..."
+      : step === "telefone"
+        ? "(62) 99999-9999"
+        : step === "email"
+          ? "seuemail@exemplo.com"
+          : step === "data_festa"
+            ? "Ou digite outra data..."
+            : step === "tema"
+              ? "Ou digite outro tema..."
+              : "";
 
   return (
     <div className={outerClass}>
       <div className={innerClass}>
-        {/* Header */}
-        <div className="flex items-center justify-between bg-gradient-to-r from-pink to-aqua-deep px-4 py-3 text-white">
-          <div className="flex items-center gap-2">
-            {canGoBack && (step === "orc_detalhe" || step === "atendente") && (
-              <button
-                onClick={goBackOne}
-                className="mr-1 rounded-full p-1.5 transition hover:bg-white/20"
-                aria-label="Voltar"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </button>
-            )}
-            <div className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-white/20 backdrop-blur">
-              <img src={maiteAvatar.url} alt="Maitê - Casa Prime Eventos" className="h-full w-full object-cover" />
+        {/* Header Temático */}
+        <div className="flex items-center justify-between bg-gradient-to-r from-[#8641df] via-[#a367f0] to-[#ffcb03] px-5 py-3.5 text-white shadow-md">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 p-2 shadow-inner">
+                <img src="/logo-icone-branca.png" alt="Casa Prime" className="h-full w-full object-contain" />
+              </div>
+              <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-400" />
             </div>
             <div>
-              <div className="font-display text-base font-semibold leading-tight">
-                Maitê - Casa Prime Eventos
+              <div className="flex items-center gap-1.5">
+                <span className="font-display text-base sm:text-lg font-bold tracking-wide">
+                  Sofia · Consultora Prime
+                </span>
+                <span className="rounded-full bg-white/25 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                  Online
+                </span>
               </div>
-              <div className="text-xs opacity-90">Atendimento de festas infantis 🎂</div>
+              <div className="text-xs text-white/95 font-medium">
+                Simulador Rápido por Botões 🎂
+              </div>
             </div>
           </div>
           {onClose && (
             <button
               onClick={onClose}
-              className="rounded-full p-1.5 transition hover:bg-white/20"
+              className="rounded-full p-2 transition hover:bg-white/20 active:scale-95"
               aria-label="Fechar"
             >
-              <X className="h-5 w-5" />
+              <X className="h-5 w-5 text-white" />
             </button>
           )}
         </div>
 
-        {/* Messages */}
+        {/* Mensagens do Chat */}
         <div
           ref={scrollRef}
           role="log"
           aria-live="polite"
-          className="flex-1 space-y-2 overflow-y-auto bg-gradient-to-b from-pink-soft/40 to-white p-4"
+          className="flex-1 space-y-3.5 overflow-y-auto bg-gradient-to-b from-purple-50/50 via-white to-purple-50/30 p-4 sm:p-5"
         >
           {messages.map((m) => (
-            <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             <div
-                className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
+              key={m.id}
+              className={`flex ${m.role === "user" ? "justify-end" : "justify-start"} animate-in fade-in slide-in-from-bottom-2 duration-200`}
+            >
+              <div
+                className={`max-w-[88%] sm:max-w-[85%] rounded-3xl px-5 py-3.5 text-sm sm:text-base shadow-sm leading-relaxed ${
                   m.role === "user"
-                    ? "rounded-br-sm bg-primary text-primary-foreground whitespace-pre-wrap"
-                    : "rounded-bl-sm bg-white text-foreground"
+                    ? "rounded-br-xs bg-[#8641df] text-white"
+                    : "rounded-bl-xs bg-white text-gray-800 border border-purple-100 shadow-md shadow-purple-900/5 text-left"
                 }`}
               >
                 {m.role === "user" ? (
@@ -433,13 +682,10 @@ export function ChatbotUI({
                   <ReactMarkdown
                     remarkPlugins={[remarkBreaks]}
                     components={{
-                      em: ({ children, ...props }) => <strong {...props}>{children}</strong>,
-                      strong: ({ children, ...props }) => <strong {...props}>{children}</strong>,
-                      p: ({ children, ...props }) => (
-                        <p {...props} className="mb-1 last:mb-0">
-                          {children}
-                        </p>
-                      ),
+                      p: ({ children }) => <p className="mb-2 last:mb-0 leading-relaxed">{children}</p>,
+                      strong: ({ children }) => <strong className="font-bold text-purple-950">{children}</strong>,
+                      ul: ({ children }) => <ul className="my-2 space-y-1.5 pl-1">{children}</ul>,
+                      li: ({ children }) => <li className="text-sm text-gray-700 leading-normal">{children}</li>,
                     }}
                   >
                     {m.text}
@@ -449,186 +695,328 @@ export function ChatbotUI({
             </div>
           ))}
 
-          {/* Buttons per step */}
-          {step === "qualificacao" && (
-            <div className="flex flex-col gap-2 pt-1">
-              <ChoiceButton onClick={() => chooseQualificacao(true)}>✅ Sim, é infantil</ChoiceButton>
-              <ChoiceButton onClick={() => chooseQualificacao(false)}>❌ Não é infantil</ChoiceButton>
+          {/* 0. OPÇÃO DE PULAR E-MAIL */}
+          {step === "email" && (
+            <div className="pt-2 animate-in fade-in text-left">
+              <div className="mb-2 text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-800">
+                Digite seu e-mail abaixo ou:
+              </div>
+              <button
+                type="button"
+                onClick={handlePularEmail}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-purple-200 bg-white px-4 py-3 font-display text-xs sm:text-sm font-bold text-purple-700 hover:border-purple-400 hover:bg-purple-50 transition active:scale-95 shadow-sm"
+              >
+                <span>Pular este passo (não informar e-mail)</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
             </div>
           )}
 
-          {step === "menu" && (
-            <div className="flex flex-col gap-2 pt-1">
-              <ChoiceButton onClick={() => chooseMenu("visita")}>🔎 Solicitar uma visita</ChoiceButton>
-              <ChoiceButton onClick={() => chooseMenu("orcamento")}>💰 Fazer um orçamento</ChoiceButton>
-              <ChoiceButton onClick={() => acaoDetalhe("atendente")}>💬 Falar com atendente</ChoiceButton>
+          {/* 1. OPÇÕES DE PARENTESCO / ANIVERSARIANTE (SEM DIGITAR) */}
+          {step === "aniversariante_tipo" && (
+            <div className="pt-2 animate-in fade-in text-left">
+              <div className="mb-2 text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-800">
+                Selecione quem vai comemorar:
+              </div>
+              <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                {OPCOES_PARENTESCO.map((opcao) => (
+                  <button
+                    key={opcao}
+                    onClick={() => handleEscolhaParentesco(opcao)}
+                    className="flex items-center justify-center rounded-2xl border-2 border-purple-100 bg-white p-3.5 text-center font-display text-sm sm:text-base font-bold text-gray-800 shadow-sm transition hover:border-[#8641df] hover:bg-purple-50 hover:scale-[1.02] active:scale-95"
+                  >
+                    {opcao}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
-          {step === "visita_resumo" && (
-            <div className="pt-1">
-              <div className="rounded-2xl border-2 border-pink/30 bg-white p-4 text-sm shadow-sm">
-                <div className="mb-2 font-display font-semibold text-foreground">📋 Resumo</div>
-                <div className="space-y-1 text-foreground/90">
-                  <div>👤 <b>Nome:</b> {lead.nome}</div>
-                  <div>📱 <b>Telefone:</b> {lead.telefone}</div>
-                  <div>✉️ <b>E-mail:</b> {lead.email}</div>
-                  <div>📅 <b>Data prevista:</b> {lead.data || "a definir"}</div>
+          {/* 2. OPÇÕES DE IDADE (SEM DIGITAR) */}
+          {step === "idade" && (
+            <div className="pt-2 animate-in fade-in text-left">
+              <div className="mb-2 text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-800">
+                Selecione a idade a comemorar:
+              </div>
+              <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
+                {OPCOES_IDADES.map((item) => (
+                  <button
+                    key={item.label}
+                    onClick={() => handleEscolhaIdade(item)}
+                    className="flex items-center justify-center rounded-2xl border-2 border-purple-100 bg-white py-3 px-2 text-center font-display text-xs sm:text-sm font-bold text-gray-800 shadow-sm transition hover:border-[#8641df] hover:bg-purple-50 hover:scale-[1.02] active:scale-95"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 3. OPÇÕES DE DATA / ÉPOCA (SEM DIGITAR) */}
+          {step === "data_festa" && (
+            <div className="pt-2 animate-in fade-in text-left space-y-2.5">
+              <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-800">
+                Toque na época pretendida ou escolha a data:
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {OPCOES_DATAS.map((opcao) => (
+                  <button
+                    key={opcao}
+                    onClick={() => handleEscolhaData(opcao)}
+                    className="rounded-2xl border-2 border-purple-100 bg-white px-3.5 py-2.5 font-display text-xs sm:text-sm font-bold text-gray-800 shadow-sm transition hover:border-[#8641df] hover:bg-purple-50 active:scale-95"
+                  >
+                    {opcao}
+                  </button>
+                ))}
+              </div>
+
+              {/* Botão de calendário opcional */}
+              <div className="pt-1">
+                <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start rounded-2xl border-purple-200 text-left font-normal text-xs sm:text-sm h-11 bg-white",
+                        !selectedDate && "text-muted-foreground",
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4 text-purple-600" />
+                      {selectedDate
+                        ? format(selectedDate, "dd/MM/yyyy")
+                        : "📅 Ou escolher dia exato no calendário"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0 pointer-events-auto" align="center">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={(date) => {
+                        if (!date || isSubmittingRef.current) return;
+                        setSelectedDate(date);
+                        setCalendarOpen(false);
+                        const formatted = format(date, "dd/MM/yyyy");
+                        handleEscolhaData(formatted);
+                      }}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+          )}
+
+          {/* 4. OPÇÕES DE CONVIDADOS (SEM DIGITAR) */}
+          {step === "qtd_pessoas" && (
+            <div className="pt-2 animate-in fade-in text-left">
+              <div className="mb-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-800">
+                Selecione o número de convidados:
+              </div>
+              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                {FAIXAS_PESSOAS.map((qtd) => (
+                  <button
+                    key={qtd}
+                    onClick={() => handleEscolhaPessoas(qtd)}
+                    className="flex flex-col items-center rounded-2xl border-2 border-purple-100 bg-white p-3.5 font-semibold text-gray-800 shadow-sm transition hover:border-[#8641df] hover:bg-purple-50 hover:scale-105 active:scale-95"
+                  >
+                    <span className="font-display text-xl sm:text-2xl font-bold text-[#8641df]">{qtd}</span>
+                    <span className="text-xs sm:text-sm text-gray-600">pessoas</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 5. OPÇÕES DE PACOTES (SEM DIGITAR) */}
+          {step === "pacote" && (
+            <div className="space-y-2.5 pt-2 animate-in fade-in text-left">
+              <div className="mb-2 text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-800">
+                Escolha o pacote desejado ({lead.qtdPessoas} pessoas):
+              </div>
+              {pacotes.map((p) => {
+                const valorItem = p.valores.find((v) => v.pessoas === lead.qtdPessoas);
+                return (
+                  <button
+                    key={p.id}
+                    onClick={() => handleEscolhaPacote(p)}
+                    className="flex w-full items-center justify-between rounded-2xl border-2 border-purple-100 bg-white p-4 text-left transition hover:border-[#8641df] hover:bg-purple-50/80 hover:shadow-md"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold uppercase text-purple-700">{p.tag}</span>
+                        {p.badge && (
+                          <span className="rounded-full bg-[#ffcb03] px-2.5 py-0.5 text-xs font-bold text-[#14092e]">
+                            {p.badge}
+                          </span>
+                        )}
+                      </div>
+                      <div className="font-display text-lg sm:text-xl font-bold text-gray-900">{p.nome}</div>
+                      <div className="text-xs sm:text-sm text-gray-500">{p.subtitulo}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-semibold text-gray-400">Total</div>
+                      <div className="font-display text-lg sm:text-xl font-extrabold text-[#8641df]">
+                        {valorItem?.valorFormatado ?? p.aPartirDe}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* 6. OPÇÕES DE TEMA (SEM DIGITAR) */}
+          {step === "tema" && (
+            <div className="pt-2 animate-in fade-in text-left">
+              <div className="mb-2.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-800">
+                Toque no tema desejado:
+              </div>
+              <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                {OPCOES_TEMAS.map((tema) => (
+                  <button
+                    key={tema}
+                    onClick={() => handleEscolhaTema(tema)}
+                    className="flex items-center justify-center rounded-2xl border-2 border-purple-100 bg-white p-3 text-center font-display text-xs sm:text-sm font-bold text-gray-800 shadow-sm transition hover:border-[#8641df] hover:bg-purple-50 hover:scale-[1.02] active:scale-95"
+                  >
+                    {tema}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Resumo Final & Envio Direto ao WhatsApp do Dono */}
+          {step === "resumo" && (
+            <div className="space-y-4 pt-3 animate-in zoom-in-95 duration-300 text-left">
+              {/* Cartão de Resumo */}
+              <div className="rounded-3xl border-2 border-purple-200 bg-white p-5 sm:p-6 shadow-xl shadow-purple-900/10 text-left">
+                <div className="flex items-center justify-between border-b border-purple-100 pb-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-[#ffcb03]" />
+                    <span className="font-display text-base sm:text-lg font-bold text-purple-950">
+                      Resumo da Festa dos Sonhos
+                    </span>
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700 border border-emerald-200">
+                    <CheckCircle2 className="h-3.5 w-3.5" /> Salvo no CRM
+                  </span>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-sm">
+                  <div>
+                    <span className="text-gray-500">Responsável:</span>{" "}
+                    <strong className="text-gray-900">{lead.nome}</strong>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">WhatsApp:</span>{" "}
+                    <strong className="text-gray-900">{lead.telefone}</strong>
+                  </div>
+                  {lead.email && (
+                    <div className="sm:col-span-2">
+                      <span className="text-gray-500">E-mail:</span>{" "}
+                      <strong className="text-gray-900">{lead.email}</strong>
+                    </div>
+                  )}
+                  {lead.criancaNome && (
+                    <div>
+                      <span className="text-gray-500">Aniversariante:</span>{" "}
+                      <strong className="text-gray-900">{lead.criancaNome}</strong>
+                    </div>
+                  )}
+                  {lead.data && (
+                    <div>
+                      <span className="text-gray-500">Data pretendida:</span>{" "}
+                      <strong className="text-gray-900">{lead.data}</strong>
+                    </div>
+                  )}
+                  <div>
+                    <span className="text-gray-500">Convidados:</span>{" "}
+                    <strong className="text-purple-700">{lead.qtdPessoas} pessoas</strong>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Pacote:</span>{" "}
+                    <strong className="text-purple-700">{lead.pacoteNome}</strong>
+                  </div>
+                  {lead.tema && (
+                    <div className="sm:col-span-2">
+                      <span className="text-gray-500">Tema/Observações:</span>{" "}
+                      <strong className="text-gray-900">{lead.tema}</strong>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-5 rounded-2xl bg-gradient-to-r from-purple-50 to-amber-50 p-4 border border-purple-200/60 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs font-bold uppercase text-purple-800">
+                      Investimento de Referência
+                    </div>
+                    <div className="text-xs text-gray-500">Com estrutura completa de 12h</div>
+                  </div>
+                  <div className="font-display text-2xl sm:text-3xl font-extrabold text-purple-950">
+                    {lead.valorFormatado}
+                  </div>
                 </div>
               </div>
-              <div className="mt-2 flex flex-col gap-2">
-                <ChoiceButton onClick={confirmarVisita}>✅ Confirmar e enviar para WhatsApp</ChoiceButton>
-                <ChoiceButton onClick={corrigirVisita}>✏️ Corrigir informações</ChoiceButton>
+
+              {/* Botão de Disparo Direto para o WhatsApp do Dono */}
+              <a
+                href={waLink(buildWhatsAppBudgetMsg(lead))}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex w-full items-center justify-center gap-3 rounded-2xl bg-[#25D366] px-5 py-4 text-center font-display text-base sm:text-lg font-bold text-white shadow-xl shadow-emerald-500/30 transition-all hover:bg-[#20ba59] hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <MessageCircle className="h-6 w-6 animate-bounce" />
+                <span>Enviar Orçamento para o WhatsApp do Dono</span>
+              </a>
+
+              <div className="flex items-center justify-between pt-1 text-xs text-gray-500">
+                <span className="flex items-center gap-1">
+                  <ShieldCheck className="h-4 w-4 text-emerald-600" /> Atendimento oficial Casa Prime
+                </span>
+                <button
+                  onClick={reiniciar}
+                  className="inline-flex items-center gap-1 font-semibold text-purple-700 hover:underline"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" /> Fazer outra simulação
+                </button>
               </div>
-            </div>
-          )}
-
-          {step === "visita_enviado" && (
-            <div className="pt-2 space-y-2">
-              <a
-                href={waLink(buildWhatsMessage(lead, "visita"))}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-whatsapp px-4 py-3 font-semibold text-white shadow-lg transition hover:brightness-110"
-              >
-                <Send className="h-4 w-4" /> Continuar no WhatsApp
-              </a>
-              <button
-                onClick={voltarInicio}
-                className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-2 text-sm text-foreground/70 transition hover:bg-gray-50"
-              >
-                🔄 Iniciar novo atendimento
-              </button>
-            </div>
-          )}
-
-          {step === "orc_pacote" && (
-            <div className="flex flex-col gap-2 pt-1">
-              {pacotes.map((p) => (
-                <ChoiceButton key={p.id} onClick={() => escolherPacote(p.id)}>
-                  {PACOTE_INFO[p.id]?.titulo ?? p.id}
-                </ChoiceButton>
-              ))}
-              <button
-                onClick={() => acaoDetalhe("menu")}
-                className="mt-1 text-xs text-foreground/60 underline underline-offset-2"
-              >
-                ← Voltar ao menu
-              </button>
-            </div>
-          )}
-
-          {step === "orc_detalhe" && (
-            <div className="flex flex-col gap-2 pt-1">
-              <ChoiceButton onClick={() => acaoDetalhe("outro")}>🔁 Ver outro pacote</ChoiceButton>
-              <ChoiceButton onClick={() => acaoDetalhe("personalizado")}>✨ Orçamento personalizado</ChoiceButton>
-              <ChoiceButton onClick={() => acaoDetalhe("atendente")}>💬 Falar com atendente</ChoiceButton>
-              <ChoiceButton onClick={() => acaoDetalhe("menu")}>↩️ Voltar ao menu</ChoiceButton>
-            </div>
-          )}
-
-          {step === "atendente" && (
-            <div className="pt-2 space-y-2">
-              <a
-                href={waLink(buildWhatsMessage(lead, lead.pacote ? "orcamento" : "atendente"))}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-whatsapp px-4 py-3 font-semibold text-white shadow-lg transition hover:brightness-110"
-              >
-                <Send className="h-4 w-4" /> Continuar no WhatsApp
-              </a>
-              <button
-                onClick={voltarInicio}
-                className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-2 text-sm text-foreground/70 transition hover:bg-gray-50"
-              >
-                🔄 Iniciar novo atendimento
-              </button>
-            </div>
-          )}
-
-          {step === "encerrado" && (
-            <div className="pt-2">
-              <button
-                onClick={voltarInicio}
-                className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-2 text-sm text-foreground/70 transition hover:bg-gray-50"
-              >
-                🔄 Iniciar novo atendimento
-              </button>
             </div>
           )}
         </div>
 
-        {/* Composer */}
+        {/* Campo de Entrada de Texto (somente onde digitação faz sentido) */}
         {showFreeInput && (
-          <div className="border-t bg-white p-3">
-            {step === "visita_data" ? (
-              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start rounded-full border-input bg-background text-left font-normal",
-                      !selectedDate && "text-muted-foreground",
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {selectedDate ? format(selectedDate, "dd/MM/yyyy") : "Escolha a data da festa"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 pointer-events-auto" align="center">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={(date) => {
-                      if (!date) return;
-                      setSelectedDate(date);
-                      setCalendarOpen(false);
-                      const formatted = format(date, "dd/MM/yyyy");
-                      pushUser(formatted);
-                      handleText(formatted);
-                    }}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  submitText();
-                }}
-                className="flex gap-2"
+          <div className="border-t border-purple-100 bg-white p-3.5">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                submitText();
+              }}
+              className="flex gap-2"
+            >
+              <Input
+                ref={inputRef}
+                value={input}
+                onChange={(e) =>
+                  setInput(step === "telefone" ? maskPhoneBR(e.target.value) : e.target.value)
+                }
+                inputMode={step === "telefone" ? "tel" : step === "email" ? "email" : "text"}
+                type={step === "email" ? "email" : "text"}
+                placeholder={placeholder}
+                className="h-11 rounded-2xl border-purple-200 text-base focus-visible:ring-purple-500"
+              />
+              <Button
+                type="submit"
+                size="icon"
+                className="h-11 w-11 shrink-0 rounded-2xl bg-[#8641df] hover:bg-purple-700 text-white shadow-md shadow-purple-500/20"
+                disabled={!input.trim()}
               >
-                <Input
-                  ref={inputRef}
-                  value={input}
-                  onChange={(e) =>
-                    setInput(isPhoneStep ? maskPhoneBR(e.target.value) : e.target.value)
-                  }
-                  inputMode={isPhoneStep ? "tel" : step === "email" ? "email" : "text"}
-                  placeholder={placeholder}
-                  className="rounded-full"
-                />
-                <Button type="submit" size="icon" className="h-9 w-9 shrink-0 rounded-full" disabled={!input.trim()}>
-                  <Send className="h-4 w-4" />
-                </Button>
-              </form>
-            )}
+                <Send className="h-4 w-4" />
+              </Button>
+            </form>
           </div>
         )}
       </div>
     </div>
   );
 }
-
-function ChoiceButton({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button
-      onClick={onClick}
-      className="rounded-2xl border-2 border-pink/30 bg-white px-4 py-3 text-left text-sm font-semibold text-foreground transition hover:border-pink hover:bg-pink-soft active:scale-[0.99]"
-    >
-      {children}
-    </button>
-  );
-}
-

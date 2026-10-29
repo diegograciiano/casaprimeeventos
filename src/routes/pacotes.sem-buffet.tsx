@@ -3,11 +3,6 @@ import { Check, ArrowRight, ArrowLeft, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useChatbot } from "@/components/site/ChatbotContext";
 
-import salaoAzul from "@/assets/salao-azul.jpg.asset.json";
-import salaoRosa from "@/assets/salao-rosa.jpg.asset.json";
-import decoracaoSafari from "@/assets/decoracao-safari.jpg.asset.json";
-import algodaoDoce from "@/assets/algodao-doce.jpg.asset.json";
-
 export const Route = createFileRoute("/pacotes/sem-buffet")({
   head: () => ({
     meta: [
@@ -41,7 +36,7 @@ const pacotes: Pacote[] = [
     id: "Pacote Bombom (Sem Buffet)",
     nome: "Bombom",
     capacidade: "Até 60 pessoas",
-    img: salaoRosa.url,
+    img: "/images/salao-decorado-rosa.jpg",
     secoes: [
       {
         titulo: "Espaço e mobiliário",
@@ -70,7 +65,7 @@ const pacotes: Pacote[] = [
     id: "Pacote Chiclete (Sem Buffet)",
     nome: "Chiclete",
     capacidade: "Até 80 pessoas",
-    img: decoracaoSafari.url,
+    img: "/images/decoracao-safari.jpg",
     secoes: [
       {
         titulo: "Espaço e mobiliário",
@@ -95,7 +90,7 @@ const pacotes: Pacote[] = [
     id: "Pacote Sorvete (Sem Buffet)",
     nome: "Sorvete",
     capacidade: "Até 90 pessoas",
-    img: algodaoDoce.url,
+    img: "/images/algodao-doce-pipoca.jpg",
     secoes: [
       {
         titulo: "Espaço e mobiliário",
@@ -125,7 +120,7 @@ const pacotes: Pacote[] = [
     id: "Pacote Churros (Sem Buffet)",
     nome: "Churros",
     capacidade: "Até 120 pessoas",
-    img: salaoAzul.url,
+    img: "/images/salao-decorado-azul.jpg",
     secoes: [
       {
         titulo: "Espaço e mobiliário",

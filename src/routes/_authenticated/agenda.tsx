@@ -3,8 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { listLeads } from "@/lib/leads.functions";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { CrmNav } from "@/components/admin/CrmNav";
 import { cn } from "@/lib/utils";
 import { ptBR } from "date-fns/locale";
 
@@ -108,9 +110,18 @@ function sameDay(a: Date, b: Date) {
 
 function AgendaPage() {
   const fetchLeads = useServerFn(listLeads);
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ["leads"],
-    queryFn: () => fetchLeads(),
+    queryFn: async () => {
+      const { data: directLeads, error } = await supabase
+        .from("leads_festas")
+        .select("*")
+        .order("updated_at", { ascending: false });
+      if (!error && directLeads) {
+        return { leads: directLeads as Lead[] };
+      }
+      return await fetchLeads();
+    },
   });
   const [selected, setSelected] = useState<Date | undefined>(new Date());
 
@@ -141,25 +152,20 @@ function AgendaPage() {
 
   return (
     <div className="min-h-screen bg-muted/20 p-4 sm:p-6">
-      <div className="mx-auto max-w-5xl">
-        <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <Link to="/admin" className="text-sm text-muted-foreground hover:underline">← CRM</Link>
-            <h1 className="font-display text-2xl sm:text-3xl font-bold">Agenda de festas</h1>
-            <p className="text-sm text-muted-foreground">
-              {reservedDays.length} reservadas · {eventDays.length} em negociação · {semData.length} sem data.
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" asChild><Link to="/relatorios">Relatórios</Link></Button>
-            <Button variant="outline" asChild><Link to="/admin">CRM</Link></Button>
-          </div>
-        </header>
+      <div className="mx-auto max-w-[1600px] w-full">
+        <CrmNav totalLeads={leads.length} onRefresh={() => refetch()} />
+
+        <div className="mb-6">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-gray-900">Agenda de Festas</h1>
+          <p className="text-sm text-muted-foreground">
+            {reservedDays.length} reservadas · {eventDays.length} em negociação · {semData.length} sem data.
+          </p>
+        </div>
 
         {isLoading && <p className="text-muted-foreground">Carregando…</p>}
 
         {data && (
-          <div className="grid gap-4 md:grid-cols-[auto_1fr]">
+          <div className="grid gap-6 lg:grid-cols-[380px_1fr]">
             <div className="rounded-2xl bg-white p-2 shadow-sm">
               <Calendar
                 mode="single"

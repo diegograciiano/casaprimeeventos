@@ -15,12 +15,18 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-const USER_TO_EMAIL = (u: string) => `${u.trim().toLowerCase()}@casaprime.local`;
+const resolveEmail = (input: string) => {
+  const trimmed = input.trim();
+  if (trimmed.includes("@")) {
+    return trimmed.toLowerCase();
+  }
+  return `${trimmed.toLowerCase()}@casaprime.local`;
+};
 
 function AuthPage() {
   const navigate = useNavigate();
   const bootstrap = useServerFn(bootstrapCrmAdmin);
-  const [username, setUsername] = useState("");
+  const [loginInput, setLoginInput] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,16 +42,48 @@ function AuthPage() {
     setLoading(true);
     setError(null);
     try {
-      const email = USER_TO_EMAIL(username);
-      let { error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
-      if (signInErr && username.trim().toLowerCase() === "casaprime") {
-        // First-time bootstrap of the fixed admin account, then retry
-        await bootstrap({});
-        const retry = await supabase.auth.signInWithPassword({ email, password });
-        signInErr = retry.error;
+      const email = resolveEmail(loginInput);
+      let { data: authData, error: signInErr } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInErr && loginInput.trim().toLowerCase() === "casaprime") {
+        // Primeiro acesso do usuário casaprime
+        const { error: signUpErr } = await supabase.auth.signUp({ email, password });
+        if (!signUpErr) {
+          const retry = await supabase.auth.signInWithPassword({ email, password });
+          signInErr = retry.error;
+          authData = retry.data;
+        } else {
+          try {
+            await bootstrap({});
+            const retry = await supabase.auth.signInWithPassword({ email, password });
+            signInErr = retry.error;
+            authData = retry.data;
+          } catch {
+            // Ignore bootstrap error
+          }
+        }
       }
-      if (signInErr) throw signInErr;
-      navigate({ to: "/admin" });
+
+      if (signInErr) {
+        const msg = signInErr.message || "";
+        if (msg.toLowerCase().includes("email not confirmed")) {
+          throw new Error(
+            "E-mail ainda não confirmado. No Supabase (Authentication > Users), clique nos 3 pontinhos do usuário e em 'Confirm email' ou crie o usuário marcando a opção 'Auto Confirm User'."
+          );
+        }
+        if (msg.toLowerCase().includes("invalid login credentials")) {
+          throw new Error(
+            "E-mail ou senha incorretos. Verifique se digitou o e-mail completo exatamente como cadastrado no Supabase."
+          );
+        }
+        throw signInErr;
+      }
+
+      // Redireciona com reload limpo para garantir a sessão hidratada
+      window.location.href = "/admin";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao autenticar");
     } finally {
@@ -56,23 +94,33 @@ function AuthPage() {
   return (
     <div className="grid min-h-screen place-items-center bg-muted/30 p-4">
       <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl">
-        <Link to="/" className="text-sm text-muted-foreground hover:underline">
-          ← voltar ao site
-        </Link>
-        <h1 className="mt-4 font-display text-2xl font-bold">Acessar CRM</h1>
+        <div className="flex items-center justify-between">
+          <Link to="/" className="text-sm text-muted-foreground hover:underline">
+            ← voltar ao site
+          </Link>
+        </div>
+        <div className="mt-4 mb-3">
+          <img
+            src="/logo.png"
+            alt="Casa Prime Eventos"
+            className="h-12 w-auto object-contain"
+          />
+        </div>
+        <h1 className="mt-2 font-display text-2xl font-bold">Acessar CRM</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Painel interno da Casa Prime Eventos.
         </p>
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="username">Usuário</Label>
+            <Label htmlFor="login">E-mail de Acesso</Label>
             <Input
-              id="username"
+              id="login"
               type="text"
               autoComplete="username"
+              placeholder="seu-email@exemplo.com"
               required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={loginInput}
+              onChange={(e) => setLoginInput(e.target.value)}
             />
           </div>
           <div className="space-y-1.5">
@@ -88,8 +136,12 @@ function AuthPage() {
             />
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Aguarde…" : "Entrar"}
+          <Button
+            type="submit"
+            className="w-full h-11 rounded-2xl bg-[#8641df] hover:bg-purple-700 text-white font-bold text-base shadow-md shadow-purple-500/20"
+            disabled={loading}
+          >
+            {loading ? "Entrando..." : "Entrar no CRM"}
           </Button>
         </form>
       </div>

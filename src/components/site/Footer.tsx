@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { Instagram, MessageCircle, MapPin } from "lucide-react";
-import logo from "@/assets/icon-casa-prime.png.asset.json";
 import { INSTAGRAM_HANDLE, INSTAGRAM_URL, WHATSAPP_DISPLAY, waLink } from "@/lib/whatsapp";
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -20,19 +19,13 @@ export function Footer() {
       <div className="mx-auto grid max-w-6xl gap-8 px-6 py-10 text-center md:grid-cols-2 md:gap-8 md:py-12 md:text-left">
         {/* Marca */}
         <div className="flex flex-col items-center md:items-start">
-          <div className="flex items-center gap-3">
+          <Link to="/" aria-label="Casa Prime Eventos — Início">
             <img
-              src={logo.url}
-              alt=""
-              width={56}
-              height={56}
-              className="h-14 w-14 object-contain brightness-0 invert"
+              src="/logo-branca.png"
+              alt="Casa Prime Eventos"
+              className="h-16 w-auto object-contain"
             />
-            <div className="font-display text-2xl font-bold leading-tight">
-              Casa Prime<br />
-              <span className="text-[#ffcb03]">Eventos</span>
-            </div>
-          </div>
+          </Link>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/70">
             A sua casa de diversão. Festas infantis inesquecíveis com estrutura completa,
             piscina aquecida e muita alegria.

@@ -2,7 +2,7 @@ import { useChatbot } from "./ChatbotContext";
 import { ChatbotUI } from "./ChatbotUI";
 
 export function Chatbot() {
-  const { open, closeChat } = useChatbot();
+  const { open, closeChat, initialPacote } = useChatbot();
   if (!open) return null;
-  return <ChatbotUI mode="floating" onClose={closeChat} />;
+  return <ChatbotUI mode="floating" onClose={closeChat} initialPacoteId={initialPacote} />;
 }
